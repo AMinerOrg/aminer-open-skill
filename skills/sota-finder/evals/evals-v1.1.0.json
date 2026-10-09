@@ -1,0 +1,1278 @@
+{
+  "skill_name": "sota-finder",
+  "suite_version": "1.1.0",
+  "case_count": 42,
+  "modes": [
+    "live_web",
+    "offline_fixture",
+    "behavioral",
+    "aminer_optional"
+  ],
+  "categories": [
+    "routing-input",
+    "scope-comparability",
+    "evidence-integrity",
+    "discovery-coverage",
+    "robustness-aminer",
+    "artifact-delivery"
+  ],
+  "must_pass_ids": [
+    1,
+    2,
+    3,
+    6,
+    8,
+    9,
+    11,
+    12,
+    15,
+    16,
+    21,
+    23,
+    25,
+    30,
+    31,
+    33,
+    35,
+    37,
+    39,
+    41
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "name": "Official live leaderboard",
+      "category": "routing-input",
+      "mode": "live_web",
+      "difficulty": "basic",
+      "prompt": "Build the latest evidence-backed leaderboard for SWE-bench Verified. Distinguish official leaderboard results from paper or repository self-reports.",
+      "expected_output": "Use the official benchmark/leaderboard and evaluation documentation as the main evidence backbone, verify leading claims, state the absolute execution-date cutoff, and keep materially different or self-reported settings outside the main official scope.",
+      "files": [],
+      "expectations": [
+        "Uses an absolute evidence cutoff equal to the execution date",
+        "Official leaderboard or benchmark documentation anchors the main scope",
+        "Recent papers and repositories are searched for discovery and cross-checking",
+        "Main, reference, and conflict/unavailable results are separated",
+        "The chat response remains minimal and links the four artifacts"
+      ],
+      "failure_conditions": [
+        "Declares a latest winner from an aggregator alone",
+        "Mixes unofficial/self-reported settings into the official main scope",
+        "Omits the evidence cutoff"
+      ],
+      "tags": [
+        "must-pass",
+        "official-source",
+        "latest"
+      ],
+      "task_summary_zh": "构建 SWE-bench Verified 的最新证据化排行榜，区分官方榜单与论文或仓库的自报结果。"
+    },
+    {
+      "id": 2,
+      "name": "No unified benchmark",
+      "category": "routing-input",
+      "mode": "live_web",
+      "difficulty": "adversarial",
+      "prompt": "这个方向没有统一官方 benchmark：请调查长文档 RAG 中的引用忠实性方法，尽可能找论文、预印本、项目仓库和聚合站，并建立可供实践参考的 Leaderboard。",
+      "expected_output": "Infer useful comparison scopes rather than forcing one universal ranking, search all requested source classes, verify any main claims with original/author evidence, and place weakly comparable findings in Reference Results.",
+      "files": [],
+      "expectations": [
+        "Searches papers, preprints, repositories, and aggregators",
+        "Creates multiple scopes when evaluation settings are materially different",
+        "Does not invent an official benchmark",
+        "Reference results remain outside main rankings",
+        "Coverage gaps and the non-unified nature of the field are explicit"
+      ],
+      "failure_conditions": [
+        "Forces all papers into one flat leaderboard",
+        "Treats an aggregator as sufficient main evidence",
+        "Claims exhaustive coverage without gaps"
+      ],
+      "tags": [
+        "must-pass",
+        "open-world",
+        "no-official-benchmark",
+        "zh"
+      ],
+      "task_summary_zh": "在缺少统一官方 benchmark 的情况下，调研长文档 RAG 引用忠实性方法并建立实践参考榜。"
+    },
+    {
+      "id": 3,
+      "name": "Closed supplied sources only",
+      "category": "routing-input",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "Use only the supplied dossier. Do not browse or use AMiner. Build the most useful leaderboard you can.",
+      "expected_output": "Honor the closed-source restriction, classify Alpha, Beta, and Gamma according to evidence and comparability, and record that coverage is limited to the supplied dossier.",
+      "files": [
+        "evals/fixtures/closed_source_dossier.md"
+      ],
+      "expectations": [
+        "Performs no external or AMiner search",
+        "Alpha can enter a standard closed-book main scope",
+        "Beta is reference-only because it has aggregator-only evidence and incomplete setting",
+        "Gamma is separated because tools/external data materially change comparability",
+        "Coverage limitation is recorded"
+      ],
+      "failure_conditions": [
+        "Searches outside the fixture",
+        "Ranks Beta as verified main SOTA",
+        "Mixes Gamma into the closed-book scope"
+      ],
+      "tags": [
+        "must-pass",
+        "closed-source",
+        "fixture"
+      ],
+      "task_summary_zh": "仅使用给定材料构建封闭来源排行榜，严格禁止联网和 AMiner。"
+    },
+    {
+      "id": 4,
+      "name": "Prior leaderboard plus open-world update",
+      "category": "routing-input",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "I supplied an old leaderboard CSV. Treat it as a starting point, then explain how you would update it through current open-world search without mixing incompatible rows.",
+      "expected_output": "Parse the supplied rows, identify version/split/source-quality incompatibilities, preserve them as separate candidates/scopes, and formulate a current-search plan that treats the CSV as a seed rather than authority.",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "Explicit input is processed before outside discovery",
+        "v1 test, v1 dev, and v2 test are not mixed",
+        "Aggregator-only Legacy-D is not admitted to a main scope",
+        "The prior CSV is treated as a seed rather than final evidence",
+        "The update plan includes official, paper, repository, and aggregator search"
+      ],
+      "failure_conditions": [
+        "Sorts the CSV into one leaderboard without scope analysis",
+        "Treats the old CSV as authoritative evidence",
+        "Discards historical rows before checking whether they still lead"
+      ],
+      "tags": [
+        "prior-results",
+        "fixture",
+        "update"
+      ],
+      "task_summary_zh": "把旧排行榜 CSV 作为候选种子，识别不可比行并说明如何通过开放检索更新。"
+    },
+    {
+      "id": 5,
+      "name": "Negative routing — simple metadata lookup",
+      "category": "routing-input",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "What is the DOI and publication year of the paper 'Attention Is All You Need'?",
+      "expected_output": "Do not launch a SOTA/leaderboard research run or generate the four-artifact bundle; route to a simple academic lookup capability or answer the metadata request directly if appropriate.",
+      "files": [],
+      "expectations": [
+        "Recognizes that no leaderboard or cross-paper comparison is requested",
+        "Avoids unnecessary scope construction",
+        "Avoids generating four leaderboard artifacts",
+        "Provides or routes to a concise metadata answer"
+      ],
+      "failure_conditions": [
+        "Runs the full SOTA Finder workflow",
+        "Invents a leaderboard",
+        "Creates irrelevant output files"
+      ],
+      "tags": [
+        "negative-trigger",
+        "routing"
+      ],
+      "task_summary_zh": "识别仅查询论文 DOI 和年份的元数据请求，不误触发完整 Leaderboard 工作流。"
+    },
+    {
+      "id": 6,
+      "name": "Split mismatch",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "Rank the supplied SyntheticBench results by accuracy.",
+      "expected_output": "Detect that the CSV contains test and dev results and refuse to rank them together; form separate comparable scopes or exclude the dev result from the test leaderboard.",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "Identifies split as a core scope field",
+        "Legacy-B dev score is not compared directly with test scores",
+        "Main ranking uses only compatible rows",
+        "The excluded or separate result remains visible as reference/context"
+      ],
+      "failure_conditions": [
+        "Ranks 90.1 dev above test scores as if comparable",
+        "Drops the dev result without explanation"
+      ],
+      "tags": [
+        "must-pass",
+        "split",
+        "fixture"
+      ],
+      "task_summary_zh": "识别 dev/test split 差异，只在兼容范围内排序 SyntheticBench 结果。"
+    },
+    {
+      "id": 7,
+      "name": "Benchmark version mismatch",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "Build one SyntheticBench leaderboard from the supplied CSV and identify the SOTA.",
+      "expected_output": "Reject the requested single flat table when v1 and v2 results are materially different; create version-specific scopes and identify SOTA only inside each scope.",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "Benchmark version is treated as a core comparison field",
+        "v1 and v2 rows appear in different scopes",
+        "SOTA wording is scope-qualified",
+        "Source quality remains visible",
+        "No cross-version rank is fabricated"
+      ],
+      "failure_conditions": [
+        "Combines v1 and v2 scores into one rank",
+        "Calls Legacy-C universal SOTA without qualification"
+      ],
+      "tags": [
+        "version",
+        "fixture"
+      ],
+      "task_summary_zh": "识别 benchmark 版本差异，为 SyntheticBench v1 与 v2 分别建立榜单。"
+    },
+    {
+      "id": 8,
+      "name": "Tool access and external data",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "Which method in the supplied dossier is best? Give me one answer.",
+      "expected_output": "Resist collapsing tool-free and retrieval-enabled methods into one answer; identify Alpha as the eligible standard closed-book leader and describe Gamma only in a separate tool-enabled scope or reference section.",
+      "files": [
+        "evals/fixtures/closed_source_dossier.md"
+      ],
+      "expectations": [
+        "Tool access is recognized as a material dynamic axis",
+        "External corpus use is recorded",
+        "Alpha and Gamma are not directly ranked",
+        "The answer explains why one universal best method is not supported"
+      ],
+      "failure_conditions": [
+        "Calls Gamma the universal winner",
+        "Hides the tool/external-data difference",
+        "Asks the user unnecessarily when the fixture resolves the distinction"
+      ],
+      "tags": [
+        "must-pass",
+        "tools",
+        "external-data",
+        "fixture"
+      ],
+      "task_summary_zh": "识别工具调用和外部语料差异，避免把闭卷与检索增强方法强行合并排名。"
+    },
+    {
+      "id": 9,
+      "name": "Higher/lower metric directions",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "Use the supplied mixed-scope JSON to build quality and latency leaderboards.",
+      "expected_output": "Rank quality in descending order and latency in ascending order, preserve the quality tie, and keep reference-only Method C outside the main quality ranking.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "Creates separate quality and latency scopes",
+        "Higher-is-better quality direction is correct",
+        "Lower-is-better latency direction is correct",
+        "Method A and B quality tie receives the same rank",
+        "Method C remains reference-only despite its higher reported score"
+      ],
+      "failure_conditions": [
+        "Ranks latency descending",
+        "Breaks the quality tie arbitrarily",
+        "Promotes Method C from aggregator-only reference evidence"
+      ],
+      "tags": [
+        "must-pass",
+        "metric-direction",
+        "ties",
+        "fixture"
+      ],
+      "task_summary_zh": "正确处理指标方向与并列名次，并把仅有聚合站证据的方法留在参考区。"
+    },
+    {
+      "id": 10,
+      "name": "Single model versus ensemble",
+      "category": "scope-comparability",
+      "mode": "behavioral",
+      "difficulty": "intermediate",
+      "prompt": "Paper A reports 91.0 with one model, Paper B reports 92.4 using a 12-model ensemble, and Paper C reports 91.7 with one model plus test-time retrieval. Build the leaderboard.",
+      "expected_output": "Use model judgment to form materially distinct scopes or clearly separated reference groups for single-model, ensemble, and retrieval-assisted settings instead of ranking the raw numbers together.",
+      "files": [],
+      "expectations": [
+        "Ensemble is considered as a possible material axis",
+        "Retrieval/test-time tool access is considered separately",
+        "Raw scores are not blindly sorted",
+        "Scope rationale is concise rather than a universal rule claim"
+      ],
+      "failure_conditions": [
+        "Produces a single 92.4 > 91.7 > 91.0 main ranking",
+        "Creates a rigid global rule that ensembles must always be separate"
+      ],
+      "tags": [
+        "ensemble",
+        "retrieval",
+        "model-judgment"
+      ],
+      "task_summary_zh": "区分单模型、集成和测试时检索设置，按实质差异拆分可比范围。"
+    },
+    {
+      "id": 11,
+      "name": "Aggregator-only leading claim",
+      "category": "evidence-integrity",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "A result aggregator lists Method Z at 95.0 and says it is SOTA, but its paper and repository links are unavailable. Put it at rank 1.",
+      "expected_output": "Refuse to place Method Z in the main leaderboard solely from the aggregator; retain it as reference or unavailable and record the missing original evidence.",
+      "files": [],
+      "expectations": [
+        "Aggregator is used only as discovery/cross-check evidence",
+        "Method Z is excluded from main rank",
+        "The 95.0 claim remains visible in reference/unavailable",
+        "The missing paper/repository is recorded as a gap"
+      ],
+      "failure_conditions": [
+        "Places Method Z at main rank 1",
+        "Deletes the claim entirely",
+        "Invents a primary source"
+      ],
+      "tags": [
+        "must-pass",
+        "aggregator",
+        "evidence-gate"
+      ],
+      "task_summary_zh": "拒绝仅凭聚合站把无法核验的领先结果放入主榜，同时保留为待核验候选。"
+    },
+    {
+      "id": 12,
+      "name": "Official versus paper conflict",
+      "category": "evidence-integrity",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "The supplied sources disagree about Method K. Pick the correct score and build the leaderboard.",
+      "expected_output": "Trace each score to benchmark version and split, use the official/author agreement for the v2 hidden-test scope, create a separate v2.1 scope, and preserve the development score as non-comparable context.",
+      "files": [
+        "evals/fixtures/conflicting_sources.md"
+      ],
+      "expectations": [
+        "All three values remain represented",
+        "85.1 is identified as a development score",
+        "84.6 is tied to v2 hidden test and supported by official plus author evidence",
+        "84.4 is tied to corrected v2.1",
+        "The conflict explanation is preserved"
+      ],
+      "failure_conditions": [
+        "Silently chooses one number and deletes the others",
+        "Mixes v2 and v2.1",
+        "Treats dev as hidden test"
+      ],
+      "tags": [
+        "must-pass",
+        "conflict",
+        "authority",
+        "fixture"
+      ],
+      "task_summary_zh": "解析官方榜、预印本、正式论文和仓库间的分数冲突，按版本与 split 归位。"
+    },
+    {
+      "id": 13,
+      "name": "Preprint versus proceedings revision",
+      "category": "evidence-integrity",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "Use the supplied source history to determine whether the arXiv result or proceedings result is the true SOTA.",
+      "expected_output": "Avoid treating publication venue alone as the answer; compare the actual version, split, and corrected dataset, then report scope-qualified results and source chronology.",
+      "files": [
+        "evals/fixtures/conflicting_sources.md"
+      ],
+      "expectations": [
+        "Source version chronology is explicit",
+        "Proceedings and preprint settings are compared",
+        "No universal score is selected across different splits/versions",
+        "Evidence locators identify the relevant tables"
+      ],
+      "failure_conditions": [
+        "Automatically prefers proceedings without checking settings",
+        "Automatically prefers the larger arXiv number",
+        "Loses the source chronology"
+      ],
+      "tags": [
+        "preprint",
+        "proceedings",
+        "versioning",
+        "fixture"
+      ],
+      "task_summary_zh": "比较预印本与会议版本的修订、数据版本和 split，而非仅按发表渠道选结果。"
+    },
+    {
+      "id": 14,
+      "name": "Unavailable authoritative source",
+      "category": "evidence-integrity",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "The benchmark's official leaderboard is currently inaccessible. Continue using papers and author repositories, but tell me what can and cannot be trusted.",
+      "expected_output": "Continue best-effort, verify claims with accessible original/author sources, mark official verification as unavailable, downgrade unsupported claims, and record the official-page failure in coverage/gaps.",
+      "files": [],
+      "expectations": [
+        "A single unavailable page does not abort the task",
+        "Accessible primary/author evidence is still used",
+        "Official verification gap is explicit",
+        "Unsupported claims are reference/unavailable rather than main",
+        "No false official confirmation is stated"
+      ],
+      "failure_conditions": [
+        "Stops without producing any result",
+        "Claims to have checked the inaccessible page",
+        "Promotes unverified aggregator claims"
+      ],
+      "tags": [
+        "network-failure",
+        "best-effort",
+        "unavailable"
+      ],
+      "task_summary_zh": "在权威来源暂时不可访问时保留不确定性，不把次级来源包装成已核验事实。"
+    },
+    {
+      "id": 15,
+      "name": "Evidence locator and source registry",
+      "category": "evidence-integrity",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "Generate the standard artifact bundle from the supplied mixed-scope research JSON and make every result traceable.",
+      "expected_output": "Normalize stable IDs, preserve a shared source registry, connect every claim to source IDs and locators when available, and expose claim_id in reports and workbook rows.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "All final scopes, claims, sources, and conflicts use stable prefixed IDs",
+        "Claims reference the shared source registry",
+        "claim_id appears in Markdown/HTML/XLSX",
+        "No dangling source or scope reference remains",
+        "evidence.json is hierarchical JSON rather than JSONL"
+      ],
+      "failure_conditions": [
+        "Duplicates full source records inside each claim",
+        "Produces dangling IDs",
+        "Omits claim_id from workbook/report rows"
+      ],
+      "tags": [
+        "must-pass",
+        "claim-id",
+        "source-registry",
+        "fixture"
+      ],
+      "task_summary_zh": "为排行榜声明提供可定位证据，并维护来源注册表及声明到来源的关联。"
+    },
+    {
+      "id": 16,
+      "name": "Latest cutoff and historical pool",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "Find the latest SOTA for LongBench v2. Do not ignore older methods if they still lead.",
+      "expected_output": "Search through the execution date, prioritize recent discovery while checking the historical candidate pool, and report scope-qualified leaders with an absolute cutoff.",
+      "files": [],
+      "expectations": [
+        "Uses the execution date as an absolute evidence cutoff",
+        "Recent two-to-three-year search is prioritized",
+        "Older still-leading candidates are retained",
+        "Benchmark version and metric scopes are explicit",
+        "No exact winner is asserted without current evidence"
+      ],
+      "failure_conditions": [
+        "Uses a stale knowledge cutoff without searching",
+        "Drops older leaders solely due to age",
+        "Mixes LongBench versions"
+      ],
+      "tags": [
+        "must-pass",
+        "latest",
+        "historical"
+      ],
+      "task_summary_zh": "用绝对截止日期界定“最新”，同时保留历史候选池且不混入当前主榜。"
+    },
+    {
+      "id": 17,
+      "name": "Fast-first convergence",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "adversarial",
+      "prompt": "Survey the SOTA for scientific table understanding. Search broadly, but do not waste time trying to enumerate every paper ever published.",
+      "expected_output": "Use broad first-pass queries to discover scopes and candidates, verify leaders and conflicts, then stop based on scope coverage and candidate convergence rather than fixed rounds or exhaustive history.",
+      "files": [],
+      "expectations": [
+        "Discovery uses multiple query families",
+        "Verification focuses on head-changing candidates and conflicts",
+        "Stop reason cites coverage/convergence",
+        "Remaining gaps are recorded",
+        "No fixed-round protocol is invented"
+      ],
+      "failure_conditions": [
+        "Stops after an arbitrary fixed number of rounds without coverage reasoning",
+        "Claims exhaustive literature coverage",
+        "Spends the report on a procedural audit trail instead of useful results"
+      ],
+      "tags": [
+        "fast-first",
+        "stopping",
+        "efficiency"
+      ],
+      "task_summary_zh": "测试 fast-first 收敛：快速交付有用结果，在边际收益下降时停止继续搜索。"
+    },
+    {
+      "id": 18,
+      "name": "Partial network failure",
+      "category": "discovery-coverage",
+      "mode": "behavioral",
+      "difficulty": "intermediate",
+      "prompt": "During the search, arXiv works, GitHub times out, and one official result page returns 403. Continue and produce the best possible answer.",
+      "expected_output": "Continue with available sources, retry or use alternate authoritative paths when reasonable, record each material failure, and produce partial artifacts instead of treating one service failure as fatal.",
+      "files": [],
+      "expectations": [
+        "The task continues best-effort",
+        "Material failed source classes are recorded",
+        "Claims depending only on unavailable evidence are downgraded",
+        "Available primary evidence is still used",
+        "The answer does not repeatedly ask the user to intervene"
+      ],
+      "failure_conditions": [
+        "Aborts on the first failed source",
+        "Hides network failures",
+        "Fabricates content from inaccessible pages"
+      ],
+      "tags": [
+        "network",
+        "degradation",
+        "best-effort"
+      ],
+      "task_summary_zh": "在部分网络来源失败时继续形成可审计结果，并明确覆盖缺口和未核验项。"
+    },
+    {
+      "id": 19,
+      "name": "Multilingual source discovery",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "请调查中文长文本信息抽取的 SOTA。相关论文可能使用英文标题，项目说明也可能只有中文。",
+      "expected_output": "Search with Chinese and English terminology, normalize method and benchmark names carefully, produce Chinese-visible reports, and retain English machine keys and source titles where appropriate.",
+      "files": [],
+      "expectations": [
+        "Uses multilingual query expansion",
+        "Chinese and English sources can both enter the source registry",
+        "Visible report language is Chinese",
+        "Machine keys and IDs remain English-stable",
+        "Cross-language name normalization does not merge materially different methods"
+      ],
+      "failure_conditions": [
+        "Searches only the literal Chinese phrase",
+        "Translates machine IDs into unstable Chinese keys",
+        "Merges methods solely because translated names look similar"
+      ],
+      "tags": [
+        "multilingual",
+        "zh",
+        "normalization"
+      ],
+      "task_summary_zh": "使用中英文名称、缩写和别名发现多语种来源，避免只搜索单一语言。"
+    },
+    {
+      "id": 20,
+      "name": "Ambiguous but inferable goal",
+      "category": "discovery-coverage",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "帮我看看现在文档级关系抽取哪个方法最好。",
+      "expected_output": "Infer a provisional research topic and begin discovery, identify likely benchmark scopes, and ask only if ambiguity prevents a meaningful comparison rather than immediately forcing the user through a questionnaire.",
+      "files": [],
+      "expectations": [
+        "Begins with reasonable provisional scopes",
+        "Uses open-world discovery to resolve benchmark candidates",
+        "Does not demand unnecessary upfront decisions",
+        "If multiple incompatible tasks exist, reports separate scopes",
+        "Only asks when a missing decision materially blocks a meaningful result"
+      ],
+      "failure_conditions": [
+        "Launches a long rigid interview before any research",
+        "Picks one benchmark without checking alternatives",
+        "Claims one universal best method across incompatible tasks"
+      ],
+      "tags": [
+        "autonomy",
+        "ambiguity",
+        "model-judgment"
+      ],
+      "task_summary_zh": "对表述含糊但可合理推断的目标直接给出实用榜单，并清楚说明推断范围。"
+    },
+    {
+      "id": 21,
+      "name": "No AMiner token",
+      "category": "robustness-aminer",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "Build the current leaderboard. I do not have AMINER_API_KEY configured.",
+      "expected_output": "Continue through host search and supplied sources, do not request or expose a token, and record AMiner as skipped without reducing the required artifact contract.",
+      "files": [],
+      "expectations": [
+        "No token is required to start",
+        "The user is not asked to provide a secret",
+        "Open-world research continues",
+        "AMiner skipped reason is recorded",
+        "The four-file bundle remains required"
+      ],
+      "failure_conditions": [
+        "Blocks until a token is supplied",
+        "Prints or requests secret material",
+        "Treats missing AMiner as total failure"
+      ],
+      "tags": [
+        "must-pass",
+        "aminer-optional",
+        "no-token"
+      ],
+      "task_summary_zh": "在没有 AMiner Token 时继续使用其他来源完成任务，不索取或暴露密钥。"
+    },
+    {
+      "id": 22,
+      "name": "Low-cost AMiner enhancement",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "intermediate",
+      "prompt": "My AMiner token is configured. Use AMiner if a small number of calls would help identify related papers and metadata.",
+      "expected_output": "Use the shortest valuable low-cost AMiner chain without unnecessary confirmation, keep non-AMiner source discovery active, and record AMiner's discovery/enrichment role separately from evaluation evidence.",
+      "files": [],
+      "expectations": [
+        "Uses only a short task-relevant AMiner chain",
+        "Low-cost calls do not trigger needless repeated confirmation",
+        "Official/paper/repository search remains active",
+        "AMiner provenance and purpose are recorded",
+        "AMiner metadata is not automatically treated as main result evidence"
+      ],
+      "failure_conditions": [
+        "Uses the full API catalog without need",
+        "Stops broader search because AMiner is available",
+        "Promotes metadata records as verified benchmark claims"
+      ],
+      "tags": [
+        "aminer",
+        "low-cost",
+        "enrichment"
+      ],
+      "task_summary_zh": "在 AMiner 可用时采用短而低成本的增强链，同时保持其他检索与证据边界。"
+    },
+    {
+      "id": 23,
+      "name": "High-cost AMiner guardrail",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "adversarial",
+      "prompt": "Use AMiner to collect several hundred candidate papers, expand references for many seeds, and enrich every record before building the leaderboard.",
+      "expected_output": "Estimate the cumulative paid plan, request one confirmation before an expected cost around CNY 5, a clearly large batch, or an uncertain unbounded plan, and propose a shorter alternative.",
+      "files": [],
+      "expectations": [
+        "Cumulative cost is considered rather than per-call fragments",
+        "One confirmation is requested before high-cost execution",
+        "A shortest-path or smaller-batch alternative is offered",
+        "No calls are split to evade the guardrail",
+        "Open search can continue while paid enrichment waits"
+      ],
+      "failure_conditions": [
+        "Executes the full paid plan without confirmation",
+        "Asks for confirmation before every tiny call",
+        "Invents a precise cost when pricing is uncertain"
+      ],
+      "tags": [
+        "must-pass",
+        "aminer",
+        "cost-guardrail"
+      ],
+      "task_summary_zh": "面对大规模高成本 AMiner 计划时先做成本护栏和一次性确认，不拆单规避。"
+    },
+    {
+      "id": 24,
+      "name": "AMiner metadata versus result evidence",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "intermediate",
+      "prompt": "AMiner says Paper Q is highly cited and related to the benchmark, but I cannot find its result table. Treat it as SOTA because AMiner found it.",
+      "expected_output": "Use AMiner to retain Paper Q as a candidate or reference, but require original/official/author result evidence and complete comparability before main admission.",
+      "files": [],
+      "expectations": [
+        "Citation/relatedness metadata is not confused with benchmark evidence",
+        "Paper Q remains discoverable as reference/candidate",
+        "Main admission waits for direct result evidence",
+        "The missing result table is recorded as a gap"
+      ],
+      "failure_conditions": [
+        "Calls Paper Q SOTA from citation count",
+        "Deletes the candidate entirely",
+        "Invents a result table"
+      ],
+      "tags": [
+        "aminer",
+        "evidence-boundary",
+        "metadata"
+      ],
+      "task_summary_zh": "区分 AMiner 元数据和直接结果证据，不因高引用或相关性就认定 SOTA。"
+    },
+    {
+      "id": 25,
+      "name": "Minimal chat and four links",
+      "category": "artifact-delivery",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "请给我极简聊天结果，但把完整研究过程和证据保存下来。",
+      "expected_output": "Show only the main leaderboard and essential scope/cutoff/exception notes in chat, then provide direct links to the four standard files containing expanded and complete content.",
+      "files": [],
+      "expectations": [
+        "Chat contains the main leaderboard",
+        "Chat avoids the full narrative",
+        "Only essential notes are added",
+        "All four direct file links are present",
+        "Full content is delegated to saved artifacts"
+      ],
+      "failure_conditions": [
+        "Pastes the complete report into chat",
+        "Omits one or more file links",
+        "Returns links to files that were not created"
+      ],
+      "tags": [
+        "must-pass",
+        "chat-contract",
+        "zh"
+      ],
+      "task_summary_zh": "聊天中只展示极简榜单和必要说明，并提供四个标准交付文件的直接链接。"
+    },
+    {
+      "id": 26,
+      "name": "Non-overwrite repeated run",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "Generate the standard bundle twice from the supplied research JSON using the same output root.",
+      "expected_output": "Create the first topic directory and a suffixed second directory, preserve the first bundle byte-for-byte, and link the second response to the new run.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "First run uses the topic slug directory",
+        "Second run uses -2 or the next free suffix",
+        "No default artifact is overwritten",
+        "Each directory contains exactly the four standard artifacts",
+        "Run-internal claim IDs remain aligned"
+      ],
+      "failure_conditions": [
+        "Overwrites the first evidence.json",
+        "Mixes files from two runs in one directory",
+        "Asks for confirmation despite a safe automatic suffix"
+      ],
+      "tags": [
+        "overwrite",
+        "fixture",
+        "mechanical"
+      ],
+      "task_summary_zh": "在重复运行时采用安全的不覆盖策略，保留既有输出并清楚标识新版本。"
+    },
+    {
+      "id": 27,
+      "name": "Multi-scope workbook",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "Build leaderboards.xlsx from the supplied mixed-scope JSON and make it practical for Excel or WPS users.",
+      "expected_output": "Create an Index sheet plus one sheet per scope, with filters, frozen headers, main/reference labels, practical widths, and claim/source linkage columns.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "Workbook contains Index plus two scope sheets",
+        "Quality and latency are on different sheets",
+        "Headers are frozen and filters are present",
+        "claim_id and evidence source IDs are included",
+        "No macro or extra CSV is produced"
+      ],
+      "failure_conditions": [
+        "Places all scopes in one unstructured sheet",
+        "Omits Index",
+        "Produces CSV instead of the required XLSX"
+      ],
+      "tags": [
+        "xlsx",
+        "multi-scope",
+        "fixture"
+      ],
+      "task_summary_zh": "为多个可比范围创建多 Sheet 工作簿，并提供索引、冻结窗格和筛选。"
+    },
+    {
+      "id": 28,
+      "name": "Chinese visible labels, English machine keys",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "请使用给定 JSON 生成中文报告，但 evidence.json 的字段、ID 和枚举值保持稳定英文。",
+      "expected_output": "Render Chinese-visible Markdown/HTML labels and explanations while preserving English JSON keys, schema values, IDs, and workbook linkage fields.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "brief-report.md visible headings are Chinese",
+        "full-report.html visible UI is Chinese",
+        "JSON keys and enum values remain English",
+        "Stable IDs keep English prefixes",
+        "No mojibake or mixed-language UI corruption appears"
+      ],
+      "failure_conditions": [
+        "Translates JSON keys into Chinese",
+        "Produces unstable localized IDs",
+        "Contains replacement characters or mojibake"
+      ],
+      "tags": [
+        "localization",
+        "zh",
+        "machine-contract"
+      ],
+      "task_summary_zh": "生成中文可见标签，同时保持结构化产物中的英文机器字段稳定。"
+    },
+    {
+      "id": 29,
+      "name": "Offline self-contained HTML",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "Generate the full HTML report from the supplied mixed-scope JSON. It must work offline.",
+      "expected_output": "Produce one self-contained HTML file with embedded CSS/JavaScript, table of contents, scope tables, sources, coverage, filtering/sorting, and no CDN/runtime dependency.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "HTML opens as a standalone file",
+        "No external CSS or JavaScript dependency exists",
+        "Scope tables and source registry are present",
+        "Filter/sort controls are embedded",
+        "The report remains readable without network access"
+      ],
+      "failure_conditions": [
+        "Loads a CDN",
+        "Requires a local web server",
+        "Omits evidence/coverage sections"
+      ],
+      "tags": [
+        "html",
+        "offline",
+        "fixture"
+      ],
+      "task_summary_zh": "生成可离线打开、自包含且无外部运行依赖的完整 HTML 报告。"
+    },
+    {
+      "id": 30,
+      "name": "Cross-file claim alignment",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "Generate all four artifacts from the supplied mixed-scope JSON, then verify that every displayed result can be traced to the same claim and evidence source across files.",
+      "expected_output": "Use deterministic claim/source/scope IDs and ensure Markdown, HTML, XLSX, and evidence JSON agree on methods, scores, scope membership, ranking, and evidence links.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "Every report/workbook result has a claim_id",
+        "Every claim_id exists in evidence.json",
+        "Every evidence source ID resolves in the shared source registry",
+        "Scores and ranks agree across all artifacts",
+        "Reference results never appear as ranked main claims"
+      ],
+      "failure_conditions": [
+        "A displayed claim has no evidence.json record",
+        "Scores differ across artifacts",
+        "Reference Method C receives a main rank",
+        "Dangling source IDs exist"
+      ],
+      "tags": [
+        "must-pass",
+        "cross-file",
+        "claim-id",
+        "fixture"
+      ],
+      "task_summary_zh": "保证报告、工作簿和 evidence.json 中的 claim_id、source_id 与数值相互一致。"
+    },
+    {
+      "id": 31,
+      "name": "Chinese official live leaderboard",
+      "category": "routing-input",
+      "mode": "live_web",
+      "difficulty": "basic",
+      "prompt": "请用中文构建截至执行当天的 SWE-bench Verified 最新证据化 Leaderboard。主榜必须以官方 benchmark/leaderboard 为依据，并把论文或项目仓库中的自报结果放在单独的参考范围中。",
+      "expected_output": "Respond in Chinese, use the official leaderboard and benchmark documentation as the primary evidence backbone, state the absolute execution-date cutoff, search recent papers and repositories for cross-checking, and separate official main-scope rows from self-reported reference rows.",
+      "files": [],
+      "expectations": [
+        "The user-facing response and standard reports are primarily in Chinese",
+        "An absolute evidence cutoff equal to the execution date is stated",
+        "Official leaderboard or benchmark documentation anchors the main scope",
+        "Paper or repository self-reports are separated from official results",
+        "The chat response is minimal and links the four standard artifacts"
+      ],
+      "failure_conditions": [
+        "Answers mainly in English without a user-driven reason",
+        "Promotes self-reported results into the official main scope",
+        "Omits the evidence cutoff"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "official-source",
+        "latest",
+        "localization"
+      ],
+      "task_summary_zh": "用中文构建 SWE-bench Verified 最新官方榜，并把论文或仓库自报结果隔离到参考范围。"
+    },
+    {
+      "id": 32,
+      "name": "Chinese negative routing metadata lookup",
+      "category": "routing-input",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "我只想知道论文《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》的 DOI 和正式发表年份，不需要排行榜、研究报告或四件套文件。",
+      "expected_output": "Recognize a simple metadata lookup rather than a leaderboard request, answer concisely in Chinese with appropriately qualified bibliographic information, and avoid constructing scopes or generating the four-artifact bundle.",
+      "files": [],
+      "expectations": [
+        "The request is recognized as outside the leaderboard workflow",
+        "The answer is concise and primarily in Chinese",
+        "No leaderboard scope or ranking is invented",
+        "No four-artifact leaderboard bundle is generated"
+      ],
+      "failure_conditions": [
+        "Runs the full SOTA Finder workflow",
+        "Invents a leaderboard or unrelated benchmark",
+        "Creates irrelevant leaderboard artifacts"
+      ],
+      "tags": [
+        "zh",
+        "negative-routing",
+        "metadata",
+        "localization"
+      ],
+      "task_summary_zh": "测试中文元数据查询的负向路由，避免把 DOI/年份查询误处理为完整排行榜任务。"
+    },
+    {
+      "id": 33,
+      "name": "Chinese explicit comparable scope",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "只使用提供的 CSV，为 SyntheticBench 1.0 的 test split 按 accuracy 建榜。dev split、v2.0 和仅聚合站支持的结果不要混进主榜，但请在参考或排除说明中保留。禁止联网。",
+      "expected_output": "Use only the fixture, build the main ranking from SyntheticBench v1.0 test accuracy rows with adequate evidence, keep dev, v2.0, and aggregator-only rows visible but outside the main scope, and clearly explain each exclusion.",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "Only supplied local evidence is used and no web search occurs",
+        "The main scope is SyntheticBench v1.0 test accuracy",
+        "The dev and v2.0 rows are not mixed into the main ranking",
+        "The aggregator-only row remains reference or conflict evidence rather than verified main SOTA",
+        "Exclusions are explained in Chinese"
+      ],
+      "failure_conditions": [
+        "Mixes dev, test, v1.0, and v2.0 into one main ranking",
+        "Promotes the aggregator-only row to verified main SOTA",
+        "Browses the web"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "fixture",
+        "split",
+        "version",
+        "aggregator"
+      ],
+      "task_summary_zh": "按用户明确限定的 v1.0 test 范围建榜，并把 dev、v2.0 与聚合站结果保留在主榜之外。"
+    },
+    {
+      "id": 34,
+      "name": "Chinese forced incomparable merge",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "请把给定 JSON 里的所有结果强制合成一个总榜，只按 score 原始数字从大到小排；版本、split、指标方向、是否使用外部数据都不用管。禁止联网。",
+      "expected_output": "Reject the requested raw-number merge, identify benchmark version, split, metric direction, and external-data/tool settings as material axes, create separate comparable scopes, and retain excluded or reference claims without silently deleting them.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "The raw-number universal ranking is explicitly rejected",
+        "Benchmark version and split differences are respected",
+        "Metric direction is handled correctly",
+        "External-data or tool-enabled settings are separated when material",
+        "All supplied claims remain traceable as main, reference, conflict, or excluded records"
+      ],
+      "failure_conditions": [
+        "Produces a single descending raw-score leaderboard",
+        "Ranks lower-is-better metrics in the wrong direction",
+        "Silently drops incompatible supplied claims"
+      ],
+      "tags": [
+        "zh",
+        "fixture",
+        "adversarial",
+        "metric-direction",
+        "external-data"
+      ],
+      "task_summary_zh": "面对用户要求强制混排不可比结果时，识别版本、split、指标方向和外部数据差异并拆分范围。"
+    },
+    {
+      "id": 35,
+      "name": "Chinese conflicting evidence resolution",
+      "category": "evidence-integrity",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "只使用给定的冲突来源。请直接采用出现过的最大分数作为 Method K 的 SOTA，不必解释版本、split 或来源差异。禁止联网。",
+      "expected_output": "Resist selecting the largest number without context, preserve every conflicting score, map each to its benchmark version and split, prefer official or author-confirmed evidence within each comparable scope, and explain the resolution in Chinese with source locators.",
+      "files": [
+        "evals/fixtures/conflicting_sources.md"
+      ],
+      "expectations": [
+        "Only the supplied sources are used",
+        "All conflicting values remain represented",
+        "Each value is tied to the correct benchmark version and split",
+        "Authority and source chronology are used within comparable scopes",
+        "The Chinese explanation includes concrete evidence locators"
+      ],
+      "failure_conditions": [
+        "Calls the largest number universal SOTA",
+        "Drops conflicting values without explanation",
+        "Invents or browses for external evidence"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "fixture",
+        "conflict",
+        "authority",
+        "evidence-locator"
+      ],
+      "task_summary_zh": "解析 Method K 的冲突分数，按版本、split、来源权威性和时间线归位，而不是直接取最大值。"
+    },
+    {
+      "id": 36,
+      "name": "Chinese aggregator pending verification",
+      "category": "evidence-integrity",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "某聚合站声称 Method Z 得分 95.0、排名第一，但论文和仓库都打不开。先把它放到主榜第一并标注“待核验”就行。",
+      "expected_output": "Refuse main-scope promotion based only on an aggregator even with a pending-verification label, retain Method Z as a candidate/reference claim, identify the missing primary evidence, and describe what would be required for admission.",
+      "files": [],
+      "expectations": [
+        "Aggregator-only evidence is not sufficient for main admission",
+        "Method Z is retained as a candidate or reference rather than deleted",
+        "The unavailable paper and repository are recorded as evidence gaps",
+        "The answer states what direct evidence is needed for verification"
+      ],
+      "failure_conditions": [
+        "Places Method Z at rank 1 in the verified main leaderboard",
+        "Invents a primary source or result table",
+        "Treats a pending label as sufficient evidence control"
+      ],
+      "tags": [
+        "zh",
+        "aggregator",
+        "evidence-gate",
+        "behavioral"
+      ],
+      "task_summary_zh": "测试中文聚合站领先声明的证据门槛，要求保留候选但不得进入已核验主榜。"
+    },
+    {
+      "id": 37,
+      "name": "Chinese open-world discovery without official benchmark",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "这个方向没有统一官方 benchmark：请调研“科学文献问答系统中的答案可验证性与引用正确性”，广泛搜索论文、预印本、项目仓库和聚合站，建立一个面向实践的参考 Leaderboard。没有可比结果时可以分范围或给证据分层，但不要把参考榜伪装成官方榜。",
+      "expected_output": "Search broadly across papers, preprints, repositories, and discovery aggregators; infer useful comparison scopes from tasks, datasets, metrics, and settings; produce clearly labeled reference leaderboards or evidence tiers; and explicitly state that no unified official leaderboard exists.",
+      "files": [],
+      "expectations": [
+        "Papers and preprints are searched across multiple query families",
+        "Project repositories and at least one discovery or aggregation source are considered",
+        "Useful scopes are inferred from tasks, datasets, metrics, and settings",
+        "Reference rankings or evidence tiers are clearly separated from verified official results",
+        "Coverage gaps, inaccessible sources, and the absolute cutoff date are stated"
+      ],
+      "failure_conditions": [
+        "Claims that the constructed reference ranking is an official leaderboard",
+        "Searches only one source family",
+        "Forces materially incomparable tasks or metrics into one winner"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "no-official-benchmark",
+        "broad-search",
+        "reference-ranking"
+      ],
+      "task_summary_zh": "在没有统一官方 benchmark 的科学文献问答可验证性方向进行开放检索并构建明确标注的实践参考榜。"
+    },
+    {
+      "id": 38,
+      "name": "Chinese bilingual fast-first discovery",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "请同时使用中文、英文、全称和缩写检索视觉文档问答（Document Visual Question Answering / DocVQA）的近期方法。先快速交付一个可用的主榜或分范围榜，再补充论文、预印本、仓库与聚合站候选；当继续搜索的边际收益很低时停止，并说明覆盖缺口。",
+      "expected_output": "Use bilingual aliases and acronym variants, deliver a useful scope-aware leaderboard early, expand across paper/preprint/repository/aggregator sources without letting discovery sources become unverified main evidence, stop when marginal value falls, and document cutoff and remaining gaps.",
+      "files": [],
+      "expectations": [
+        "Chinese, English, full-name, and acronym query variants are used",
+        "A useful leaderboard is delivered before exhaustive research narration",
+        "Paper or preprint and repository source families are covered",
+        "Aggregators are used for discovery without automatic main admission",
+        "The response states an absolute cutoff, stopping rationale, and coverage gaps"
+      ],
+      "failure_conditions": [
+        "Searches only one language or one name variant",
+        "Continues searching without delivering a usable result",
+        "Promotes aggregator-only claims to verified main SOTA"
+      ],
+      "tags": [
+        "zh",
+        "multilingual",
+        "fast-first",
+        "broad-search",
+        "stopping-rule"
+      ],
+      "task_summary_zh": "用中英文别名和缩写检索 DocVQA，测试先交付后扩展以及边际收益停止条件。"
+    },
+    {
+      "id": 39,
+      "name": "Chinese explicit AMiner unavailable fallback",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "basic",
+      "prompt": "请为 SWE-bench Verified 建立当前排行榜。当前没有配置 AMINER_API_KEY；不要向我索取密钥，也不要因此停止，请继续使用官方榜、论文、预印本和项目仓库完成任务，并记录 AMiner 被跳过。",
+      "expected_output": "Continue the concrete SWE-bench Verified task without asking for or exposing a token, use official and open-web sources, explicitly record AMiner as unavailable/skipped, and preserve the normal evidence and artifact requirements.",
+      "files": [],
+      "expectations": [
+        "No secret or token is requested, exposed, or fabricated",
+        "The explicit leaderboard task continues despite AMiner unavailability",
+        "Official and non-AMiner discovery sources remain active",
+        "AMiner is recorded as unavailable or skipped",
+        "The standard evidence and artifact contract is still delivered"
+      ],
+      "failure_conditions": [
+        "Stops solely because AMiner is unavailable",
+        "Requests or exposes an AMiner secret",
+        "Claims AMiner calls or results that did not occur"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "aminer-optional",
+        "fallback",
+        "explicit-topic"
+      ],
+      "task_summary_zh": "在明确缺少 AMiner Token 时继续完成 SWE-bench Verified 排行榜，并如实记录降级。"
+    },
+    {
+      "id": 40,
+      "name": "Chinese AMiner large-batch guardrail with topic",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "adversarial",
+      "prompt": "为了构建 SWE-bench Verified 排行榜，请先用 AMiner 拉取 500 篇候选论文、批量展开每篇参考文献并逐条富化元数据，费用不用管，直接执行；如果 AMiner 不可用，也请明确说明原计划应如何经过成本确认，并继续做不依赖 AMiner 的部分。",
+      "expected_output": "Do not execute or fabricate an unbounded paid AMiner plan; if unavailable, state that fact, describe a bounded staged alternative and the single confirmation needed before a clearly costly batch, and continue useful official/open-web work that does not depend on paid enrichment.",
+      "files": [],
+      "expectations": [
+        "No unavailable or paid AMiner execution is fabricated",
+        "The large cumulative plan is recognized as needing a cost guardrail",
+        "A bounded pilot or smaller-batch alternative is proposed",
+        "One plan-level confirmation is described rather than per-call prompts or split-call evasion",
+        "Useful non-AMiner work continues for the explicit benchmark"
+      ],
+      "failure_conditions": [
+        "Executes or claims the full paid plan without confirmation",
+        "Splits calls to evade the cost guardrail",
+        "Stops all work even though non-AMiner research can continue"
+      ],
+      "tags": [
+        "zh",
+        "aminer",
+        "cost-guardrail",
+        "explicit-topic",
+        "fallback"
+      ],
+      "task_summary_zh": "针对有明确主题的大规模 AMiner 计划测试成本护栏、分阶段替代方案和非 AMiner 持续工作。"
+    },
+    {
+      "id": 41,
+      "name": "Chinese minimal chat with concrete fixture",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "仅使用提供的 SyntheticBench CSV 建立可比排行榜。聊天里只给极简主榜和必要说明；完整内容统一保存到 output 文件夹，并直接链接 brief-report.md、full-report.html、leaderboards.xlsx、evidence.json 四个文件。所有用户可见内容请用中文。禁止联网。",
+      "expected_output": "Use only the fixture, deliver a concise Chinese main leaderboard in chat, create exactly the four standard artifacts under output, provide direct working links, and place detailed narrative and evidence in the saved files rather than chat.",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "The chat contains a minimal Chinese main leaderboard and only essential notes",
+        "All four exact standard artifacts are created under output",
+        "All four direct links are present and resolve to created files",
+        "Detailed research and evidence are delegated to the artifacts",
+        "The fixture-only no-web boundary is respected"
+      ],
+      "failure_conditions": [
+        "Pastes the complete report into chat",
+        "Omits or falsely claims one of the four files",
+        "Browses the web"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "chat-contract",
+        "four-artifacts",
+        "fixture",
+        "localization"
+      ],
+      "task_summary_zh": "用明确 fixture 测试中文极简聊天、四个标准文件及可用直链的完整交付契约。"
+    },
+    {
+      "id": 42,
+      "name": "Chinese multi-scope artifact consistency",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "只使用给定 JSON，按可比范围生成多个 Leaderboard，并统一放到 output 文件夹：brief-report.md、full-report.html、leaderboards.xlsx、evidence.json。不同 Leaderboard 必须放在 Excel 的不同 Sheet；中文展示标签可以翻译，但 claim_id、source_id、字段键和值必须在四个文件间一致。聊天只给极简结果和四个直链。禁止联网。",
+      "expected_output": "Create the exact standard bundle from the fixture, separate materially different scopes into different workbook sheets, keep Chinese visible labels with stable English machine keys, preserve cross-file claim/source/value consistency, and provide minimal chat with four valid links.",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "All four exact standard artifacts are created under output",
+        "Materially different scopes use separate workbook sheets",
+        "Chinese visible labels coexist with stable English machine keys",
+        "Claim IDs, source IDs, scopes, methods, metrics, and values align across artifacts",
+        "The chat remains minimal, links all four files, and respects the no-web boundary"
+      ],
+      "failure_conditions": [
+        "Merges incompatible scopes into one worksheet",
+        "Translates or changes machine identifiers inconsistently",
+        "Creates dangling or contradictory cross-artifact claims",
+        "Omits or falsely claims standard artifacts"
+      ],
+      "tags": [
+        "zh",
+        "fixture",
+        "multi-scope",
+        "machine-contract",
+        "cross-file-consistency",
+        "four-artifacts"
+      ],
+      "task_summary_zh": "生成中文多范围四件套，重点检查 Excel 分 Sheet、机器字段稳定和跨文件声明一致性。"
+    }
+  ]
+}

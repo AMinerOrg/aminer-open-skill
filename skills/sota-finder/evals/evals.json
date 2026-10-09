@@ -1,871 +1,1216 @@
 {
   "skill_name": "sota-finder",
-  "suite_version": "1.0.0",
-  "case_count": 30,
+  "suite_version": "4.1.0",
+  "evaluation_date": "2026-09-18",
+  "case_count": 20,
+  "categories": [
+    "benchmark-sota",
+    "multitrack-sota",
+    "open-world-sota"
+  ],
   "modes": [
     "live_web",
-    "offline_fixture",
-    "behavioral",
     "aminer_optional"
-  ],
-  "categories": [
-    "routing-input",
-    "scope-comparability",
-    "evidence-integrity",
-    "discovery-coverage",
-    "robustness-aminer",
-    "artifact-delivery"
   ],
   "must_pass_ids": [
     1,
-    2,
     3,
-    6,
-    8,
-    9,
+    4,
+    7,
     11,
-    12,
     15,
     16,
-    21,
-    23,
-    25,
-    30
+    20
   ],
   "evals": [
     {
       "id": 1,
-      "name": "Official live leaderboard",
-      "category": "routing-input",
+      "name": "中文：SWE-bench Verified 当前官方 SOTA",
+      "category": "benchmark-sota",
       "mode": "live_web",
       "difficulty": "basic",
-      "prompt": "Build the latest evidence-backed leaderboard for SWE-bench Verified. Distinguish official leaderboard results from paper or repository self-reports.",
-      "expected_output": "Use the official benchmark/leaderboard and evaluation documentation as the main evidence backbone, verify leading claims, state the absolute execution-date cutoff, and keep materially different or self-reported settings outside the main official scope.",
+      "prompt": "我们准备启动代码智能体项目。请查找截至今天 SWE-bench Verified 的当前 SOTA，优先核对官方 leaderboard，再查看论文、预印本、作者仓库和常用聚合站。请给出按同一评测口径可直接比较的榜单，不要只列冠军；协议不同或仅自报的强结果单独列出，并说明最值得复现的候选和当前覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "代码智能体研究员",
+      "user_goal": "快速确认 SWE-bench Verified 当前最强方法与可复现候选",
+      "real_user_scenario": true,
+      "scenario_zh": "团队准备启动代码智能体实验，需要一份最新且口径清楚的官方榜单作为基线。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "建立有足够头部候选的官方主榜，并把协议不同的自报结果放入参考表；明确指出当前证据最充分的 SOTA，并给出适合复现的强基线；说明未覆盖提交、闭源依赖、复现材料不足和榜单更新时间等缺口。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Uses an absolute evidence cutoff equal to the execution date",
-        "Official leaderboard or benchmark documentation anchors the main scope",
-        "Recent papers and repositories are searched for discovery and cross-checking",
-        "Main, reference, and conflict/unavailable results are separated",
-        "The chat response remains minimal and links the four artifacts"
+        "覆盖 SWE-bench Verified、官方榜单名称、方法名及常见代码智能体别名",
+        "覆盖官方 leaderboard、原始论文或预印本、作者仓库，并用聚合站辅助发现",
+        "区分 benchmark 版本、提交轨道、解析率口径、是否使用额外工具或专有模型",
+        "逐项核对分数、提交或发布日期、评测设置与原始来源",
+        "建立有足够头部候选的官方主榜，并把协议不同的自报结果放入参考表",
+        "先给出清晰、面向用户的结论；明确指出当前证据最充分的 SOTA，并给出适合复现的强基线",
+        "说明未覆盖提交、闭源依赖、复现材料不足和榜单更新时间等缺口"
       ],
       "failure_conditions": [
-        "Declares a latest winner from an aggregator alone",
-        "Mixes unofficial/self-reported settings into the official main scope",
-        "Omits the evidence cutoff"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
+        "sota-discovery",
         "must-pass",
-        "official-source",
-        "latest"
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "coverage-gaps",
+        "code-agent"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "simple_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 2,
-      "name": "No unified benchmark",
-      "category": "routing-input",
+      "name": "English: current LiveCodeBench code-generation SOTA",
+      "category": "benchmark-sota",
       "mode": "live_web",
-      "difficulty": "adversarial",
-      "prompt": "这个方向没有统一官方 benchmark：请调查长文档 RAG 中的引用忠实性方法，尽可能找论文、预印本、项目仓库和聚合站，并建立可供实践参考的 Leaderboard。",
-      "expected_output": "Infer useful comparison scopes rather than forcing one universal ranking, search all requested source classes, verify any main claims with original/author evidence, and place weakly comparable findings in Reference Results.",
+      "difficulty": "basic",
+      "prompt": "Find the current state of the art on LiveCodeBench as of today. Search the official leaderboard first, then relevant papers, preprints, model repositories or cards, and reputable aggregators. Build a useful leaderboard rather than naming one winner, separate benchmark releases and evaluation windows when they are not comparable, identify the best-supported leader, and state the main coverage gaps.",
+      "prompt_language": "en",
+      "user_role": "代码生成研究员",
+      "user_goal": "确认 LiveCodeBench 当前领先模型及其可比口径",
+      "real_user_scenario": true,
+      "scenario_zh": "研究人员需要快速了解动态代码生成基准上的最新领先者，同时规避时间窗和版本混淆。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "Build a sufficiently broad comparable leaderboard and retain non-comparable recent leaders in labeled reference sections；Name the best-supported current SOTA for each valid scope and distinguish it from weaker self-reported claims；Report missing submissions, inaccessible models, possible contamination concerns, and freshness limits。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Searches papers, preprints, repositories, and aggregators",
-        "Creates multiple scopes when evaluation settings are materially different",
-        "Does not invent an official benchmark",
-        "Reference results remain outside main rankings",
-        "Coverage gaps and the non-unified nature of the field are explicit"
+        "Use LiveCodeBench, LCB, code generation, benchmark release names, evaluation windows, and model aliases",
+        "Cover the official leaderboard, primary papers or technical reports, model repositories or cards, and aggregators for discovery",
+        "Separate benchmark releases, test periods, scoring variants, model modes, and pass@k settings",
+        "Verify scores, model versions, dates, and evaluation settings against primary or official sources",
+        "Build a sufficiently broad comparable leaderboard and retain non-comparable recent leaders in labeled reference sections",
+        "Lead with a clear user-facing conclusion; name the best-supported current SOTA for each valid scope and distinguish it from weaker self-reported claims",
+        "Report missing submissions, inaccessible models, possible contamination concerns, and freshness limits"
       ],
       "failure_conditions": [
-        "Forces all papers into one flat leaderboard",
-        "Treats an aggregator as sufficient main evidence",
-        "Claims exhaustive coverage without gaps"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "must-pass",
-        "open-world",
-        "no-official-benchmark",
-        "zh"
+        "sota-discovery",
+        "official-leaderboard",
+        "paper-search",
+        "repository-search",
+        "aggregator-search",
+        "coverage-gaps",
+        "dynamic-benchmark"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "simple_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 3,
-      "name": "Closed supplied sources only",
-      "category": "routing-input",
-      "mode": "offline_fixture",
+      "name": "中文：DocVQA 近期 SOTA 与分范围榜",
+      "category": "benchmark-sota",
+      "mode": "live_web",
       "difficulty": "intermediate",
-      "prompt": "Use only the supplied dossier. Do not browse or use AMiner. Build the most useful leaderboard you can.",
-      "expected_output": "Honor the closed-source restriction, classify Alpha, Beta, and Gamma according to evidence and comparability, and record that coverage is limited to the supplied dossier.",
-      "files": [
-        "evals/fixtures/closed_source_dossier.md"
-      ],
+      "prompt": "请整理截至今天的 DocVQA 近期 SOTA 全景。检索中文名、英文全称、DocVQA 缩写以及 Document VQA、MP-DocVQA、InfographicsVQA 等常见名称，覆盖官方榜、论文、预印本、项目仓库、模型卡和聚合站。请按单页、多页、信息图等可比范围分别建榜，保留重要近期候选，指出各范围最可信的 SOTA、代码可用性和覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "多模态算法工程师",
+      "user_goal": "掌握 DocVQA 各主要任务的当前 SOTA 与近期强方法",
+      "real_user_scenario": true,
+      "scenario_zh": "文档智能项目需要同时理解单页、多页和信息图问答，不能把不同任务混为一榜。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "分别建立可用的主榜，并将验证集、自报或协议不同结果作为参考候选保留；为每个主要任务范围识别证据最充分的 SOTA，并简述近期方法路线；说明闭源模型缺位、验证集污染风险、未提交官方测试集等覆盖缺口。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
       "expectations": [
-        "Performs no external or AMiner search",
-        "Alpha can enter a standard closed-book main scope",
-        "Beta is reference-only because it has aggregator-only evidence and incomplete setting",
-        "Gamma is separated because tools/external data materially change comparability",
-        "Coverage limitation is recorded"
+        "使用中文名、英文全称、缩写、子任务名和常见别名进行多轮检索",
+        "覆盖 RRC 等官方榜、论文、预印本、仓库、模型卡和聚合站",
+        "按单页、多页、信息图、数据集 split、指标及验证集或隐藏测试集拆分",
+        "核验方法名称、ANLS 等指标、提交日期、论文版本和代码链接",
+        "分别建立可用的主榜，并将验证集、自报或协议不同结果作为参考候选保留",
+        "先给出清晰、面向用户的结论；为每个主要任务范围识别证据最充分的 SOTA，并简述近期方法路线",
+        "说明闭源模型缺位、验证集污染风险、未提交官方测试集等覆盖缺口"
       ],
       "failure_conditions": [
-        "Searches outside the fixture",
-        "Ranks Beta as verified main SOTA",
-        "Mixes Gamma into the closed-book scope"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
+        "sota-discovery",
         "must-pass",
-        "closed-source",
-        "fixture"
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "protocol-variants",
+        "multilingual-search",
+        "coverage-gaps"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 4,
-      "name": "Prior leaderboard plus open-world update",
-      "category": "routing-input",
-      "mode": "offline_fixture",
-      "difficulty": "intermediate",
-      "prompt": "I supplied an old leaderboard CSV. Treat it as a starting point, then explain how you would update it through current open-world search without mixing incompatible rows.",
-      "expected_output": "Parse the supplied rows, identify version/split/source-quality incompatibilities, preserve them as separate candidates/scopes, and formulate a current-search plan that treats the CSV as a seed rather than authority.",
-      "files": [
-        "evals/fixtures/prior_leaderboard.csv"
-      ],
+      "name": "中文：LibriSpeech 语音识别 SOTA",
+      "category": "benchmark-sota",
+      "mode": "live_web",
+      "difficulty": "basic",
+      "prompt": "请查找截至今天 LibriSpeech 自动语音识别的当前 SOTA。以论文、预印本、作者仓库和可信聚合榜为线索，分别整理 test-clean 与 test-other 的 WER，并区分单模型、集成、外部语言模型或额外训练数据等设置。请给出完整可比榜单，明确 WER 越低越好，指出最可信的领先结果、适合公开复现的强基线和覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "语音算法工程师",
+      "user_goal": "确认 LibriSpeech 当前最低 WER 方法及公开复现基线",
+      "real_user_scenario": true,
+      "scenario_zh": "团队需要快速选择语音识别基线，重点是正确处理 WER 越低越好和不同测试集。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "按可比设置建立 lower-is-better 榜单，并保留协议不同的强结果作为参考；分别识别主要测试集与设置下最可信的最低 WER，并推荐可复现基线；说明缺少官方统一提交榜、闭源系统、训练资源和复现信息等限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
       "expectations": [
-        "Explicit input is processed before outside discovery",
-        "v1 test, v1 dev, and v2 test are not mixed",
-        "Aggregator-only Legacy-D is not admitted to a main scope",
-        "The prior CSV is treated as a seed rather than final evidence",
-        "The update plan includes official, paper, repository, and aggregator search"
+        "覆盖 LibriSpeech、ASR、WER、test-clean、test-other 以及主流模型别名",
+        "覆盖原始论文或预印本、作者仓库、模型卡和可信聚合榜",
+        "区分 test-clean 与 test-other、单模型与集成、语言模型和额外数据设置",
+        "核对 WER 数值、指标方向、训练数据、解码设置及论文或仓库版本",
+        "按可比设置建立 lower-is-better 榜单，并保留协议不同的强结果作为参考",
+        "先给出清晰、面向用户的结论；分别识别主要测试集与设置下最可信的最低 WER，并推荐可复现基线",
+        "说明缺少官方统一提交榜、闭源系统、训练资源和复现信息等限制"
       ],
       "failure_conditions": [
-        "Sorts the CSV into one leaderboard without scope analysis",
-        "Treats the old CSV as authoritative evidence",
-        "Discards historical rows before checking whether they still lead"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "prior-results",
-        "fixture",
-        "update"
+        "sota-discovery",
+        "must-pass",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "metric-direction",
+        "coverage-gaps",
+        "speech-recognition"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "simple_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 5,
-      "name": "Negative routing — simple metadata lookup",
-      "category": "routing-input",
-      "mode": "behavioral",
-      "difficulty": "basic",
-      "prompt": "What is the DOI and publication year of the paper 'Attention Is All You Need'?",
-      "expected_output": "Do not launch a SOTA/leaderboard research run or generate the four-artifact bundle; route to a simple academic lookup capability or answer the metadata request directly if appropriate.",
+      "name": "中文：COCO 目标检测 test-dev SOTA",
+      "category": "benchmark-sota",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "请调研截至今天 COCO object detection test-dev 的 SOTA。覆盖官方评测入口、论文、预印本、作者代码仓库、模型库和聚合站，重点记录 box AP、backbone、模型规模、预训练数据、输入分辨率和 test-time augmentation。请建立口径清楚的榜单，必要时拆分纯 COCO、额外数据或集成设置，并指出各范围的领先方法与尚未核实的候选。",
+      "prompt_language": "zh",
+      "user_role": "计算机视觉研究员",
+      "user_goal": "确认 COCO test-dev 目标检测领先方法与公平可比结果",
+      "real_user_scenario": true,
+      "scenario_zh": "视觉团队需要选择检测模型，但模型规模、预训练和测试增强会显著影响排名。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "建立主要公平设置榜单，并将额外数据、超大模型或集成结果单独保留；识别各主要可比范围的 SOTA，避免用资源更强但协议不同的结果取代主榜冠军；说明官方榜可访问性、旧结果更新滞后、模型细节缺失和未核验候选。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Recognizes that no leaderboard or cross-paper comparison is requested",
-        "Avoids unnecessary scope construction",
-        "Avoids generating four leaderboard artifacts",
-        "Provides or routes to a concise metadata answer"
+        "组合 COCO detection、test-dev、box AP、模型名、backbone 和榜单别名检索",
+        "覆盖官方评测信息、原始论文或预印本、作者仓库、模型库和聚合站",
+        "按 box AP、训练数据、模型规模、输入尺度、增强、集成和提交设置拆分",
+        "核验 AP 数值、表格位置、模型配置、代码或权重及提交口径",
+        "建立主要公平设置榜单，并将额外数据、超大模型或集成结果单独保留",
+        "先给出清晰、面向用户的结论；识别各主要可比范围的 SOTA，避免用资源更强但协议不同的结果取代主榜冠军",
+        "说明官方榜可访问性、旧结果更新滞后、模型细节缺失和未核验候选"
       ],
       "failure_conditions": [
-        "Runs the full SOTA Finder workflow",
-        "Invents a leaderboard",
-        "Creates irrelevant output files"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "negative-trigger",
-        "routing"
+        "sota-discovery",
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "protocol-variants",
+        "coverage-gaps",
+        "object-detection"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 6,
-      "name": "Split mismatch",
-      "category": "scope-comparability",
-      "mode": "offline_fixture",
+      "name": "中文：ImageNet-1K 图像分类 SOTA",
+      "category": "benchmark-sota",
+      "mode": "live_web",
       "difficulty": "basic",
-      "prompt": "Rank the supplied SyntheticBench results by accuracy.",
-      "expected_output": "Detect that the CSV contains test and dev results and refuse to rank them together; form separate comparable scopes or exclude the dev result from the test leaderboard.",
-      "files": [
-        "evals/fixtures/prior_leaderboard.csv"
-      ],
+      "prompt": "请查找截至今天 ImageNet-1K 图像分类的 SOTA。综合论文、预印本、官方或作者仓库、模型卡与可信聚合榜，记录 top-1 accuracy、参数量、输入分辨率、预训练或额外数据、蒸馏和集成设置。请按可比训练条件建榜，明确当前领先结果，并给出一个公开可复现的强基线和主要覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "视觉模型研究员",
+      "user_goal": "快速确认 ImageNet-1K 当前最高准确率与公平训练设置",
+      "real_user_scenario": true,
+      "scenario_zh": "团队要选择图像分类骨干网络，需要区分纯监督、额外数据和不同分辨率。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "建立公平训练设置下的主榜，并单列额外数据或特殊推理配置结果；指出各主要设置中证据最充分的最高 top-1 结果和可复现强基线；说明不同模型库口径、缺失配置、私有数据和复现成本等缺口。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
       "expectations": [
-        "Identifies split as a core scope field",
-        "Legacy-B dev score is not compared directly with test scores",
-        "Main ranking uses only compatible rows",
-        "The excluded or separate result remains visible as reference/context"
+        "覆盖 ImageNet-1K、ILSVRC、top-1 accuracy、classification 和模型常见别名",
+        "覆盖论文或预印本、作者仓库、模型卡、公开模型库和可信聚合榜",
+        "区分纯 ImageNet 训练、额外预训练数据、蒸馏、输入分辨率和集成设置",
+        "核验 top-1 数值、模型版本、参数量、训练数据及评测分辨率",
+        "建立公平训练设置下的主榜，并单列额外数据或特殊推理配置结果",
+        "先给出清晰、面向用户的结论；指出各主要设置中证据最充分的最高 top-1 结果和可复现强基线",
+        "说明不同模型库口径、缺失配置、私有数据和复现成本等缺口"
       ],
       "failure_conditions": [
-        "Ranks 90.1 dev above test scores as if comparable",
-        "Drops the dev result without explanation"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "must-pass",
-        "split",
-        "fixture"
+        "sota-discovery",
+        "paper-search",
+        "repository-search",
+        "aggregator-search",
+        "coverage-gaps",
+        "image-classification"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "simple_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 7,
-      "name": "Benchmark version mismatch",
-      "category": "scope-comparability",
-      "mode": "offline_fixture",
+      "name": "中文：KITTI 3D 目标检测官方榜 SOTA",
+      "category": "benchmark-sota",
+      "mode": "live_web",
       "difficulty": "intermediate",
-      "prompt": "Build one SyntheticBench leaderboard from the supplied CSV and identify the SOTA.",
-      "expected_output": "Reject the requested single flat table when v1 and v2 results are materially different; create version-specific scopes and identify SOTA only inside each scope.",
-      "files": [
-        "evals/fixtures/prior_leaderboard.csv"
-      ],
+      "prompt": "请核对截至今天 KITTI 3D object detection 官方 leaderboard 的 SOTA。按 Car、Pedestrian、Cyclist 以及 Easy、Moderate、Hard 拆分结果，注明 AP 指标版本、传感器输入和是否使用额外数据；再用论文、预印本和作者仓库补充方法信息。请给出有代表性的官方榜单，指出各主范围冠军和复现材料缺口，不要把 2D、BEV 与 3D 指标混在一起。",
+      "prompt_language": "zh",
+      "user_role": "自动驾驶算法研究员",
+      "user_goal": "确认 KITTI 3D 检测官方榜不同类别和难度下的领先方法",
+      "real_user_scenario": true,
+      "scenario_zh": "自动驾驶团队需要使用官方隐藏测试集结果，且必须正确区分类别、难度和指标版本。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "建立官方 3D 主榜并覆盖代表性头部方法，其他任务或设置单独列示；指出 Car Moderate 等主要范围及其他类别中的官方领先者和可复现候选；说明匿名提交、方法映射不明、代码缺失和榜单更新时间等限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
       "expectations": [
-        "Benchmark version is treated as a core comparison field",
-        "v1 and v2 rows appear in different scopes",
-        "SOTA wording is scope-qualified",
-        "Source quality remains visible",
-        "No cross-version rank is fabricated"
+        "覆盖 KITTI 3D detection、官方榜任务名、类别、难度、AP 版本和方法别名",
+        "优先官方 leaderboard，并以论文、预印本和作者仓库补充方法与代码信息",
+        "区分 3D、BEV、2D，按类别、难度、AP 版本、传感器和额外数据拆分",
+        "核验官方分数、提交名称、论文身份、时间与具体评测列",
+        "建立官方 3D 主榜并覆盖代表性头部方法，其他任务或设置单独列示",
+        "先给出清晰、面向用户的结论；指出 Car Moderate 等主要范围及其他类别中的官方领先者和可复现候选",
+        "说明匿名提交、方法映射不明、代码缺失和榜单更新时间等限制"
       ],
       "failure_conditions": [
-        "Combines v1 and v2 scores into one rank",
-        "Calls Legacy-C universal SOTA without qualification"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "version",
-        "fixture"
+        "sota-discovery",
+        "must-pass",
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "protocol-variants",
+        "coverage-gaps",
+        "autonomous-driving"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 8,
-      "name": "Tool access and external data",
-      "category": "scope-comparability",
-      "mode": "offline_fixture",
-      "difficulty": "adversarial",
-      "prompt": "Which method in the supplied dossier is best? Give me one answer.",
-      "expected_output": "Resist collapsing tool-free and retrieval-enabled methods into one answer; identify Alpha as the eligible standard closed-book leader and describe Gamma only in a separate tool-enabled scope or reference section.",
-      "files": [
-        "evals/fixtures/closed_source_dossier.md"
-      ],
+      "name": "中文：BraTS 脑肿瘤分割挑战 SOTA",
+      "category": "benchmark-sota",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "请调研截至今天 BraTS 脑肿瘤分割的 SOTA。先确定仍具代表性的挑战年份与任务，再检索官方挑战页面、论文、预印本、代码仓库和聚合资料。请按年份、数据集版本、验证或测试集、肿瘤区域及 Dice/HD95 等指标建立可比榜单，明确每个范围的领先方法，并说明代码、数据可得性和证据缺口。",
+      "prompt_language": "zh",
+      "user_role": "医学影像研究员",
+      "user_goal": "厘清 BraTS 不同年份与任务的领先分割方法",
+      "real_user_scenario": true,
+      "scenario_zh": "医学影像团队要选基线，但 BraTS 年份、标签区域、验证方式和指标经常被混用。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "为主要年份和任务建立分范围榜，避免把跨年份或不同区域结果混排；识别每个有效范围内证据最充分的领先方法并给出可复现候选；说明测试标签不可见、挑战页面缺失、医学数据访问和复现细节限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
       "expectations": [
-        "Tool access is recognized as a material dynamic axis",
-        "External corpus use is recorded",
-        "Alpha and Gamma are not directly ranked",
-        "The answer explains why one universal best method is not supported"
+        "覆盖 BraTS 全称、年份、segmentation、challenge、Dice、HD95 和任务别名",
+        "覆盖官方挑战页面、原始论文或预印本、作者仓库和可信聚合资料",
+        "按年份、数据版本、split、肿瘤区域、Dice 或 HD95 及集成设置拆分",
+        "核验成绩来源、评测阶段、指标方向、团队或方法映射和发布日期",
+        "为主要年份和任务建立分范围榜，避免把跨年份或不同区域结果混排",
+        "先给出清晰、面向用户的结论；识别每个有效范围内证据最充分的领先方法并给出可复现候选",
+        "说明测试标签不可见、挑战页面缺失、医学数据访问和复现细节限制"
       ],
       "failure_conditions": [
-        "Calls Gamma the universal winner",
-        "Hides the tool/external-data difference",
-        "Asks the user unnecessarily when the fixture resolves the distinction"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "must-pass",
-        "tools",
-        "external-data",
-        "fixture"
+        "sota-discovery",
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "metric-direction",
+        "protocol-variants",
+        "coverage-gaps",
+        "medical-imaging"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 9,
-      "name": "Higher/lower metric directions",
-      "category": "scope-comparability",
-      "mode": "offline_fixture",
+      "name": "English: current LongBench v2 long-context SOTA",
+      "category": "benchmark-sota",
+      "mode": "live_web",
       "difficulty": "basic",
-      "prompt": "Use the supplied mixed-scope JSON to build quality and latency leaderboards.",
-      "expected_output": "Rank quality in descending order and latency in ascending order, preserve the quality tie, and keep reference-only Method C outside the main quality ranking.",
-      "files": [
-        "evals/fixtures/mixed_scope_results.json"
-      ],
+      "prompt": "Find the current SOTA on LongBench v2 as of today. Search the official project or leaderboard, the benchmark paper, model reports and repositories, and reputable aggregators. Build a comparable leaderboard with model version, score, evaluation setting, open or closed status, and date; separate incompatible protocols, identify the best-supported leader and a reproducible baseline, and summarize coverage gaps.",
+      "prompt_language": "en",
+      "user_role": "长上下文模型研究员",
+      "user_goal": "快速确认 LongBench v2 当前领先模型与公开基线",
+      "real_user_scenario": true,
+      "scenario_zh": "团队需要评估长上下文模型，希望快速获得版本清楚、来源可靠的当前榜单。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "Build a useful comparable leaderboard with both frontier and reproducible candidates；Identify the best-supported current leader for the main protocol and a strong open baseline；State missing model submissions, opaque proprietary settings, benchmark freshness, and unverified claims。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
       "expectations": [
-        "Creates separate quality and latency scopes",
-        "Higher-is-better quality direction is correct",
-        "Lower-is-better latency direction is correct",
-        "Method A and B quality tie receives the same rank",
-        "Method C remains reference-only despite its higher reported score"
+        "Use LongBench v2, benchmark aliases, task categories, model names, and leaderboard terminology",
+        "Cover the official project or leaderboard, benchmark paper, model reports, repositories, and aggregators",
+        "Separate benchmark versions, official versus self-reported runs, model modes, context settings, and score variants",
+        "Verify scores, model versions, dates, evaluation scripts, and primary source locations",
+        "Build a useful comparable leaderboard with both frontier and reproducible candidates",
+        "Lead with a clear user-facing conclusion; identify the best-supported current leader for the main protocol and a strong open baseline",
+        "State missing model submissions, opaque proprietary settings, benchmark freshness, and unverified claims"
       ],
       "failure_conditions": [
-        "Ranks latency descending",
-        "Breaks the quality tie arbitrarily",
-        "Promotes Method C from aggregator-only reference evidence"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "must-pass",
-        "metric-direction",
-        "ties",
-        "fixture"
+        "sota-discovery",
+        "official-leaderboard",
+        "paper-search",
+        "repository-search",
+        "aggregator-search",
+        "coverage-gaps",
+        "long-context"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "simple_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 10,
-      "name": "Single model versus ensemble",
-      "category": "scope-comparability",
-      "mode": "behavioral",
+      "name": "中文：ChartQA 当前 SOTA 与协议变体",
+      "category": "benchmark-sota",
+      "mode": "live_web",
       "difficulty": "intermediate",
-      "prompt": "Paper A reports 91.0 with one model, Paper B reports 92.4 using a 12-model ensemble, and Paper C reports 91.7 with one model plus test-time retrieval. Build the leaderboard.",
-      "expected_output": "Use model judgment to form materially distinct scopes or clearly separated reference groups for single-model, ensemble, and retrieval-assisted settings instead of ranking the raw numbers together.",
+      "prompt": "请查找截至今天 ChartQA 的当前 SOTA。覆盖基准论文或项目页、后续论文与预印本、作者仓库、模型卡和聚合站，记录 test split、relaxed accuracy 或其他指标、是否使用 OCR、额外训练数据和推理设置。请按兼容协议建榜，保留协议不同但重要的近期方法，指出最可信的 SOTA 与当前证据缺口。",
+      "prompt_language": "zh",
+      "user_role": "图表理解研究员",
+      "user_goal": "确认 ChartQA 不同评测协议下的当前领先方法",
+      "real_user_scenario": true,
+      "scenario_zh": "团队需要比较图表问答模型，但 relaxed accuracy、数据划分和视觉输入设置可能不同。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "按兼容协议建立主榜，并单列其他指标或自报设置的重要候选；识别主要官方或社区标准协议下证据最充分的领先方法；说明评测脚本差异、复现材料缺失、闭源模型和未提交结果。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Ensemble is considered as a possible material axis",
-        "Retrieval/test-time tool access is considered separately",
-        "Raw scores are not blindly sorted",
-        "Scope rationale is concise rather than a universal rule claim"
+        "覆盖 ChartQA、chart question answering、relaxed accuracy、数据划分和方法别名",
+        "覆盖基准项目或论文、后续论文与预印本、作者仓库、模型卡和聚合站",
+        "区分数据 split、指标实现、OCR 使用、额外数据、模型版本和推理协议",
+        "核验成绩表、评测脚本、模型卡数字、版本与原始链接",
+        "按兼容协议建立主榜，并单列其他指标或自报设置的重要候选",
+        "先给出清晰、面向用户的结论；识别主要官方或社区标准协议下证据最充分的领先方法",
+        "说明评测脚本差异、复现材料缺失、闭源模型和未提交结果"
       ],
       "failure_conditions": [
-        "Produces a single 92.4 > 91.7 > 91.0 main ranking",
-        "Creates a rigid global rule that ensembles must always be separate"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "ensemble",
-        "retrieval",
-        "model-judgment"
+        "sota-discovery",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "protocol-variants",
+        "coverage-gaps",
+        "chart-understanding"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 11,
-      "name": "Aggregator-only leading claim",
-      "category": "evidence-integrity",
-      "mode": "behavioral",
-      "difficulty": "basic",
-      "prompt": "A result aggregator lists Method Z at 95.0 and says it is SOTA, but its paper and repository links are unavailable. Put it at rank 1.",
-      "expected_output": "Refuse to place Method Z in the main leaderboard solely from the aggregator; retain it as reference or unavailable and record the missing original evidence.",
+      "name": "中文：MTEB 中文检索总榜与数据集分榜",
+      "category": "multitrack-sota",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "请调研截至今天 MTEB 中文 retrieval 的 SOTA。优先使用官方排行榜或项目数据，并核对论文、模型卡、仓库与聚合站。请同时给出中文检索平均分榜和主要数据集分榜，记录模型版本、embedding 维度、是否需要指令、评测版本及开闭源状态；指出总体冠军、不同数据集冠军、适合落地的公开模型和覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "中文检索工程师",
+      "user_goal": "确认 MTEB 中文检索总体领先模型及具体数据集赢家",
+      "real_user_scenario": true,
+      "scenario_zh": "检索团队既关心中文任务平均表现，也关心实际业务相近数据集上的领先者。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "建立中文检索总榜及若干业务相关数据集分榜，保留可复现信息；分别指出总体和分数据集的领先者，并给出公开可用强候选；说明榜单动态更新、缺失模型、私有模型、维度与资源差异等限制。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Aggregator is used only as discovery/cross-check evidence",
-        "Method Z is excluded from main rank",
-        "The 95.0 claim remains visible in reference/unavailable",
-        "The missing paper/repository is recorded as a gap"
+        "覆盖 MTEB、Massive Text Embedding Benchmark、Chinese retrieval、任务和模型别名",
+        "覆盖官方排行榜或结果数据、论文、模型卡、仓库和聚合站",
+        "区分语言、retrieval 子集、平均方式、数据集、评测版本、模型尺寸和指令设置",
+        "核验平均分与分项分数、模型版本、发布日期、评测配置和来源",
+        "建立中文检索总榜及若干业务相关数据集分榜，保留可复现信息",
+        "先给出清晰、面向用户的结论；分别指出总体和分数据集的领先者，并给出公开可用强候选",
+        "说明榜单动态更新、缺失模型、私有模型、维度与资源差异等限制"
       ],
       "failure_conditions": [
-        "Places Method Z at main rank 1",
-        "Deletes the claim entirely",
-        "Invents a primary source"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
+        "sota-discovery",
         "must-pass",
-        "aggregator",
-        "evidence-gate"
+        "official-leaderboard",
+        "paper-search",
+        "repository-search",
+        "aggregator-search",
+        "multitrack",
+        "coverage-gaps",
+        "text-embedding"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 12,
-      "name": "Official versus paper conflict",
-      "category": "evidence-integrity",
-      "mode": "offline_fixture",
-      "difficulty": "adversarial",
-      "prompt": "The supplied sources disagree about Method K. Pick the correct score and build the leaderboard.",
-      "expected_output": "Trace each score to benchmark version and split, use the official/author agreement for the v2 hidden-test scope, create a separate v2.1 scope, and preserve the development score as non-comparable context.",
-      "files": [
-        "evals/fixtures/conflicting_sources.md"
-      ],
+      "name": "中文：MMMU 总榜与学科分项 SOTA",
+      "category": "multitrack-sota",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "请整理截至今天 MMMU 的最新 SOTA。检索官方项目或榜单、论文、预印本、模型技术报告、仓库和聚合站；先给总体榜，再尽可能整理主要学科或子集的领先结果。请区分 MMMU 版本、验证或测试集、直接回答与思维增强设置、模型版本和是否使用外部工具，指出各范围最可信的领先者及覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "多模态模型评测负责人",
+      "user_goal": "掌握 MMMU 总体与学科维度的领先模型",
+      "real_user_scenario": true,
+      "scenario_zh": "团队需要判断模型是总体更强还是只在部分学科占优，因此不能只看一个总分。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "建立总体主榜，并在证据允许时建立学科或子集分榜；识别总体冠军及重要学科中的领先模型，避免以单一分项代表总体 SOTA；说明官方分项缺失、自报协议、闭源设置和榜单更新差异。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
       "expectations": [
-        "All three values remain represented",
-        "85.1 is identified as a development score",
-        "84.6 is tied to v2 hidden test and supported by official plus author evidence",
-        "84.4 is tied to corrected v2.1",
-        "The conflict explanation is preserved"
+        "覆盖 MMMU 全称、官方项目、总体分、学科类别、模型名和评测设置别名",
+        "覆盖官方项目或榜单、论文与预印本、技术报告、仓库和聚合站",
+        "区分 benchmark 版本、split、总体与学科分项、提示或工具设置和模型版本",
+        "核验总分与分项分数、表格列、评测日期、模型身份和来源层级",
+        "建立总体主榜，并在证据允许时建立学科或子集分榜",
+        "先给出清晰、面向用户的结论；识别总体冠军及重要学科中的领先模型，避免以单一分项代表总体 SOTA",
+        "说明官方分项缺失、自报协议、闭源设置和榜单更新差异"
       ],
       "failure_conditions": [
-        "Silently chooses one number and deletes the others",
-        "Mixes v2 and v2.1",
-        "Treats dev as hidden test"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "must-pass",
-        "conflict",
-        "authority",
-        "fixture"
+        "sota-discovery",
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "multitrack",
+        "protocol-variants",
+        "coverage-gaps",
+        "multimodal-reasoning"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 13,
-      "name": "Preprint versus proceedings revision",
-      "category": "evidence-integrity",
-      "mode": "offline_fixture",
+      "name": "中文：Video-MME 多赛道 SOTA",
+      "category": "multitrack-sota",
+      "mode": "live_web",
       "difficulty": "intermediate",
-      "prompt": "Use the supplied source history to determine whether the arXiv result or proceedings result is the true SOTA.",
-      "expected_output": "Avoid treating publication venue alone as the answer; compare the actual version, split, and corrected dataset, then report scope-qualified results and source chronology.",
-      "files": [
-        "evals/fixtures/conflicting_sources.md"
-      ],
+      "prompt": "请调研截至今天 Video-MME 的 SOTA。覆盖官方项目、论文、预印本、模型报告或仓库和聚合站，给出总体结果，并按短、中、长视频以及有无音频或字幕等可获得赛道拆分。记录模型版本、帧数或视频输入策略和评测协议，指出每个主要范围的领先者、公开可复现候选与覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "视频多模态研究员",
+      "user_goal": "确认 Video-MME 总体及不同时长和输入设置的领先模型",
+      "real_user_scenario": true,
+      "scenario_zh": "视频理解项目需要比较短中长视频，同时关注音频和字幕是否进入模型。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "建立总体榜和可获得的时长或输入设置分榜，保留近期强候选；分别识别总体和关键赛道的证据充分领先模型与公开基线；说明分项披露不足、帧预算差异、闭源配置和未核验自报结果。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
       "expectations": [
-        "Source version chronology is explicit",
-        "Proceedings and preprint settings are compared",
-        "No universal score is selected across different splits/versions",
-        "Evidence locators identify the relevant tables"
+        "覆盖 Video-MME、视频多模态评测、时长分组、音频字幕设置和模型别名",
+        "覆盖官方项目、基准论文、后续论文或预印本、模型仓库或报告和聚合站",
+        "区分总体与时长分项、音频或字幕输入、帧采样、模型版本和评测协议",
+        "核验总体与分项分数、模型配置、日期及原始表格或榜单",
+        "建立总体榜和可获得的时长或输入设置分榜，保留近期强候选",
+        "先给出清晰、面向用户的结论；分别识别总体和关键赛道的证据充分领先模型与公开基线",
+        "说明分项披露不足、帧预算差异、闭源配置和未核验自报结果"
       ],
       "failure_conditions": [
-        "Automatically prefers proceedings without checking settings",
-        "Automatically prefers the larger arXiv number",
-        "Loses the source chronology"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "preprint",
-        "proceedings",
-        "versioning",
-        "fixture"
+        "sota-discovery",
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "multitrack",
+        "protocol-variants",
+        "coverage-gaps",
+        "video-understanding"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 14,
-      "name": "Unavailable authoritative source",
-      "category": "evidence-integrity",
+      "name": "English: historical and current image-captioning SOTA",
+      "category": "multitrack-sota",
       "mode": "live_web",
       "difficulty": "intermediate",
-      "prompt": "The benchmark's official leaderboard is currently inaccessible. Continue using papers and author repositories, but tell me what can and cannot be trusted.",
-      "expected_output": "Continue best-effort, verify claims with accessible original/author sources, mark official verification as unavailable, downgrade unsupported claims, and record the official-page failure in coverage/gaps.",
+      "prompt": "Trace the historical and current SOTA for image captioning across the major benchmarks. Search benchmark or challenge pages, papers and preprints, author repositories, model cards, and aggregators. Build separate leaderboards for comparable datasets, splits and metrics such as CIDEr or SPICE, highlight milestone methods and current leaders, and explain where modern multimodal-model results cannot be compared directly with older benchmark submissions.",
+      "prompt_language": "en",
+      "user_role": "视觉语言研究员",
+      "user_goal": "梳理图像描述生成从经典基准到近期方法的 SOTA 演进",
+      "real_user_scenario": true,
+      "scenario_zh": "研究综述需要跨时间和多个数据集理解进展，同时避免把不同指标或测试服务器混排。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "Build dataset-specific leaderboards that show both historical milestones and current comparable leaders；Identify the strongest supported result in each active scope without inventing one universal captioning champion；Explain retired servers, metric limitations, sparse recent submissions, and protocol discontinuities。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "A single unavailable page does not abort the task",
-        "Accessible primary/author evidence is still used",
-        "Official verification gap is explicit",
-        "Unsupported claims are reference/unavailable rather than main",
-        "No false official confirmation is stated"
+        "Use image captioning, caption generation, benchmark names, challenge names, metrics, and method aliases across time",
+        "Cover benchmark or challenge pages, primary papers and preprints, repositories, model cards, and aggregators",
+        "Separate datasets, splits, online test servers, metrics, ensemble settings, and historical versus modern protocols",
+        "Verify milestone and current scores, publication dates, method identity, and original result locations",
+        "Build dataset-specific leaderboards that show both historical milestones and current comparable leaders",
+        "Lead with a clear user-facing conclusion; identify the strongest supported result in each active scope without inventing one universal captioning champion",
+        "Explain retired servers, metric limitations, sparse recent submissions, and protocol discontinuities"
       ],
       "failure_conditions": [
-        "Stops without producing any result",
-        "Claims to have checked the inaccessible page",
-        "Promotes unverified aggregator claims"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "network-failure",
-        "best-effort",
-        "unavailable"
+        "sota-discovery",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "historical",
+        "multitrack",
+        "protocol-variants",
+        "coverage-gaps",
+        "image-captioning"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 15,
-      "name": "Evidence locator and source registry",
-      "category": "evidence-integrity",
-      "mode": "offline_fixture",
-      "difficulty": "basic",
-      "prompt": "Generate the standard artifact bundle from the supplied mixed-scope research JSON and make every result traceable.",
-      "expected_output": "Normalize stable IDs, preserve a shared source registry, connect every claim to source IDs and locators when available, and expose claim_id in reports and workbook rows.",
+      "name": "中文：用最新证据更新历史 SOTA 榜单",
+      "category": "multitrack-sota",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "附件是一份历史 leaderboard CSV。请先识别其中的 benchmark、split、指标和已有来源，再联网检索截至今天的官方页面、论文、预印本、项目仓库和聚合站，补充遗漏的新方法并核验旧记录。保留仍有价值的历史结果，纠正错误或过时结论，按可比范围重建榜单，并指出当前 SOTA、发生变化的排名和覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "研究项目维护者",
+      "user_goal": "在保留历史记录的前提下补齐当前 SOTA 并纠正过时结论",
+      "real_user_scenario": true,
+      "scenario_zh": "团队已有一份旧榜单，希望通过重新检索得到可追溯的最新版，而不是从零另做一份。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "在保留历史脉络的同时建立更新后的主榜和必要分榜；明确指出与旧榜相比当前 SOTA 和排名变化，并区分新证据与原有记录；说明仍未找到的来源、未覆盖的新提交、时间截止与可能继续变化之处。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [
-        "evals/fixtures/mixed_scope_results.json"
+        "evals/fixtures/prior_leaderboard.csv"
       ],
       "expectations": [
-        "All final scopes, claims, sources, and conflicts use stable prefixed IDs",
-        "Claims reference the shared source registry",
-        "claim_id appears in Markdown/HTML/XLSX",
-        "No dangling source or scope reference remains",
-        "evidence.json is hierarchical JSON rather than JSONL"
+        "从附件实体扩展 benchmark 全称、缩写、任务别名、方法名和近期年份进行检索",
+        "覆盖附件已有来源以及官方页面、论文、预印本、项目仓库和聚合站",
+        "解析并保持 benchmark、版本、split、指标方向和设置边界，新增结果不得混入错误范围",
+        "逐行核验关键旧记录和新增领先记录，标记更正、替换与无法确认项",
+        "在保留历史脉络的同时建立更新后的主榜和必要分榜",
+        "先给出清晰、面向用户的结论；明确指出与旧榜相比当前 SOTA 和排名变化，并区分新证据与原有记录",
+        "说明仍未找到的来源、未覆盖的新提交、时间截止与可能继续变化之处"
       ],
       "failure_conditions": [
-        "Duplicates full source records inside each claim",
-        "Produces dangling IDs",
-        "Omits claim_id from workbook/report rows"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
+        "sota-discovery",
         "must-pass",
-        "claim-id",
-        "source-registry",
-        "fixture"
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "historical",
+        "user-files",
+        "coverage-gaps"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 16,
-      "name": "Latest cutoff and historical pool",
-      "category": "discovery-coverage",
+      "name": "中文：无统一榜单的长文档 RAG 引用忠实度 SOTA",
+      "category": "open-world-sota",
       "mode": "live_web",
-      "difficulty": "intermediate",
-      "prompt": "Find the latest SOTA for LongBench v2. Do not ignore older methods if they still lead.",
-      "expected_output": "Search through the execution date, prioritize recent discovery while checking the historical candidate pool, and report scope-qualified leaders with an absolute cutoff.",
+      "difficulty": "adversarial",
+      "prompt": "我们要评估长文档 RAG 的引用忠实度，但这个方向没有统一官方 leaderboard。请广泛检索论文、预印本、项目仓库、公开评测页面和聚合资料，先归纳主流任务、数据集与 citation faithfulness 指标，再在可比范围内建立多个参考榜。请找出证据最充分的领先方法和可复现方案，同时保留不可直接比较但有价值的候选，明确覆盖缺口和停止检索的理由。",
+      "prompt_language": "zh",
+      "user_role": "企业 RAG 研究负责人",
+      "user_goal": "在缺少统一 benchmark 时找到长文档 RAG 引用忠实度的最佳公开方案",
+      "real_user_scenario": true,
+      "scenario_zh": "业务需要答案带可靠引用，但相关结果分散在不同数据集、论文和开源项目中。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "为证据足够的主要范围建立参考榜，并保留不可比但重要的方法地图；按范围识别最有根据的领先方法，避免虚构全领域唯一 SOTA，并推荐可复现方案；明确统一榜缺失、指标定义差异、公开实现不足、检索盲区和停止理由。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Uses the execution date as an absolute evidence cutoff",
-        "Recent two-to-three-year search is prioritized",
-        "Older still-leading candidates are retained",
-        "Benchmark version and metric scopes are explicit",
-        "No exact winner is asserted without current evidence"
+        "扩展 long-document RAG、citation faithfulness、attribution、grounded QA、长上下文检索及常见别名",
+        "广泛覆盖论文、预印本、作者仓库、公开评测项目、数据集页面和聚合资料",
+        "先归纳任务、数据集、指标、语料长度和检索或生成设置，再建立多个可比范围",
+        "核验关键分数、评测定义、数据集版本、代码和结果出处",
+        "为证据足够的主要范围建立参考榜，并保留不可比但重要的方法地图",
+        "先给出清晰、面向用户的结论；按范围识别最有根据的领先方法，避免虚构全领域唯一 SOTA，并推荐可复现方案",
+        "明确统一榜缺失、指标定义差异、公开实现不足、检索盲区和停止理由"
       ],
       "failure_conditions": [
-        "Uses a stale knowledge cutoff without searching",
-        "Drops older leaders solely due to age",
-        "Mixes LongBench versions"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
+        "sota-discovery",
         "must-pass",
-        "latest",
-        "historical"
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "no-unified-benchmark",
+        "protocol-variants",
+        "coverage-gaps",
+        "rag"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 17,
-      "name": "Fast-first convergence",
-      "category": "discovery-coverage",
-      "mode": "live_web",
+      "name": "中文：科研文献问答与答案可验证性 SOTA",
+      "category": "open-world-sota",
+      "mode": "aminer_optional",
       "difficulty": "adversarial",
-      "prompt": "Survey the SOTA for scientific table understanding. Search broadly, but do not waste time trying to enumerate every paper ever published.",
-      "expected_output": "Use broad first-pass queries to discover scopes and candidates, verify leaders and conflicts, then stop based on scope coverage and candidate convergence rather than fixed rounds or exhaustive history.",
+      "prompt": "请调研科研文献问答中兼顾答案质量与可验证性的 SOTA。广泛搜索论文、预印本、基准或数据集页面、作者仓库和聚合站；如环境可用，可选用 AMiner 补充论文发现，但不能依赖它才能完成。请先划分科学问答、文献检索增强、引用或证据核验等可比范围，再建立参考榜，指出各范围领先方法、公开实现和主要覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "科研智能体产品经理",
+      "user_goal": "找到兼顾科研问答效果和答案可验证性的领先方案",
+      "real_user_scenario": true,
+      "scenario_zh": "产品需要回答论文相关问题并给出可靠依据，但现有评测分散在科学问答、引文和事实核验任务中。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "按任务和指标建立多个可比参考榜，并保留跨范围的重要近期方法；识别各主要范围证据最充分的领先方案及适合产品验证的公开候选；说明统一评测缺失、答案和引用指标脱节、数据污染及检索覆盖限制。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Discovery uses multiple query families",
-        "Verification focuses on head-changing candidates and conflicts",
-        "Stop reason cites coverage/convergence",
-        "Remaining gaps are recorded",
-        "No fixed-round protocol is invented"
+        "覆盖 scientific QA、literature QA、evidence-grounded answering、citation verification 及中文别名",
+        "覆盖论文、预印本、基准与数据集页面、作者仓库、聚合站，并可选用 AMiner 扩展发现",
+        "区分答案正确性、证据检索、引用准确性、数据集领域、闭卷与检索增强设置",
+        "核验关键成绩、指标定义、论文版本、代码或数据可用性和原始出处",
+        "按任务和指标建立多个可比参考榜，并保留跨范围的重要近期方法",
+        "先给出清晰、面向用户的结论；识别各主要范围证据最充分的领先方案及适合产品验证的公开候选",
+        "说明统一评测缺失、答案和引用指标脱节、数据污染及检索覆盖限制"
       ],
       "failure_conditions": [
-        "Stops after an arbitrary fixed number of rounds without coverage reasoning",
-        "Claims exhaustive literature coverage",
-        "Spends the report on a procedural audit trail instead of useful results"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "fast-first",
-        "stopping",
-        "efficiency"
+        "sota-discovery",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "aminer-optional",
+        "no-unified-benchmark",
+        "coverage-gaps",
+        "scientific-qa"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 18,
-      "name": "Partial network failure",
-      "category": "discovery-coverage",
-      "mode": "behavioral",
-      "difficulty": "intermediate",
-      "prompt": "During the search, arXiv works, GitHub times out, and one official result page returns 403. Continue and produce the best possible answer.",
-      "expected_output": "Continue with available sources, retry or use alternate authoritative paths when reasonable, record each material failure, and produce partial artifacts instead of treating one service failure as fatal.",
+      "name": "中文：可复现的多模态文档问答 SOTA",
+      "category": "open-world-sota",
+      "mode": "aminer_optional",
+      "difficulty": "adversarial",
+      "prompt": "请寻找截至今天可复现的多模态文档问答 SOTA。广泛检索 DocVQA 及相关文档理解基准的官方页、论文、预印本、仓库、模型卡和聚合站；如可用，可选用 AMiner 扩展论文发现。请按数据集和协议建立榜单，同时把代码、权重、许可证和推理资源纳入说明，区分绝对最高分与公开可复现领先者，并报告尚未覆盖或无法核验的候选。",
+      "prompt_language": "zh",
+      "user_role": "文档智能研发负责人",
+      "user_goal": "找到效果强且有代码或权重支撑的多模态文档问答方案",
+      "real_user_scenario": true,
+      "scenario_zh": "团队不仅需要最高分，还需要从跨基准结果中识别真正可复现的近期方案。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "按可比 benchmark 建立性能榜，并附公开可复现状态而不以可复现性筛掉高分结果；分别指出绝对 SOTA 与证据充分的公开可复现 SOTA，并推荐验证顺序；说明闭源结果、代码失效、许可证不明、资源不可得和未覆盖基准。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "The task continues best-effort",
-        "Material failed source classes are recorded",
-        "Claims depending only on unavailable evidence are downgraded",
-        "Available primary evidence is still used",
-        "The answer does not repeatedly ask the user to intervene"
+        "覆盖 multimodal document QA、document understanding、DocVQA 相关任务、方法别名和复现关键词",
+        "覆盖官方页、论文、预印本、作者仓库、模型卡、聚合站，并可选用 AMiner 发现论文",
+        "区分数据集、split、指标、OCR 或无 OCR、模型尺寸、闭源 API 与公开权重设置",
+        "核验结果表、评测协议、代码与权重状态、许可证、资源需求和版本",
+        "按可比 benchmark 建立性能榜，并附公开可复现状态而不以可复现性筛掉高分结果",
+        "先给出清晰、面向用户的结论；分别指出绝对 SOTA 与证据充分的公开可复现 SOTA，并推荐验证顺序",
+        "说明闭源结果、代码失效、许可证不明、资源不可得和未覆盖基准"
       ],
       "failure_conditions": [
-        "Aborts on the first failed source",
-        "Hides network failures",
-        "Fabricates content from inaccessible pages"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "network",
-        "degradation",
-        "best-effort"
+        "sota-discovery",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "aminer-optional",
+        "no-unified-benchmark",
+        "reproducibility",
+        "coverage-gaps",
+        "document-qa"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 19,
-      "name": "Multilingual source discovery",
-      "category": "discovery-coverage",
+      "name": "English: text-to-image prompt-following SOTA across benchmarks",
+      "category": "open-world-sota",
       "mode": "live_web",
-      "difficulty": "intermediate",
-      "prompt": "请调查中文长文本信息抽取的 SOTA。相关论文可能使用英文标题，项目说明也可能只有中文。",
-      "expected_output": "Search with Chinese and English terminology, normalize method and benchmark names carefully, produce Chinese-visible reports, and retain English machine keys and source titles where appropriate.",
+      "difficulty": "adversarial",
+      "prompt": "Find the current SOTA for text-to-image prompt following across GenEval, DPG-Bench, T2I-CompBench and other widely used evaluations. Search benchmark pages, papers and preprints, model reports or cards, repositories, and aggregators. Build separate comparable leaderboards, verify evaluator and protocol differences, identify the strongest supported model in each scope, retain useful non-comparable candidates, and explain why no single overall winner may exist.",
+      "prompt_language": "en",
+      "user_role": "生成模型研究员",
+      "user_goal": "比较多个提示遵循基准上的文生图领先模型",
+      "real_user_scenario": true,
+      "scenario_zh": "团队需要判断文生图模型的提示遵循能力，但不同基准、评测器和闭源模型结果不可直接合并。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "Build benchmark-specific leaderboards and a clearly labeled cross-benchmark coverage matrix；Identify the strongest supported model per scope and avoid unsupported averaging into a universal champion；Report proprietary model gaps, evaluator bias, unavailable prompts or outputs, and missing standardized submissions。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Uses multilingual query expansion",
-        "Chinese and English sources can both enter the source registry",
-        "Visible report language is Chinese",
-        "Machine keys and IDs remain English-stable",
-        "Cross-language name normalization does not merge materially different methods"
+        "Use text-to-image prompt following, compositional generation, benchmark names, evaluator names, and model aliases",
+        "Cover benchmark pages, primary papers and preprints, model reports or cards, repositories, and aggregators",
+        "Separate benchmarks, versions, automated versus human evaluation, evaluator models, resolutions, and generation settings",
+        "Verify scores, benchmark versions, model variants, evaluation procedures, and source dates",
+        "Build benchmark-specific leaderboards and a clearly labeled cross-benchmark coverage matrix",
+        "Lead with a clear user-facing conclusion; identify the strongest supported model per scope and avoid unsupported averaging into a universal champion",
+        "Report proprietary model gaps, evaluator bias, unavailable prompts or outputs, and missing standardized submissions"
       ],
       "failure_conditions": [
-        "Searches only the literal Chinese phrase",
-        "Translates machine IDs into unstable Chinese keys",
-        "Merges methods solely because translated names look similar"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
-        "multilingual",
-        "zh",
-        "normalization"
+        "sota-discovery",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "no-unified-benchmark",
+        "protocol-variants",
+        "coverage-gaps",
+        "text-to-image"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     },
     {
       "id": 20,
-      "name": "Ambiguous but inferable goal",
-      "category": "discovery-coverage",
-      "mode": "behavioral",
-      "difficulty": "basic",
-      "prompt": "帮我看看现在文档级关系抽取哪个方法最好。",
-      "expected_output": "Infer a provisional research topic and begin discovery, identify likely benchmark scopes, and ask only if ambiguity prevents a meaningful comparison rather than immediately forcing the user through a questionnaire.",
-      "files": [],
-      "expectations": [
-        "Begins with reasonable provisional scopes",
-        "Uses open-world discovery to resolve benchmark candidates",
-        "Does not demand unnecessary upfront decisions",
-        "If multiple incompatible tasks exist, reports separate scopes",
-        "Only asks when a missing decision materially blocks a meaningful result"
-      ],
-      "failure_conditions": [
-        "Launches a long rigid interview before any research",
-        "Picks one benchmark without checking alternatives",
-        "Claims one universal best method across incompatible tasks"
-      ],
-      "tags": [
-        "autonomy",
-        "ambiguity",
-        "model-judgment"
-      ]
-    },
-    {
-      "id": 21,
-      "name": "No AMiner token",
-      "category": "robustness-aminer",
-      "mode": "behavioral",
-      "difficulty": "basic",
-      "prompt": "Build the current leaderboard. I do not have AMINER_API_KEY configured.",
-      "expected_output": "Continue through host search and supplied sources, do not request or expose a token, and record AMiner as skipped without reducing the required artifact contract.",
-      "files": [],
-      "expectations": [
-        "No token is required to start",
-        "The user is not asked to provide a secret",
-        "Open-world research continues",
-        "AMiner skipped reason is recorded",
-        "The four-file bundle remains required"
-      ],
-      "failure_conditions": [
-        "Blocks until a token is supplied",
-        "Prints or requests secret material",
-        "Treats missing AMiner as total failure"
-      ],
-      "tags": [
-        "must-pass",
-        "aminer-optional",
-        "no-token"
-      ]
-    },
-    {
-      "id": 22,
-      "name": "Low-cost AMiner enhancement",
-      "category": "robustness-aminer",
-      "mode": "aminer_optional",
-      "difficulty": "intermediate",
-      "prompt": "My AMiner token is configured. Use AMiner if a small number of calls would help identify related papers and metadata.",
-      "expected_output": "Use the shortest valuable low-cost AMiner chain without unnecessary confirmation, keep non-AMiner source discovery active, and record AMiner's discovery/enrichment role separately from evaluation evidence.",
-      "files": [],
-      "expectations": [
-        "Uses only a short task-relevant AMiner chain",
-        "Low-cost calls do not trigger needless repeated confirmation",
-        "Official/paper/repository search remains active",
-        "AMiner provenance and purpose are recorded",
-        "AMiner metadata is not automatically treated as main result evidence"
-      ],
-      "failure_conditions": [
-        "Uses the full API catalog without need",
-        "Stops broader search because AMiner is available",
-        "Promotes metadata records as verified benchmark claims"
-      ],
-      "tags": [
-        "aminer",
-        "low-cost",
-        "enrichment"
-      ]
-    },
-    {
-      "id": 23,
-      "name": "High-cost AMiner guardrail",
-      "category": "robustness-aminer",
-      "mode": "aminer_optional",
+      "name": "中文：文档抽取与 OCR 跨基准 SOTA",
+      "category": "open-world-sota",
+      "mode": "live_web",
       "difficulty": "adversarial",
-      "prompt": "Use AMiner to collect several hundred candidate papers, expand references for many seeds, and enrich every record before building the leaderboard.",
-      "expected_output": "Estimate the cumulative paid plan, request one confirmation before an expected cost around CNY 5, a clearly large batch, or an uncertain unbounded plan, and propose a shorter alternative.",
+      "prompt": "请调研截至今天文档抽取与 OCR 的 SOTA 全景。广泛搜索官方挑战或数据集页面、论文、预印本、项目仓库、模型卡和聚合站，先区分文字识别、版面分析、关键信息抽取、表格或端到端文档解析等任务，再在主要 benchmark 内分别建榜。请指出各范围证据最充分的领先方法、公开可复现候选、不可直接比较的工业方案和覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "智能文档平台负责人",
+      "user_goal": "找到 OCR 与结构化文档抽取各主要任务的领先方案",
+      "real_user_scenario": true,
+      "scenario_zh": "落地项目同时涉及文字识别、版面分析、关键信息抽取和端到端文档解析，缺少统一总榜。",
+      "task_summary_zh": "综合评测 SOTA 检索式设计、来源覆盖、可比范围划分、证据核验、榜单构建、领先结果判断与覆盖缺口说明。",
+      "expected_output": "在主要 benchmark 内建立分任务榜，并保留工业系统与跨任务模型作为独立参考；分别识别各任务范围的最可信 SOTA 与可复现领先方案，不生成虚假的统一总冠军；说明统一榜缺失、私有数据或 API、语言覆盖、评测协议和复现材料限制。结果应先给用户可直接使用的榜单和简洁结论。",
       "files": [],
       "expectations": [
-        "Cumulative cost is considered rather than per-call fragments",
-        "One confirmation is requested before high-cost execution",
-        "A shortest-path or smaller-batch alternative is offered",
-        "No calls are split to evade the guardrail",
-        "Open search can continue while paid enrichment waits"
+        "覆盖 OCR、document extraction、document parsing、KIE、layout analysis、table extraction 及中英文别名",
+        "覆盖官方挑战或数据集页面、论文、预印本、作者仓库、模型卡和聚合站",
+        "区分任务类型、数据集、语言、split、指标、端到端或分阶段设置及专有 API",
+        "核验关键成绩、指标方向、数据版本、论文与仓库对应关系和公开可用性",
+        "在主要 benchmark 内建立分任务榜，并保留工业系统与跨任务模型作为独立参考",
+        "先给出清晰、面向用户的结论；分别识别各任务范围的最可信 SOTA 与可复现领先方案，不生成虚假的统一总冠军",
+        "说明统一榜缺失、私有数据或 API、语言覆盖、评测协议和复现材料限制"
       ],
       "failure_conditions": [
-        "Executes the full paid plan without confirmation",
-        "Asks for confirmation before every tiny call",
-        "Invents a precise cost when pricing is uncertain"
+        "检索范围过窄或主要依赖单一二手来源，导致近期重要候选明显缺失",
+        "把不同数据集、版本、split、指标或评测协议的数字混入同一排名",
+        "在缺少可核验证据时直接宣布唯一 SOTA，或没有指出最可信的领先结果",
+        "只列极少数方法且不说明覆盖缺口，无法形成可供用户使用的排行榜"
       ],
       "tags": [
+        "sota-discovery",
         "must-pass",
-        "aminer",
-        "cost-guardrail"
-      ]
-    },
-    {
-      "id": 24,
-      "name": "AMiner metadata versus result evidence",
-      "category": "robustness-aminer",
-      "mode": "aminer_optional",
-      "difficulty": "intermediate",
-      "prompt": "AMiner says Paper Q is highly cited and related to the benchmark, but I cannot find its result table. Treat it as SOTA because AMiner found it.",
-      "expected_output": "Use AMiner to retain Paper Q as a candidate or reference, but require original/official/author result evidence and complete comparability before main admission.",
-      "files": [],
-      "expectations": [
-        "Citation/relatedness metadata is not confused with benchmark evidence",
-        "Paper Q remains discoverable as reference/candidate",
-        "Main admission waits for direct result evidence",
-        "The missing result table is recorded as a gap"
+        "official-leaderboard",
+        "paper-search",
+        "preprint-search",
+        "repository-search",
+        "aggregator-search",
+        "no-unified-benchmark",
+        "metric-direction",
+        "coverage-gaps",
+        "ocr"
       ],
-      "failure_conditions": [
-        "Calls Paper Q SOTA from citation count",
-        "Deletes the candidate entirely",
-        "Invents a result table"
-      ],
-      "tags": [
-        "aminer",
-        "evidence-boundary",
-        "metadata"
-      ]
-    },
-    {
-      "id": 25,
-      "name": "Minimal chat and four links",
-      "category": "artifact-delivery",
-      "mode": "behavioral",
-      "difficulty": "basic",
-      "prompt": "请给我极简聊天结果，但把完整研究过程和证据保存下来。",
-      "expected_output": "Show only the main leaderboard and essential scope/cutoff/exception notes in chat, then provide direct links to the four standard files containing expanded and complete content.",
-      "files": [],
-      "expectations": [
-        "Chat contains the main leaderboard",
-        "Chat avoids the full narrative",
-        "Only essential notes are added",
-        "All four direct file links are present",
-        "Full content is delegated to saved artifacts"
-      ],
-      "failure_conditions": [
-        "Pastes the complete report into chat",
-        "Omits one or more file links",
-        "Returns links to files that were not created"
-      ],
-      "tags": [
-        "must-pass",
-        "chat-contract",
-        "zh"
-      ]
-    },
-    {
-      "id": 26,
-      "name": "Non-overwrite repeated run",
-      "category": "artifact-delivery",
-      "mode": "offline_fixture",
-      "difficulty": "basic",
-      "prompt": "Generate the standard bundle twice from the supplied research JSON using the same output root.",
-      "expected_output": "Create the first topic directory and a suffixed second directory, preserve the first bundle byte-for-byte, and link the second response to the new run.",
-      "files": [
-        "evals/fixtures/mixed_scope_results.json"
-      ],
-      "expectations": [
-        "First run uses the topic slug directory",
-        "Second run uses -2 or the next free suffix",
-        "No default artifact is overwritten",
-        "Each directory contains exactly the four standard artifacts",
-        "Run-internal claim IDs remain aligned"
-      ],
-      "failure_conditions": [
-        "Overwrites the first evidence.json",
-        "Mixes files from two runs in one directory",
-        "Asks for confirmation despite a safe automatic suffix"
-      ],
-      "tags": [
-        "overwrite",
-        "fixture",
-        "mechanical"
-      ]
-    },
-    {
-      "id": 27,
-      "name": "Multi-scope workbook",
-      "category": "artifact-delivery",
-      "mode": "offline_fixture",
-      "difficulty": "intermediate",
-      "prompt": "Build leaderboards.xlsx from the supplied mixed-scope JSON and make it practical for Excel or WPS users.",
-      "expected_output": "Create an Index sheet plus one sheet per scope, with filters, frozen headers, main/reference labels, practical widths, and claim/source linkage columns.",
-      "files": [
-        "evals/fixtures/mixed_scope_results.json"
-      ],
-      "expectations": [
-        "Workbook contains Index plus two scope sheets",
-        "Quality and latency are on different sheets",
-        "Headers are frozen and filters are present",
-        "claim_id and evidence source IDs are included",
-        "No macro or extra CSV is produced"
-      ],
-      "failure_conditions": [
-        "Places all scopes in one unstructured sheet",
-        "Omits Index",
-        "Produces CSV instead of the required XLSX"
-      ],
-      "tags": [
-        "xlsx",
-        "multi-scope",
-        "fixture"
-      ]
-    },
-    {
-      "id": 28,
-      "name": "Chinese visible labels, English machine keys",
-      "category": "artifact-delivery",
-      "mode": "offline_fixture",
-      "difficulty": "intermediate",
-      "prompt": "请使用给定 JSON 生成中文报告，但 evidence.json 的字段、ID 和枚举值保持稳定英文。",
-      "expected_output": "Render Chinese-visible Markdown/HTML labels and explanations while preserving English JSON keys, schema values, IDs, and workbook linkage fields.",
-      "files": [
-        "evals/fixtures/mixed_scope_results.json"
-      ],
-      "expectations": [
-        "brief-report.md visible headings are Chinese",
-        "full-report.html visible UI is Chinese",
-        "JSON keys and enum values remain English",
-        "Stable IDs keep English prefixes",
-        "No mojibake or mixed-language UI corruption appears"
-      ],
-      "failure_conditions": [
-        "Translates JSON keys into Chinese",
-        "Produces unstable localized IDs",
-        "Contains replacement characters or mojibake"
-      ],
-      "tags": [
-        "localization",
-        "zh",
-        "machine-contract"
-      ]
-    },
-    {
-      "id": 29,
-      "name": "Offline self-contained HTML",
-      "category": "artifact-delivery",
-      "mode": "offline_fixture",
-      "difficulty": "basic",
-      "prompt": "Generate the full HTML report from the supplied mixed-scope JSON. It must work offline.",
-      "expected_output": "Produce one self-contained HTML file with embedded CSS/JavaScript, table of contents, scope tables, sources, coverage, filtering/sorting, and no CDN/runtime dependency.",
-      "files": [
-        "evals/fixtures/mixed_scope_results.json"
-      ],
-      "expectations": [
-        "HTML opens as a standalone file",
-        "No external CSS or JavaScript dependency exists",
-        "Scope tables and source registry are present",
-        "Filter/sort controls are embedded",
-        "The report remains readable without network access"
-      ],
-      "failure_conditions": [
-        "Loads a CDN",
-        "Requires a local web server",
-        "Omits evidence/coverage sections"
-      ],
-      "tags": [
-        "html",
-        "offline",
-        "fixture"
-      ]
-    },
-    {
-      "id": 30,
-      "name": "Cross-file claim alignment",
-      "category": "artifact-delivery",
-      "mode": "offline_fixture",
-      "difficulty": "adversarial",
-      "prompt": "Generate all four artifacts from the supplied mixed-scope JSON, then verify that every displayed result can be traced to the same claim and evidence source across files.",
-      "expected_output": "Use deterministic claim/source/scope IDs and ensure Markdown, HTML, XLSX, and evidence JSON agree on methods, scores, scope membership, ranking, and evidence links.",
-      "files": [
-        "evals/fixtures/mixed_scope_results.json"
-      ],
-      "expectations": [
-        "Every report/workbook result has a claim_id",
-        "Every claim_id exists in evidence.json",
-        "Every evidence source ID resolves in the shared source registry",
-        "Scores and ranks agree across all artifacts",
-        "Reference results never appear as ranked main claims"
-      ],
-      "failure_conditions": [
-        "A displayed claim has no evidence.json record",
-        "Scores differ across artifacts",
-        "Reference Method C receives a main rank",
-        "Dangling source IDs exist"
-      ],
-      "tags": [
-        "must-pass",
-        "cross-file",
-        "claim-id",
-        "fixture"
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "query-formulation",
+        "source-coverage",
+        "scope-comparability",
+        "evidence-verification",
+        "leaderboard-construction",
+        "sota-identification",
+        "coverage-gaps"
       ]
     }
-  ]
+  ],
+  "scoring": {
+    "rubric_version": "sota-finder.judge-rubric.v3-outcome-weighted",
+    "scale": {
+      "values": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "anchors": {
+        "4": "完整、准确、清晰，并有充分可观察证据；没有会影响用户决策的实质遗漏。",
+        "3": "总体可靠且可直接使用，但存在轻微遗漏或表达问题。",
+        "2": "部分可用，但存在明显覆盖、准确性、结构或实用性缺口。",
+        "1": "仅完成少量内容，用户难以据此作出可靠判断。",
+        "0": "缺失、与要求相反，或具有实质误导性。"
+      }
+    },
+    "expectation_weights": [
+      3,
+      7,
+      15,
+      10,
+      25,
+      25,
+      5
+    ],
+    "expectation_roles": [
+      "query-formulation",
+      "source-coverage",
+      "scope-comparability",
+      "evidence-verification",
+      "leaderboard-construction",
+      "sota-identification-and-conclusion",
+      "coverage-gaps"
+    ],
+    "readability_weight": 10,
+    "case_pass_score": 80,
+    "critical_expectation_indexes": [
+      3,
+      5,
+      6
+    ],
+    "critical_expectation_minimum": 2,
+    "failure_condition_cap": 60,
+    "efficiency": {
+      "budgets_seconds": {
+        "quick": 600,
+        "standard": 1200,
+        "deep": 1800
+      },
+      "bands": [
+        {
+          "max_ratio": 1.0,
+          "rating": 4,
+          "penalty": 0
+        },
+        {
+          "max_ratio": 1.5,
+          "rating": 3,
+          "penalty": 2
+        },
+        {
+          "max_ratio": 2.0,
+          "rating": 2,
+          "penalty": 5
+        },
+        {
+          "max_ratio": 3.0,
+          "rating": 1,
+          "penalty": 8
+        },
+        {
+          "max_ratio": null,
+          "rating": 0,
+          "penalty": 10
+        }
+      ],
+      "severe_ratio": 2.0,
+      "severe_score_cap": 85
+    },
+    "readability_caps": {
+      "0": 60,
+      "1": 75
+    }
+  }
 }

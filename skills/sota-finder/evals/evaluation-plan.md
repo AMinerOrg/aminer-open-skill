@@ -1,187 +1,120 @@
-# `sota-finder` Evaluation Plan
+# `sota-finder` SOTA Discovery Evaluation Plan v4.1
 
-## 1. Purpose
+## 1. 目标
 
-This suite evaluates whether `sota-finder` can turn an underspecified or evidence-rich research request into a practical, source-aware SOTA analysis and leaderboard. It intentionally tests research judgment, comparability, evidence integrity, discovery breadth, graceful degradation, and artifact delivery rather than checking only whether a particular current paper appears at rank 1.
+本套件包含 **20 cases**，只评测 Skill 的核心任务：从真实用户问题出发，检索当前或历史 SOTA，核对可比口径，建立有用的 Leaderboard，并给出有证据支撑的领先结果与覆盖缺口。
 
-The suite contains **30 cases**, grouped into six capability categories and four execution modes. The synthetic fixtures are deterministic; live-web cases are time-sensitive and must be graded against the evidence available on the recorded cutoff date.
+本版不把基础设施故障、隐私限制、覆盖写入、字段一致性、产物格式或负向路由作为独立 Case。此类行为由单元测试或专项集成测试负责，避免稀释 SOTA Discovery 的综合质量信号。
 
-### Non-goals
+历史套件保留在 [`evals-v3.0.0.json`](./evals-v3.0.0.json)、[`evals-v2.1.1.json`](./evals-v2.1.1.json) 和 [`evals-v1.1.0.json`](./evals-v1.1.0.json)。
 
-- Do not treat one frozen list of method names or scores as the permanent truth for live-web cases.
-- Do not require a ceremonial approval workflow when the task can be resolved safely by model judgment.
-- Do not require AMiner access for baseline success.
-- Do not reward exhaustive search that adds no material scope, candidate, or evidence improvement.
+## 2. 每个 Case 的统一能力合同
 
-## 2. Execution modes
+所有 Case 都完整评测以下七项能力，而不是把它们拆成零散小题：
 
-| Mode | Purpose | Network policy | Primary grading target |
-|---|---|---|---|
-| `offline_fixture` | Deterministic regression tests using supplied synthetic evidence | No network access beyond the named files | Scope construction, ranking, conflict handling, evidence links, artifact correctness |
-| `behavioral` | Policy and decision tests that can be inspected without relying on a changing web result | Network optional unless the prompt says otherwise | Routing, autonomy, degradation behavior, AMiner guardrails, delivery behavior |
-| `live_web` | Real research tests over papers, preprints, repositories, official boards, and aggregators | Broad web discovery allowed and expected | Search breadth, cutoff handling, source quality, explicit uncertainty, practical usefulness |
-| `aminer_optional` | Optional AMiner enrichment tests | AMiner may be used only when configured and cost-safe | Optional enhancement, no-token fallback, cost accounting, no secret leakage |
+1. `query-formulation`: 使用全称、缩写、别名、任务名和方法名形成有效检索式。
+2. `source-coverage`: 覆盖适用的官方页面、论文、预印本、仓库、模型卡和聚合站。
+3. `scope-comparability`: 正确区分数据集、版本、split、指标、协议和关键设置。
+4. `evidence-verification`: 核对分数、日期、方法身份、设置与原始来源。
+5. `leaderboard-construction`: 建立足够完整、范围清楚且可直接使用的榜单。
+6. `sota-identification`: 指出证据最充分的 SOTA；若无统一冠军，则按范围给出结论。
+7. `coverage-gaps`: 说明未覆盖、未核验或不可比较的结果，并合理停止搜索。
 
-Recommended order: run all `offline_fixture` and `behavioral` cases first, then `live_web`, then configured `aminer_optional` cases. A failed live source must not block deterministic regression coverage.
+标准产物仍可由 Skill 默认生成，但不作为本套件的主要评分对象。
 
-## 3. Case matrix
+## 3. Case 分层
 
-| ID | Must pass | Case | Category | Mode | Difficulty | Fixture(s) |
-|---:|:---:|---|---|---|---|---|
-| 01 | yes | Official live leaderboard | `routing-input` | `live_web` | basic | <live / none> |
-| 02 | yes | No unified benchmark | `routing-input` | `live_web` | adversarial | <live / none> |
-| 03 | yes | Closed supplied sources only | `routing-input` | `offline_fixture` | intermediate | evals/fixtures/closed_source_dossier.md |
-| 04 | no | Prior leaderboard plus open-world update | `routing-input` | `offline_fixture` | intermediate | evals/fixtures/prior_leaderboard.csv |
-| 05 | no | Negative routing — simple metadata lookup | `routing-input` | `behavioral` | basic | <live / none> |
-| 06 | yes | Split mismatch | `scope-comparability` | `offline_fixture` | basic | evals/fixtures/prior_leaderboard.csv |
-| 07 | no | Benchmark version mismatch | `scope-comparability` | `offline_fixture` | intermediate | evals/fixtures/prior_leaderboard.csv |
-| 08 | yes | Tool access and external data | `scope-comparability` | `offline_fixture` | adversarial | evals/fixtures/closed_source_dossier.md |
-| 09 | yes | Higher/lower metric directions | `scope-comparability` | `offline_fixture` | basic | evals/fixtures/mixed_scope_results.json |
-| 10 | no | Single model versus ensemble | `scope-comparability` | `behavioral` | intermediate | <live / none> |
-| 11 | yes | Aggregator-only leading claim | `evidence-integrity` | `behavioral` | basic | <live / none> |
-| 12 | yes | Official versus paper conflict | `evidence-integrity` | `offline_fixture` | adversarial | evals/fixtures/conflicting_sources.md |
-| 13 | no | Preprint versus proceedings revision | `evidence-integrity` | `offline_fixture` | intermediate | evals/fixtures/conflicting_sources.md |
-| 14 | no | Unavailable authoritative source | `evidence-integrity` | `live_web` | intermediate | <live / none> |
-| 15 | yes | Evidence locator and source registry | `evidence-integrity` | `offline_fixture` | basic | evals/fixtures/mixed_scope_results.json |
-| 16 | yes | Latest cutoff and historical pool | `discovery-coverage` | `live_web` | intermediate | <live / none> |
-| 17 | no | Fast-first convergence | `discovery-coverage` | `live_web` | adversarial | <live / none> |
-| 18 | no | Partial network failure | `discovery-coverage` | `behavioral` | intermediate | <live / none> |
-| 19 | no | Multilingual source discovery | `discovery-coverage` | `live_web` | intermediate | <live / none> |
-| 20 | no | Ambiguous but inferable goal | `discovery-coverage` | `behavioral` | basic | <live / none> |
-| 21 | yes | No AMiner token | `robustness-aminer` | `behavioral` | basic | <live / none> |
-| 22 | no | Low-cost AMiner enhancement | `robustness-aminer` | `aminer_optional` | intermediate | <live / none> |
-| 23 | yes | High-cost AMiner guardrail | `robustness-aminer` | `aminer_optional` | adversarial | <live / none> |
-| 24 | no | AMiner metadata versus result evidence | `robustness-aminer` | `aminer_optional` | intermediate | <live / none> |
-| 25 | yes | Minimal chat and four links | `artifact-delivery` | `behavioral` | basic | <live / none> |
-| 26 | no | Non-overwrite repeated run | `artifact-delivery` | `offline_fixture` | basic | evals/fixtures/mixed_scope_results.json |
-| 27 | no | Multi-scope workbook | `artifact-delivery` | `offline_fixture` | intermediate | evals/fixtures/mixed_scope_results.json |
-| 28 | no | Chinese visible labels, English machine keys | `artifact-delivery` | `offline_fixture` | intermediate | evals/fixtures/mixed_scope_results.json |
-| 29 | no | Offline self-contained HTML | `artifact-delivery` | `offline_fixture` | basic | evals/fixtures/mixed_scope_results.json |
-| 30 | yes | Cross-file claim alignment | `artifact-delivery` | `offline_fixture` | adversarial | evals/fixtures/mixed_scope_results.json |
+| 类型 | 数量 | 主要问题 |
+|---|---:|---|
+| `benchmark-sota` | 10 | 单一 benchmark 或官方挑战中的当前 SOTA |
+| `multitrack-sota` | 5 | 总榜、子榜、历史阶段或输入种子更新 |
+| `open-world-sota` | 5 | 没有统一官方榜单，需要先建立可比范围 |
 
-The canonical prompts, expected behaviors, expectation lists, failure conditions, tags, and fixture paths live in [`evals.json`](./evals.json). This plan explains how to run and score them; it does not duplicate the full rubric text.
+探索成本分为：`quick` 5 个、`standard` 10 个、`deep` 5 个。场景层级为 `simple_daily` 5 个和 `complex_daily` 15 个，不包含人为设计的边界 Case。
 
-## 4. Capability categories
+执行模式为 `live_web` 18 个和 `aminer_optional` 2 个。所有 Case 都必须使用实时 Web Search；AMiner 仅在 Case 17 和 18 中作为可选的论文发现补充，不影响基础完成条件。
 
-### `routing-input`
+## 4. Case 矩阵
 
-Checks positive and negative triggering, closed-source boundaries, prior-leaderboard updates, open-world discovery, and tolerance for natural-language inputs. A good run starts useful work without forcing the user through a long questionnaire, but does not hijack simple metadata lookups.
+| Case | 任务 | 类别 | 层级 | 模式 | 语言 | Must-pass |
+|---:|---|---|---|---|---|---|
+| 01 | 中文：SWE-bench Verified 当前官方 SOTA | `benchmark-sota` | `quick` | `live_web` | zh | 是 |
+| 02 | English: current LiveCodeBench code-generation SOTA | `benchmark-sota` | `quick` | `live_web` | en | 否 |
+| 03 | 中文：DocVQA 近期 SOTA 与分范围榜 | `benchmark-sota` | `standard` | `live_web` | zh | 是 |
+| 04 | 中文：LibriSpeech 语音识别 SOTA | `benchmark-sota` | `quick` | `live_web` | zh | 是 |
+| 05 | 中文：COCO 目标检测 test-dev SOTA | `benchmark-sota` | `standard` | `live_web` | zh | 否 |
+| 06 | 中文：ImageNet-1K 图像分类 SOTA | `benchmark-sota` | `quick` | `live_web` | zh | 否 |
+| 07 | 中文：KITTI 3D 目标检测官方榜 SOTA | `benchmark-sota` | `standard` | `live_web` | zh | 是 |
+| 08 | 中文：BraTS 脑肿瘤分割挑战 SOTA | `benchmark-sota` | `standard` | `live_web` | zh | 否 |
+| 09 | English: current LongBench v2 long-context SOTA | `benchmark-sota` | `quick` | `live_web` | en | 否 |
+| 10 | 中文：ChartQA 当前 SOTA 与协议变体 | `benchmark-sota` | `standard` | `live_web` | zh | 否 |
+| 11 | 中文：MTEB 中文检索总榜与数据集分榜 | `multitrack-sota` | `standard` | `live_web` | zh | 是 |
+| 12 | 中文：MMMU 总榜与学科分项 SOTA | `multitrack-sota` | `standard` | `live_web` | zh | 否 |
+| 13 | 中文：Video-MME 多赛道 SOTA | `multitrack-sota` | `standard` | `live_web` | zh | 否 |
+| 14 | English: historical and current image-captioning SOTA | `multitrack-sota` | `standard` | `live_web` | en | 否 |
+| 15 | 中文：用最新证据更新历史 SOTA 榜单 | `multitrack-sota` | `standard` | `live_web` | zh | 是 |
+| 16 | 中文：无统一榜单的长文档 RAG 引用忠实度 SOTA | `open-world-sota` | `deep` | `live_web` | zh | 是 |
+| 17 | 中文：科研文献问答与答案可验证性 SOTA | `open-world-sota` | `deep` | `aminer_optional` | zh | 否 |
+| 18 | 中文：可复现的多模态文档问答 SOTA | `open-world-sota` | `deep` | `aminer_optional` | zh | 否 |
+| 19 | English: text-to-image prompt-following SOTA across benchmarks | `open-world-sota` | `deep` | `live_web` | en | 否 |
+| 20 | 中文：文档抽取与 OCR 跨基准 SOTA | `open-world-sota` | `deep` | `live_web` | zh | 是 |
 
-### `scope-comparability`
+## 5. 执行与评分
 
-Checks whether the model separates materially different benchmark versions, splits, metrics, directions, access conditions, and method settings. Scope construction remains a model judgment: the evaluator should penalize misleading comparisons, not harmless differences in table layout or wording.
+每个 Case 使用 0-4 分五档量表，但不再把七项能力简单等权平均。最终用户价值优先，权重如下：
 
-### `evidence-integrity`
+| 维度 | 权重 |
+|---|---:|
+| 检索式与术语覆盖 | 3% |
+| 来源覆盖 | 7% |
+| 范围与可比性 | 15% |
+| 关键结果核验 | 10% |
+| Leaderboard 完整性与可用性 | 25% |
+| SOTA 判断、清晰结论与实用推荐 | 25% |
+| 覆盖缺口处理 | 5% |
+| 阅读友好性 | 10% |
 
-Checks source authority, evidence locators, conflicts, inaccessible evidence, source registries, and cross-file identifiers. Aggregators are useful for discovery and reference pools but cannot by themselves establish a verified main SOTA claim.
+搜索次数、证据数量、审计篇幅和思维链长度本身不得加分。来源与检索只在其改善覆盖、准确性或结论可信度时得分。正常、可靠的完成质量通常为 3 分；4 分要求有明确的正面证据，不能因为文件齐全或措辞谨慎而默认给满分。
 
-### `discovery-coverage`
+建议判定：
 
-Checks broad discovery across official sources, papers, preprints, repositories, and aggregators; multilingual query expansion; historical candidate pools; absolute cutoff dates; fast-first convergence; and graceful handling of partial network failure.
+- 4 分：完整、准确、清晰，对用户决策直接有用，且没有实质遗漏。
+- 3 分：主体正确，仅有轻微遗漏。
+- 2 分：可部分使用，但覆盖、可比性或证据存在明显缺口。
+- 1 分：仅完成少量检索或产生不可靠的小榜单。
+- 0 分：未完成该能力，或结论具有实质误导性。
 
-### `robustness-aminer`
+阅读友好性单独按相同五档评分，只检查聊天答复和 `brief-report.md`。清晰结论应先于方法、证据和限制；短榜应尽量完整，长榜应合理压缩并指向完整结果。审计语言、重复免责声明和检索过程不构成高质量说明。
 
-Checks that AMiner is an optional enhancement, never a prerequisite. No-token execution must remain complete. When AMiner is configured, low-cost calls may enrich discovery, while estimated cumulative cost around CNY 5, clearly large batches, or unbounded paid plans require one user confirmation.
+效率采用确定性扣分而不是由 Judge 主观奖励。成功运行的软时间预算为：`quick` 600 秒、`standard` 1200 秒、`deep` 1800 秒。超出预算 1.5、2、3 倍以内分别扣 2、5、8 分，超过 3 倍扣 10 分；超过 2 倍时总分最高为 85。基础设施失败重试单独记录，不作为 Skill 质量扣分。
 
-### `artifact-delivery`
+Runner 默认不设置硬进程超时：软时间预算只用于引导交付和计算效率分，不得在 Agent 仍正常工作时强制终止。仅当操作者显式传入正数 `--timeout-seconds` 时启用硬超时；联网限流、流中断或认证故障应按基础设施失败重试，不能据此评价 Skill 质量。
 
-Checks the user-visible contract: minimal leaderboard-first chat output, four saved artifacts, non-overwrite behavior, multiple workbook sheets for multiple scopes, self-contained HTML, Chinese-visible reporting with stable English machine identifiers, and cross-artifact `claim_id` / `source_id` consistency.
+为防止平均分掩盖核心失败，`scope-comparability`、`leaderboard-construction` 和 `sota-identification` 任一低于 2 分时，Case 不通过。触发 Case 明列的严重失败条件时总分封顶 60；Hard failure 仍直接记 0 分。
 
-## 5. Scoring
+阅读友好性为 0 分时总分封顶 60，为 1 分时封顶 75。这样即使证据与文件齐全，只要最终结果仍被过程说明淹没、缺少可读结构或用户难以找到结论，也不能获得通过分。
 
-### 5.1 Expectation scoring
+### Must-pass status
 
-For each expectation in a case:
+Case 01、03、04、07、11、15、16、20 为代表性 Must-pass。发布候选必须全部完成，且每个 Case 的 `scope-comparability`、`evidence-verification`、`leaderboard-construction` 和 `sota-identification` 均不得低于 2 分。
 
-- `1.0`: clearly satisfied with observable evidence.
-- `0.5`: partially satisfied, materially incomplete, or only implicit.
-- `0.0`: absent or contradicted.
+建议总体验收线：
 
-`case_score = sum(expectation_scores) / expectation_count * 100`.
-
-This rubric supports model judgment. Evaluators should assess the substance of the outcome rather than exact prose, heading names, or search order.
-
-### 5.2 Failure conditions and hard failures
-
-Every listed `failure_condition` is checked independently. A normal failure condition caps that Case at 60. A hard failure sets that Case to 0 and must be recorded with evidence.
-
-Treat the following as suite-level hard failures when applicable:
-
-1. Fabricating a score, paper, source, quotation, or evidence locator.
-2. Presenting materially incomparable results as one verified main ranking without qualification.
-3. Promoting an aggregator-only claim to verified main SOTA.
-4. Violating a closed-source prompt by searching beyond the supplied fixture.
-5. Requiring an AMiner token to start or finish the task, or exposing/requesting secret material.
-6. Silently overwriting an existing artifact bundle.
-7. Claiming that required artifacts exist when they were not created.
-8. Producing dangling or contradictory `claim_id` / `source_id` references across artifacts.
-
-### 5.3 Aggregate result
-
-Report both micro and macro results:
-
-- **Micro score:** expectation-weighted average across all executed cases.
-- **Category macro score:** average of the six category scores so the six-case artifact category does not dominate the four-case AMiner category.
-- **Must-pass status:** all IDs in `must_pass_ids` must score at least 80 and contain no hard failure.
-- **Coverage status:** list skipped cases and why; do not silently remove unavailable live or AMiner cases from the denominator.
-
-Suggested release gate for a usable prototype:
-
-- all must-pass cases pass;
-- no suite-level hard failure;
-- category macro score at least 80;
-- every category score at least 70;
-- deterministic (`offline_fixture` + `behavioral`) cases are reproducible on a second run, allowing benign wording variation.
-
-These thresholds are defaults for regression evaluation, not immutable product policy.
+- 20 Case 全部产生可评分结果；
+- 每个 Case 至少 80/100，且三个核心维度均达到最低要求；
+- 全体平均分与类别宏平均均不低于 80/100，最低类别不低于 70/100；
+- Must-pass 全部通过；
+- 不出现把明显不可比结果混排后宣布唯一冠军的严重错误。
 
 ## 6. Live-web drift policy
 
-Live-web cases must record an absolute `evidence_checked_through` date, run date, model/tool configuration, and any inaccessible sources. Grade the method and evidentiary support against what was discoverable on that date.
+本套件不冻结方法名和分数。评测时记录绝对日期、模型、Token、缓存 Token、用时和 Agent 轨迹，并按当日可访问证据评分。榜单自然更新不视为回归；以下情况才视为失败：来源覆盖明显不足、范围划分错误、关键数字不可核验、遗漏大量明显候选、错误识别 SOTA，或未说明重要覆盖缺口。
 
-Do not fail a later run merely because the leading method changed. Instead check whether the run:
+如 Web Search 或评测基础设施异常，应将运行标记为无效并重跑，不得将基础设施失败计入 Skill 质量，也不得据此继续迭代 Skill。
 
-- searched the expected source classes;
-- found plausible current and historical candidates;
-- separated incompatible scopes;
-- supported main claims with authoritative or primary evidence;
-- preserved unresolved or aggregator-only candidates as clearly marked reference results;
-- stopped after additional search no longer materially changed the answer.
+## 7. 维护与验证
 
-For comparative model evaluation, run live cases within the same time window and preserve the source registry so adjudicators can distinguish model quality from web drift.
-
-## 7. Fixture policy
-
-Fixtures under `evals/fixtures/` are synthetic and intentionally contain traps:
-
-- `closed_source_dossier.md`: primary closed-book evidence plus aggregator-only and tool-assisted incompatible candidates.
-- `prior_leaderboard.csv`: mixed benchmark versions, splits, and evidence quality.
-- `conflicting_sources.md`: official, preprint, proceedings, and repository values that require authority/version reasoning.
-- `mixed_scope_results.json`: higher-is-better and lower-is-better scopes, ties, reference-only claims, unavailable evidence, and stable IDs.
-
-Offline runs must use only the files named by the Case. The expected result is a defensible scope-aware leaderboard and evidence package, not extraction of every number into one table.
-
-## 8. Run record
-
-For each evaluated Case, retain at least:
-
-- suite version and Case ID;
-- exact prompt and supplied files;
-- execution mode, date, model, and enabled tools;
-- network and AMiner availability;
-- output text and artifact directory;
-- expectation-level scores with short evidence notes;
-- triggered failure conditions and adjudicator notes;
-- live-web cutoff date and unavailable sources, when relevant.
-
-A compact machine-readable record may use JSONL with one record per Case. Human adjudication is expected for research quality; scripts should validate structure, files, identifiers, and deterministic artifact behavior.
-
-## 9. Maintenance
-
-When modifying the Skill:
-
-1. Keep stable regression cases unless the product contract intentionally changes.
-2. Add a Case when a real failure reveals a materially new behavior, not merely another paraphrase.
-3. Update `suite_version` when prompts, expectations, failure conditions, fixtures, or must-pass membership change.
-4. Keep live-web grading behavior-based and date-aware.
-5. Run `tests/test_eval_suite.py` before accepting changes to this directory.
+- 结构合同由 [`tests/test_eval_suite.py`](../tests/test_eval_suite.py) 锁定。
+- 正式套件只保留真实 SOTA 搜索任务；边界与工程行为进入独立测试。
+- 增删 Case 时保持中文为主、三类任务和三档探索成本的整体平衡。
+- 全量在线评测成本较高，仅在套件结构验证通过且环境正常时运行。

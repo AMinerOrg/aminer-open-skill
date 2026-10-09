@@ -27,6 +27,14 @@ AUTHORITATIVE_SOURCE_ROLES = {"official", "primary", "author"}
 SOURCE_ROLES = AUTHORITATIVE_SOURCE_ROLES | {"secondary", "aggregator"}
 SECTIONS = {"main", "reference", "unavailable"}
 CONFLICT_STATUSES = {"resolved", "unresolved", "unavailable"}
+QUERY_STATUSES = {"observed", "partial", "not_observed", "not_auditable"}
+BRIEF_MAIN_ROW_LIMIT = 5
+BRIEF_REFERENCE_ROW_LIMIT = 3
+BRIEF_COMPLETE_SCOPE_ROW_LIMIT = 12
+BRIEF_DETAILED_SCOPE_LIMIT = 12
+BRIEF_DETAIL_ROW_BUDGET = 30
+BRIEF_OVERVIEW_SCOPE_LIMIT = 15
+BRIEF_MATRIX_ROW_LIMIT = 12
 
 
 class ContractError(ValueError):
@@ -117,6 +125,60 @@ def _normalize_score(claim: dict[str, Any]) -> None:
     claim["score_display"] = display or "not available"
 
 
+def _normalize_research_control(data: dict[str, Any]) -> None:
+    """Sanitize optional provenance without making it a required workflow."""
+    if "research_control" not in data:
+        return
+    control = data["research_control"]
+    _require(isinstance(control, dict), "research_control must be an object")
+    # The model cannot self-authenticate search telemetry.  Keep the optional
+    # note, but never let it claim observed queries unless a trusted host layer
+    # replaces this sanitizer in the future.
+    control["telemetry_available"] = False
+    for field in ("query_families", "snapshot_history"):
+        if field in control:
+            _require(isinstance(control[field], list), f"research_control.{field} must be a list")
+    if "source_coverage" in control:
+        _require(isinstance(control["source_coverage"], dict), "research_control.source_coverage must be an object")
+    for family in control.get("query_families", []):
+        _require(isinstance(family, dict), "research_control.query_families entries must be objects")
+        for field in ("requested_terms", "observed_queries"):
+            if field in family:
+                _require(isinstance(family[field], list), f"research_control.query_families.{field} must be a list")
+        if "status" in family and family["status"] is not None:
+            status = _text(family["status"]).lower()
+            _require(status in QUERY_STATUSES, f"research_control.query_families status must be one of {sorted(QUERY_STATUSES)}")
+            family["status"] = status
+        if family.get("observed_queries"):
+            family["observed_queries"] = []
+            if family.get("status") in {"observed", "partial"}:
+                family["status"] = "not_auditable"
+
+
+def _normalize_coverage_matrix(coverage: dict[str, Any], language: str) -> None:
+    matrix = coverage.get("matrix")
+    if matrix is None:
+        return
+    _require(isinstance(matrix, dict), "coverage.matrix must be an object")
+    columns = matrix.get("columns")
+    rows = matrix.get("rows")
+    notes = matrix.setdefault("notes", [])
+    _require(isinstance(columns, list) and len(columns) >= 2, "coverage.matrix.columns must contain at least two columns")
+    _require(all(_text(column) for column in columns), "coverage.matrix.columns must be non-empty")
+    _require(isinstance(rows, list) and rows, "coverage.matrix.rows must be a non-empty list")
+    _require(isinstance(notes, list), "coverage.matrix.notes must be a list")
+    normalized_rows: list[list[str]] = []
+    for index, row in enumerate(rows, 1):
+        _require(isinstance(row, list), f"coverage.matrix row #{index} must be a list")
+        _require(len(row) == len(columns), "coverage.matrix rows must have the same number of cells as columns")
+        _require(all(not isinstance(cell, (dict, list)) for cell in row), f"coverage.matrix row #{index} cells must be scalar")
+        normalized_rows.append([_text(cell) for cell in row])
+    matrix["title"] = _text(matrix.get("title")) or ("跨基准覆盖矩阵" if language.lower().startswith("zh") else "Coverage Matrix")
+    matrix["columns"] = [_text(column) for column in columns]
+    matrix["rows"] = normalized_rows
+    matrix["notes"] = [_text(note) for note in notes if _text(note)]
+
+
 def normalize_bundle(raw: dict[str, Any]) -> dict[str, Any]:
     """Assign stable IDs, resolve local keys, rank main claims, and return final evidence data."""
     _require(isinstance(raw, dict), "Research input must be a JSON object")
@@ -142,19 +204,30 @@ def normalize_bundle(raw: dict[str, Any]) -> dict[str, Any]:
     run["evidence_checked_through"] = cutoff
     run["generated_at"] = _text(run.get("generated_at")) or _now_iso()
     run["language"] = language
-    run["run_id"] = _text(run.get("run_id")) or f"run-{topic_slug}-{cutoff.replace('-', '')}"
+    conclusions = run.get("conclusions", [])
+    if isinstance(conclusions, str):
+        conclusions = [conclusions]
+    _require(isinstance(conclusions, list), "research_run.conclusions must be a list or string")
+    run["conclusions"] = [_text(item) for item in conclusions if _text(item)]
+    run_id = _text(run.get("run_id"))
+    if run_id and not run_id.startswith("run-"):
+        run_id = f"run-{run_id}"
+    run["run_id"] = run_id or f"run-{topic_slug}-{cutoff.replace('-', '')}"
     aminer = run.setdefault("aminer", {"used": False})
     _require(isinstance(aminer, dict) and isinstance(aminer.get("used"), bool), "research_run.aminer.used must be boolean")
+    _normalize_research_control(data)
 
     coverage = data.setdefault("coverage", {})
     _require(isinstance(coverage, dict), "coverage must be an object")
     coverage.setdefault("searched_source_types", [])
     coverage.setdefault("queries", [])
-    coverage.setdefault("stop_reason", "")
+    coverage.setdefault("stop_reason", "Stopped after preparing the available useful result.")
     coverage.setdefault("gaps", [])
     for field in ("searched_source_types", "queries", "gaps"):
         _require(isinstance(coverage[field], list), f"coverage.{field} must be a list")
-    _require(_text(coverage.get("stop_reason")), "coverage.stop_reason is required")
+    if not _text(coverage.get("stop_reason")):
+        coverage["stop_reason"] = "Stopped after preparing the available useful result."
+    _normalize_coverage_matrix(coverage, language)
 
     scopes = data.get("scopes")
     sources = data.get("sources")
@@ -252,10 +325,21 @@ def normalize_bundle(raw: dict[str, Any]) -> dict[str, Any]:
         claim.setdefault("method_summary", None)
         claim.setdefault("notes", None)
         _require(isinstance(claim.get("comparability_complete"), bool), f"Claim {local_key!r} comparability_complete must be boolean")
-        _require(isinstance(claim["setting"], dict), f"Claim {local_key!r} setting must be an object")
-        _require(isinstance(claim["evidence_locators"], list), f"Claim {local_key!r} evidence_locators must be a list")
+        # `comparability_complete` is the single source of truth.  Drop the
+        # experimental duplicate field if an older input still contains it.
+        claim.pop("comparability_status", None)
+        if isinstance(claim["setting"], str):
+            claim["setting"] = {"description": claim["setting"]}
+        _require(isinstance(claim["setting"], dict), f"Claim {local_key!r} setting must be an object or string")
+        if isinstance(claim["evidence_locators"], (str, dict)):
+            claim["evidence_locators"] = [claim["evidence_locators"]]
+        _require(isinstance(claim["evidence_locators"], list), f"Claim {local_key!r} evidence_locators must be a list, object, or string")
+        claim["evidence_locators"] = [
+            {"description": locator} if isinstance(locator, str) else locator
+            for locator in claim["evidence_locators"]
+        ]
         for locator in claim["evidence_locators"]:
-            _require(isinstance(locator, dict), f"Claim {local_key!r} evidence locator must be an object")
+            _require(isinstance(locator, dict), f"Claim {local_key!r} evidence locator must be an object or string")
             locator_ref = locator.pop("source_key", None) or locator.get("source_id")
             if locator_ref:
                 locator["source_id"] = _resolve(locator_ref, source_map, "source")
@@ -405,66 +489,170 @@ def validate_evidence(data: dict[str, Any]) -> list[str]:
 def _labels(language: str) -> dict[str, str]:
     if language.lower().startswith("zh"):
         return {
-            "title": "SOTA 与 Leaderboard 报告",
+            "title": "SOTA 与排行榜报告",
             "cutoff": "证据核验截止",
+            "conclusion": "结论",
+            "overview": "榜单概览",
+            "key_notes": "必要说明",
+            "more_rows": "其余结果见 [完整版报告](full-report.html) 和 [Excel](leaderboards.xlsx)",
+            "separate_scope_conclusion": "不同范围的评测协议不可直接合并，应分别查看各范围领先结果。",
             "main": "主排行榜",
             "reference": "参考结果",
             "unavailable": "冲突 / 不可用",
-            "scope": "Scope",
+            "scope": "范围",
+            "task": "任务",
+            "benchmark": "基准",
+            "direction": "方向",
+            "main_results": "主榜结果",
+            "reference_results": "参考结果",
+            "top_method": "头部方法",
+            "top_score": "头部得分",
+            "sheet": "工作表",
+            "scope_id": "范围 ID",
+            "category": "类别",
             "metric": "指标",
             "method": "方法",
             "variant": "变体",
+            "score_numeric": "数值分数",
+            "score_display": "显示分数",
             "score": "分数",
+            "paper_result": "论文 / 结果",
+            "year": "年份",
+            "setting": "设置",
+            "comparable": "可比",
+            "sota": "范围第一",
+            "claim_id": "声明 ID",
+            "evidence_source_ids": "证据来源 ID",
+            "evidence_url": "证据链接",
+            "notes": "说明",
             "rank": "排名",
             "evidence": "证据",
             "notes": "说明",
-            "methods": "SOTA 方法简介",
+            "methods": "领先方法简介",
             "conflicts": "冲突",
             "coverage": "覆盖与缺口",
             "sources": "证据来源",
             "gaps": "缺口",
             "stop": "停止依据",
             "filter": "筛选表格",
+            "evaluation_protocol": "评测协议",
+            "material_axes": "关键条件",
+            "validation_warnings": "校验提醒",
+            "index_sheet": "索引",
+            "value_main": "主榜",
+            "value_reference": "参考",
+            "value_unavailable": "不可用",
+            "value_true": "是",
+            "value_false": "否",
+            "value_higher": "越高越好",
+            "value_lower": "越低越好",
+            "value_single": "单模型",
+            "value_single model": "单模型",
+            "value_unknown": "未知",
+            "value_official": "官方",
+            "value_primary": "原始来源",
+            "value_author": "作者来源",
+            "value_aggregator": "聚合来源",
+            "value_resolved": "已解决",
+            "value_unresolved": "未解决",
             "none": "无",
         }
     return {
         "title": "SOTA and Leaderboard Report",
         "cutoff": "Evidence checked through",
+        "conclusion": "Conclusion",
+        "overview": "Leaderboard Overview",
+        "key_notes": "Essential Notes",
+        "more_rows": "See the [full report](full-report.html) and [workbook](leaderboards.xlsx) for the remaining results",
+        "separate_scope_conclusion": "The evaluation protocols are not directly comparable; use the leader for each scope rather than a single cross-scope winner.",
         "main": "Main Leaderboard",
         "reference": "Reference Results",
         "unavailable": "Conflicts / Unavailable",
         "scope": "Scope",
+        "task": "Task",
+        "benchmark": "Benchmark",
+        "direction": "Direction",
+        "main_results": "Main Results",
+        "reference_results": "Reference Results",
+        "top_method": "Top Method",
+        "top_score": "Top Score",
+        "sheet": "Sheet",
+        "scope_id": "Scope ID",
+        "category": "Category",
         "metric": "Metric",
         "method": "Method",
         "variant": "Variant",
+        "score_numeric": "Score Numeric",
+        "score_display": "Score Display",
         "score": "Score",
+        "paper_result": "Paper / Result",
+        "year": "Year",
+        "setting": "Setting",
+        "comparable": "Comparable",
+        "sota": "Scope leader",
+        "claim_id": "Claim ID",
+        "evidence_source_ids": "Evidence Source IDs",
+        "evidence_url": "Evidence URL",
+        "notes": "Notes",
         "rank": "Rank",
         "evidence": "Evidence",
         "notes": "Notes",
-        "methods": "SOTA Method Notes",
+        "methods": "Leading Method Notes",
         "conflicts": "Conflicts",
         "coverage": "Coverage and Gaps",
         "sources": "Evidence Sources",
         "gaps": "Gaps",
         "stop": "Stop reason",
         "filter": "Filter tables",
+        "evaluation_protocol": "Evaluation protocol",
+        "material_axes": "Material comparison axes",
+        "validation_warnings": "Validation warnings",
+        "index_sheet": "Index",
+        "value_main": "main",
+        "value_reference": "reference",
+        "value_unavailable": "unavailable",
+        "value_true": "true",
+        "value_false": "false",
+        "value_higher": "higher",
+        "value_lower": "lower",
+        "value_single": "single",
+        "value_single model": "single model",
+        "value_unknown": "unknown",
+        "value_official": "official",
+        "value_primary": "primary",
+        "value_author": "author",
+        "value_aggregator": "aggregator",
+        "value_resolved": "resolved",
+        "value_unresolved": "unresolved",
         "none": "None",
     }
 
 
-def _metric_text(scope: dict[str, Any]) -> str:
+def _display_value(value: Any, labels: dict[str, str]) -> Any:
+    if isinstance(value, bool):
+        return labels[f"value_{str(value).lower()}"]
+    if isinstance(value, str):
+        return labels.get(f"value_{value.casefold()}", value)
+    return value
+
+
+def _metric_text(scope: dict[str, Any], labels: dict[str, str] | None = None) -> str:
     metric = scope["metric"]
     parts = [metric["name"]]
     if metric.get("variant"):
-        parts.append(_text(metric["variant"]))
+        parts.append(_text(_display_value(metric["variant"], labels) if labels else metric["variant"]))
     if metric.get("unit"):
         parts.append(f"[{metric['unit']}]")
-    parts.append(f"({metric['direction']})")
+    direction = _display_value(metric["direction"], labels) if labels else metric["direction"]
+    parts.append(f"({direction})")
     return " ".join(parts)
 
 
-def _setting_text(setting: dict[str, Any]) -> str:
-    return "; ".join(f"{key}={str(value).lower() if isinstance(value, bool) else value}" for key, value in sorted(setting.items()))
+def _setting_text(setting: dict[str, Any], labels: dict[str, str] | None = None) -> str:
+    return "; ".join(
+        f"{key}={_display_value(value, labels) if labels else str(value).lower() if isinstance(value, bool) else value}"
+        for key, value in sorted(setting.items())
+    )
 
 
 def _md_cell(value: Any) -> str:
@@ -478,7 +666,7 @@ def _claims_for_scope(data: dict[str, Any], scope_id: str, section: str) -> list
 def _markdown_table(claims: list[dict[str, Any]], labels: dict[str, str], include_rank: bool) -> str:
     if not claims:
         return f"_{labels['none']}_\n"
-    headers = ([labels["rank"]] if include_rank else []) + [labels["method"], labels["variant"], labels["score"], labels["evidence"], labels["notes"], "claim_id"]
+    headers = ([labels["rank"]] if include_rank else []) + [labels["method"], labels["variant"], labels["score"], labels["evidence"], labels["notes"], labels["claim_id"]]
     lines = ["| " + " | ".join(headers) + " |", "| " + " | ".join(["---"] * len(headers)) + " |"]
     for claim in claims:
         cells: list[Any] = []
@@ -486,7 +674,7 @@ def _markdown_table(claims: list[dict[str, Any]], labels: dict[str, str], includ
             cells.append(claim.get("rank"))
         cells.extend([
             claim["method"],
-            claim.get("variant"),
+            _display_value(claim.get("variant"), labels),
             claim["score_display"],
             ", ".join(claim["evidence_source_ids"]),
             claim.get("notes"),
@@ -496,47 +684,216 @@ def _markdown_table(claims: list[dict[str, Any]], labels: dict[str, str], includ
     return "\n".join(lines) + "\n"
 
 
+def _markdown_matrix(matrix: dict[str, Any]) -> str:
+    lines = [
+        "| " + " | ".join(_md_cell(column) for column in matrix["columns"]) + " |",
+        "| " + " | ".join(["---"] * len(matrix["columns"])) + " |",
+    ]
+    lines.extend("| " + " | ".join(_md_cell(cell) for cell in row) + " |" for row in matrix["rows"])
+    return "\n".join(lines) + "\n"
+
+
+def _brief_markdown_matrix(matrix: dict[str, Any], labels: dict[str, str]) -> str:
+    rows = matrix["rows"][:BRIEF_MATRIX_ROW_LIMIT]
+    compact = {**matrix, "rows": rows}
+    rendered = _markdown_matrix(compact)
+    if len(matrix["rows"]) > BRIEF_MATRIX_ROW_LIMIT:
+        rendered += f"\n_{labels['more_rows']} (+{len(matrix['rows']) - BRIEF_MATRIX_ROW_LIMIT})_\n"
+    return rendered
+
+
+def _brief_markdown_table(
+    claims: list[dict[str, Any]], labels: dict[str, str], include_rank: bool
+) -> str:
+    """Render a user-facing table without internal evidence or claim IDs."""
+    if not claims:
+        return f"_{labels['none']}_\n"
+    headers = ([labels["rank"]] if include_rank else []) + [
+        labels["method"], labels["variant"], labels["score"], labels["notes"]
+    ]
+    lines = [
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join(["---"] * len(headers)) + " |",
+    ]
+    for claim in claims:
+        cells: list[Any] = []
+        if include_rank:
+            cells.append(claim.get("rank"))
+        cells.extend([
+            claim["method"],
+            _display_value(claim.get("variant"), labels),
+            claim["score_display"],
+            claim.get("notes"),
+        ])
+        lines.append("| " + " | ".join(_md_cell(cell) for cell in cells) + " |")
+    return "\n".join(lines) + "\n"
+
+
+def _brief_conclusions(data: dict[str, Any], labels: dict[str, str]) -> list[str]:
+    explicit = data["research_run"].get("conclusions", [])
+    if explicit:
+        return [_text(item) for item in explicit if _text(item)]
+    scopes = data["scopes"]
+    if len(scopes) != 1:
+        return [labels["separate_scope_conclusion"]]
+    scope = scopes[0]
+    leaders = [
+        claim for claim in _claims_for_scope(data, scope["scope_id"], "main") if claim.get("sota")
+    ]
+    if not leaders:
+        return [f"{scope['name']}: {labels['none']}"]
+    methods = ", ".join(claim["method"] for claim in leaders)
+    scores = ", ".join(claim["score_display"] for claim in leaders)
+    return [f"{scope['name']}: {methods} — {scores} ({_metric_text(scope, labels)})"]
+
+
+def _brief_overview_table(
+    data: dict[str, Any], labels: dict[str, str], scopes: list[dict[str, Any]] | None = None
+) -> str:
+    headers = [labels["scope"], labels["metric"], labels["top_method"], labels["top_score"]]
+    lines = [
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join(["---"] * len(headers)) + " |",
+    ]
+    for scope in scopes if scopes is not None else data["scopes"]:
+        leaders = [
+            claim for claim in _claims_for_scope(data, scope["scope_id"], "main") if claim.get("sota")
+        ]
+        methods = ", ".join(claim["method"] for claim in leaders) or labels["none"]
+        scores = ", ".join(claim["score_display"] for claim in leaders) or labels["none"]
+        lines.append(
+            "| " + " | ".join(
+                _md_cell(cell) for cell in [scope["name"], _metric_text(scope, labels), methods, scores]
+            ) + " |"
+        )
+    return "\n".join(lines) + "\n"
+
+
 def render_brief_markdown(data: dict[str, Any]) -> str:
     run = data["research_run"]
     labels = _labels(run["language"])
-    lines = [f"# {labels['title']}: {run['topic']}", "", f"**{labels['cutoff']}: {run['evidence_checked_through']}**", ""]
+    lines = [
+        f"# {labels['title']}: {run['topic']}",
+        "",
+        f"## {labels['conclusion']}",
+        "",
+    ]
+    lines.extend(f"- {item}" for item in _brief_conclusions(data, labels))
+    matrix = data["coverage"].get("matrix")
+    use_matrix_as_overview = bool(
+        matrix and len(data["scopes"]) > BRIEF_OVERVIEW_SCOPE_LIMIT
+    )
+    overview_scopes = data["scopes"][:BRIEF_OVERVIEW_SCOPE_LIMIT]
+    overview = (
+        _brief_markdown_matrix(matrix, labels)
+        if use_matrix_as_overview
+        else _brief_overview_table(data, labels, overview_scopes)
+    )
+    lines.extend([
+        "",
+        f"**{labels['cutoff']}: {run['evidence_checked_through']}**",
+        "",
+        f"## {labels['overview']}",
+        "",
+        overview,
+    ])
+    if not use_matrix_as_overview and len(data["scopes"]) > BRIEF_OVERVIEW_SCOPE_LIMIT:
+        lines.append(
+            f"_{labels['more_rows']} (+{len(data['scopes']) - BRIEF_OVERVIEW_SCOPE_LIMIT} scopes)_\n"
+        )
+    if use_matrix_as_overview:
+        lines.extend(f"- {_text(note)}" for note in matrix.get("notes", []))
+        lines.append(f"\n_{labels['more_rows']}_\n")
+
+    brief_detail_rows = 0
     for scope in data["scopes"]:
-        lines.extend([f"## {scope['name']}", "", f"- {labels['metric']}: `{_metric_text(scope)}`"])
-        if scope.get("evaluation_protocol"):
-            lines.append(f"- Evaluation protocol: {_text(scope['evaluation_protocol'])}")
-        if scope.get("material_axes"):
-            axes = "; ".join(f"{_text(axis.get('name'))}={_text(axis.get('value'))}" for axis in scope["material_axes"])
-            lines.append(f"- Material axes: {axes}")
-        lines.extend(["", f"### {labels['main']}", "", _markdown_table(_claims_for_scope(data, scope["scope_id"], "main"), labels, True)])
-        reference = _claims_for_scope(data, scope["scope_id"], "reference")
-        if reference:
-            lines.extend([f"### {labels['reference']}", "", _markdown_table(reference, labels, False)])
-        unavailable = _claims_for_scope(data, scope["scope_id"], "unavailable")
-        if unavailable:
-            lines.extend([f"### {labels['unavailable']}", "", _markdown_table(unavailable, labels, False)])
-        sota_claims = [claim for claim in _claims_for_scope(data, scope["scope_id"], "main") if claim.get("sota")]
-        summaries = [claim for claim in sota_claims if _text(claim.get("method_summary"))]
-        if summaries:
-            lines.extend([f"### {labels['methods']}", ""])
-            for claim in summaries:
-                lines.append(f"- **{claim['method']}**: {_text(claim['method_summary'])} (`{claim['claim_id']}`)")
-            lines.append("")
-        scoped_conflicts = [conflict for conflict in data["conflicts"] if conflict["scope_id"] == scope["scope_id"]]
-        if scoped_conflicts:
-            lines.extend([f"### {labels['conflicts']}", ""])
-            for conflict in scoped_conflicts:
-                resolution = f" — {_text(conflict.get('resolution'))}" if _text(conflict.get("resolution")) else ""
-                lines.append(f"- **{conflict['status']}**: {conflict['summary']}{resolution} (`{conflict['conflict_id']}`)")
-            lines.append("")
-    lines.extend([f"## {labels['coverage']}", "", f"- {labels['stop']}: {_text(data['coverage']['stop_reason'])}"])
-    for gap in data["coverage"].get("gaps", []):
-        lines.append(f"- {labels['gaps']}: {_text(gap)}")
-    if data.get("validation_warnings"):
+        main_count = len(_claims_for_scope(data, scope["scope_id"], "main"))
+        reference_count = len(_claims_for_scope(data, scope["scope_id"], "reference"))
+        scored_count = main_count + reference_count
+        if scored_count <= BRIEF_COMPLETE_SCOPE_ROW_LIMIT:
+            brief_detail_rows += scored_count
+        else:
+            brief_detail_rows += min(main_count, BRIEF_MAIN_ROW_LIMIT)
+            brief_detail_rows += min(reference_count, BRIEF_REFERENCE_ROW_LIMIT)
+        brief_detail_rows += min(
+            len(_claims_for_scope(data, scope["scope_id"], "unavailable")), 1
+        )
+    render_scope_details = (
+        len(data["scopes"]) <= BRIEF_DETAILED_SCOPE_LIMIT
+        and brief_detail_rows <= BRIEF_DETAIL_ROW_BUDGET
+    )
+    if render_scope_details:
+        for scope in data["scopes"]:
+            main = _claims_for_scope(data, scope["scope_id"], "main")
+            reference = _claims_for_scope(data, scope["scope_id"], "reference")
+            unavailable = _claims_for_scope(data, scope["scope_id"], "unavailable")
+            complete_scope = len(main) + len(reference) <= BRIEF_COMPLETE_SCOPE_ROW_LIMIT
+            main_limit = len(main) if complete_scope else BRIEF_MAIN_ROW_LIMIT
+            reference_limit = len(reference) if complete_scope else BRIEF_REFERENCE_ROW_LIMIT
+            unavailable_limit = len(unavailable) if complete_scope else BRIEF_REFERENCE_ROW_LIMIT
+            scoped_conflicts = [
+                conflict for conflict in data["conflicts"] if conflict["scope_id"] == scope["scope_id"]
+            ]
+            if len(main) <= 1 and not reference and not unavailable and not scoped_conflicts:
+                continue
+            lines.extend([f"## {scope['name']}", "", f"- {labels['metric']}: `{_metric_text(scope, labels)}`"] )
+            if scope.get("evaluation_protocol"):
+                lines.append(f"- {labels['evaluation_protocol']}: {_text(scope['evaluation_protocol'])}")
+            if scope.get("material_axes"):
+                axes = "; ".join(
+                    f"{_text(axis.get('name'))}={_text(axis.get('value'))}"
+                    for axis in scope["material_axes"]
+                )
+                lines.append(f"- {labels['material_axes']}: {axes}")
+            if main:
+                lines.extend([
+                    "", f"### {labels['main']}", "",
+                    _brief_markdown_table(main[:main_limit], labels, True),
+                ])
+                if len(main) > main_limit:
+                    lines.append(f"_{labels['more_rows']} (+{len(main) - main_limit})_\n")
+            if reference:
+                lines.extend([
+                    f"### {labels['reference']}", "",
+                    _brief_markdown_table(reference[:reference_limit], labels, False),
+                ])
+                if len(reference) > reference_limit:
+                    lines.append(f"_{labels['more_rows']} (+{len(reference) - reference_limit})_\n")
+            if unavailable:
+                names = ", ".join(claim["method"] for claim in unavailable[:unavailable_limit])
+                suffix = f" (+{len(unavailable) - unavailable_limit})" if len(unavailable) > unavailable_limit else ""
+                lines.extend([f"### {labels['unavailable']}", "", f"- {names}{suffix}", ""] )
+            summaries = [claim for claim in main if claim.get("sota") and _text(claim.get("method_summary"))]
+            if summaries:
+                lines.extend([f"### {labels['methods']}", ""] )
+                for claim in summaries[:2]:
+                    lines.append(f"- **{claim['method']}**: {_text(claim['method_summary'])}")
+                lines.append("")
+
+    hidden_scope_details = any(
+        len(_claims_for_scope(data, scope["scope_id"], "main")) > 1
+        or bool(_claims_for_scope(data, scope["scope_id"], "reference"))
+        or bool(_claims_for_scope(data, scope["scope_id"], "unavailable"))
+        or any(conflict["scope_id"] == scope["scope_id"] for conflict in data["conflicts"])
+        for scope in data["scopes"]
+    )
+    if not render_scope_details and not use_matrix_as_overview and hidden_scope_details:
+        lines.append(f"_{labels['more_rows']}_\n")
+
+    if matrix and not use_matrix_as_overview:
+        lines.extend([f"## {matrix['title']}", "", _brief_markdown_matrix(matrix, labels)])
+        lines.extend(f"- {_text(note)}" for note in matrix.get("notes", []))
         lines.append("")
-        lines.append("### Validation warnings")
-        for warning in data["validation_warnings"]:
-            lines.append(f"- {warning}")
-    lines.append("")
+
+    notes: list[str] = []
+    for conflict in data["conflicts"]:
+        resolution = f" — {_text(conflict.get('resolution'))}" if _text(conflict.get("resolution")) else ""
+        notes.append(f"{conflict['summary']}{resolution}")
+    notes.extend(_text(gap) for gap in data["coverage"].get("gaps", []) if _text(gap))
+    if notes:
+        lines.extend([f"## {labels['key_notes']}", ""] )
+        lines.extend(f"- {note}" for note in notes)
+        lines.append("")
     return "\n".join(lines)
 
 
@@ -549,7 +906,7 @@ def _source_links(source_ids: Iterable[str], source_by_id: dict[str, dict[str, A
     return ", ".join(links) or "—"
 
 
-def _html_claim_rows(claims: list[dict[str, Any]], source_by_id: dict[str, dict[str, Any]], include_rank: bool) -> str:
+def _html_claim_rows(claims: list[dict[str, Any]], labels: dict[str, str], source_by_id: dict[str, dict[str, Any]], include_rank: bool) -> str:
     rows: list[str] = []
     for claim in claims:
         searchable = " ".join([claim["method"], _text(claim.get("variant")), claim["score_display"], _text(claim.get("notes")), claim["claim_id"]]).casefold()
@@ -558,9 +915,9 @@ def _html_claim_rows(claims: list[dict[str, Any]], source_by_id: dict[str, dict[
             cells.append(f'<td data-sort="{claim.get("rank", 999999)}">{claim.get("rank", "—")}</td>')
         cells.extend([
             f"<td><strong>{html.escape(claim['method'])}</strong></td>",
-            f"<td>{html.escape(_text(claim.get('variant'), '—'))}</td>",
+            f"<td>{html.escape(_text(_display_value(claim.get('variant'), labels), '—'))}</td>",
             f'<td data-sort="{claim.get("score_numeric", "")}">{html.escape(claim["score_display"])}</td>',
-            f"<td>{html.escape(_setting_text(claim.get('setting', {})) or '—')}</td>",
+            f"<td>{html.escape(_setting_text(claim.get('setting', {}), labels) or '—')}</td>",
             f"<td>{_source_links(claim['evidence_source_ids'], source_by_id)}</td>",
             f"<td>{html.escape(_text(claim.get('notes'), '—'))}</td>",
             f"<td><code>{html.escape(claim['claim_id'])}</code></td>",
@@ -572,9 +929,19 @@ def _html_claim_rows(claims: list[dict[str, Any]], source_by_id: dict[str, dict[
 def _html_table(claims: list[dict[str, Any]], labels: dict[str, str], source_by_id: dict[str, dict[str, Any]], include_rank: bool) -> str:
     if not claims:
         return f"<p><em>{html.escape(labels['none'])}</em></p>"
-    headers = ([labels["rank"]] if include_rank else []) + [labels["method"], labels["variant"], labels["score"], "Setting", labels["evidence"], labels["notes"], "claim_id"]
+    headers = ([labels["rank"]] if include_rank else []) + [labels["method"], labels["variant"], labels["score"], labels["setting"], labels["evidence"], labels["notes"], labels["claim_id"]]
     head = "".join(f'<th tabindex="0">{html.escape(header)}</th>' for header in headers)
-    return f'<div class="table-wrap"><table class="sortable"><thead><tr>{head}</tr></thead><tbody>{_html_claim_rows(claims, source_by_id, include_rank)}</tbody></table></div>'
+    return f'<div class="table-wrap"><table class="sortable"><thead><tr>{head}</tr></thead><tbody>{_html_claim_rows(claims, labels, source_by_id, include_rank)}</tbody></table></div>'
+
+
+def _html_matrix(matrix: dict[str, Any]) -> str:
+    head = "".join(f'<th tabindex="0">{html.escape(column)}</th>' for column in matrix["columns"])
+    rows = []
+    for row in matrix["rows"]:
+        searchable = " ".join(row).lower()
+        cells = "".join(f"<td>{html.escape(cell or '—')}</td>" for cell in row)
+        rows.append(f'<tr data-search="{html.escape(searchable)}">{cells}</tr>')
+    return f'<div class="table-wrap"><table class="sortable"><thead><tr>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
 
 
 def render_full_html(data: dict[str, Any]) -> str:
@@ -582,6 +949,13 @@ def render_full_html(data: dict[str, Any]) -> str:
     labels = _labels(run["language"])
     source_by_id = {source["source_id"]: source for source in data["sources"]}
     toc = "".join(f'<li><a href="#{html.escape(scope["scope_id"])}">{html.escape(scope["name"])}</a></li>' for scope in data["scopes"])
+    matrix = data["coverage"].get("matrix")
+    matrix_section = ""
+    if matrix:
+        toc += f'<li><a href="#coverage-matrix">{html.escape(matrix["title"])}</a></li>'
+        notes = "".join(f"<li>{html.escape(note)}</li>" for note in matrix.get("notes", []))
+        note_html = f"<ul>{notes}</ul>" if notes else ""
+        matrix_section = f'<section id="coverage-matrix"><h2>{html.escape(matrix["title"])}</h2>{_html_matrix(matrix)}{note_html}</section>'
     scope_sections: list[str] = []
     for scope in data["scopes"]:
         axes = "".join(f"<li><code>{html.escape(_text(axis.get('name')))}</code>: {html.escape(_text(axis.get('value')))}</li>" for axis in scope.get("material_axes", [])) or f"<li>{html.escape(labels['none'])}</li>"
@@ -590,15 +964,15 @@ def render_full_html(data: dict[str, Any]) -> str:
         unavailable = _claims_for_scope(data, scope["scope_id"], "unavailable")
         methods = "".join(f'<article class="method"><h4>{html.escape(claim["method"])}</h4><p>{html.escape(_text(claim.get("method_summary"), labels["none"]))}</p><code>{html.escape(claim["claim_id"])}</code></article>' for claim in main if claim.get("sota"))
         conflicts = [conflict for conflict in data["conflicts"] if conflict["scope_id"] == scope["scope_id"]]
-        conflict_html = "".join(f'<li><strong>{html.escape(conflict["status"])}</strong>: {html.escape(conflict["summary"])}{(" — " + html.escape(_text(conflict.get("resolution")))) if _text(conflict.get("resolution")) else ""} <code>{html.escape(conflict["conflict_id"])}</code></li>' for conflict in conflicts) or f"<li>{html.escape(labels['none'])}</li>"
+        conflict_html = "".join(f'<li><strong>{html.escape(_text(_display_value(conflict["status"], labels)))}</strong>: {html.escape(conflict["summary"])}{(" — " + html.escape(_text(conflict.get("resolution")))) if _text(conflict.get("resolution")) else ""} <code>{html.escape(conflict["conflict_id"])}</code></li>' for conflict in conflicts) or f"<li>{html.escape(labels['none'])}</li>"
         scope_sections.append(f'''
 <section id="{html.escape(scope['scope_id'])}">
   <h2>{html.escape(scope['name'])}</h2>
   <div class="scope-grid">
-    <p><strong>{html.escape(labels['metric'])}:</strong> {html.escape(_metric_text(scope))}</p>
-    <p><strong>Protocol:</strong> {html.escape(_text(scope.get('evaluation_protocol'), '—'))}</p>
+    <p><strong>{html.escape(labels['metric'])}:</strong> {html.escape(_metric_text(scope, labels))}</p>
+    <p><strong>{html.escape(labels['evaluation_protocol'])}:</strong> {html.escape(_text(scope.get('evaluation_protocol'), '—'))}</p>
   </div>
-  <details><summary>Material comparison axes</summary><ul>{axes}</ul></details>
+  <details><summary>{html.escape(labels['material_axes'])}</summary><ul>{axes}</ul></details>
   <h3>{html.escape(labels['main'])}</h3>{_html_table(main, labels, source_by_id, True)}
   <details><summary>{html.escape(labels['reference'])} ({len(reference)})</summary>{_html_table(reference, labels, source_by_id, False)}</details>
   <details><summary>{html.escape(labels['unavailable'])} ({len(unavailable)})</summary>{_html_table(unavailable, labels, source_by_id, False)}</details>
@@ -635,6 +1009,7 @@ details{{margin:16px 0;padding:10px 14px;border:1px solid var(--line);border-rad
 <nav><strong>Contents</strong><ul>{toc}<li><a href="#coverage">{html.escape(labels['coverage'])}</a></li><li><a href="#sources">{html.escape(labels['sources'])}</a></li></ul></nav>
 <div class="filter"><label>{html.escape(labels['filter'])}: <input id="filter" type="search" placeholder="method, score, claim ID..."></label></div>
 {''.join(scope_sections)}
+{matrix_section}
 <section id="coverage"><h2>{html.escape(labels['coverage'])}</h2><p><strong>{html.escape(labels['stop'])}:</strong> {html.escape(_text(data['coverage']['stop_reason']))}</p><h3>{html.escape(labels['gaps'])}</h3><ul>{gaps}</ul><details><summary>Validation warnings</summary><ul>{warnings}</ul></details></section>
 <section id="sources"><h2>{html.escape(labels['sources'])}</h2>{sources_html}</section>
 <footer>run_id: <code>{html.escape(run['run_id'])}</code> · schema: <code>{SCHEMA_VERSION}</code> · generated: {html.escape(run['generated_at'])}</footer>
@@ -676,6 +1051,7 @@ def render_workbook(data: dict[str, Any], path: Path) -> None:
     unavailable_fill = PatternFill("solid", fgColor="F4CCCC")
     used_titles: set[str] = set()
     source_by_id = {source["source_id"]: source for source in data["sources"]}
+    labels = _labels(data["research_run"]["language"])
 
     def style_sheet(ws: Any, widths: dict[int, int]) -> None:
         ws.freeze_panes = "A2"
@@ -690,10 +1066,23 @@ def render_workbook(data: dict[str, Any], path: Path) -> None:
             for cell in row:
                 cell.alignment = Alignment(vertical="top", wrap_text=True)
 
-    index = workbook.create_sheet("Index")
-    used_titles.add("Index")
-    index_headers = ["Scope", "Task", "Benchmark", "Metric", "Direction", "Main Results", "Reference Results", "Top Method", "Top Score", "Sheet", "Scope ID"]
+    index = workbook.create_sheet(labels["index_sheet"])
+    used_titles.add(labels["index_sheet"])
+    index_headers = [labels[key] for key in ("scope", "task", "benchmark", "metric", "direction", "main_results", "reference_results", "top_method", "top_score", "sheet", "scope_id")]
     index.append(index_headers)
+
+    matrix = data["coverage"].get("matrix")
+    if matrix:
+        matrix_title = _sheet_title(matrix["title"], used_titles)
+        matrix_ws = workbook.create_sheet(matrix_title)
+        matrix_ws.append(matrix["columns"])
+        for row in matrix["rows"]:
+            matrix_ws.append(row)
+        widths = {
+            index: min(40, max(14, max(len(_text(row[index - 1])) for row in [matrix["columns"], *matrix["rows"]]) + 2))
+            for index in range(1, len(matrix["columns"]) + 1)
+        }
+        style_sheet(matrix_ws, widths)
 
     for scope in data["scopes"]:
         title = _sheet_title(scope["name"], used_titles)
@@ -702,11 +1091,11 @@ def render_workbook(data: dict[str, Any], path: Path) -> None:
         reference = [claim for claim in claims if claim["section"] == "reference"]
         top = [claim for claim in main if claim.get("sota")]
         index.append([
-            scope["name"], scope["task"], scope.get("benchmark"), _metric_text(scope), scope["metric"]["direction"], len(main), len(reference),
+            scope["name"], scope["task"], scope.get("benchmark"), _metric_text(scope, labels), _display_value(scope["metric"]["direction"], labels), len(main), len(reference),
             "; ".join(claim["method"] for claim in top), "; ".join(claim["score_display"] for claim in top), title, scope["scope_id"],
         ])
         ws = workbook.create_sheet(title)
-        headers = ["Rank", "Category", "Method", "Variant", "Score Numeric", "Score Display", "Paper / Result", "Year", "Setting", "Comparable", "SOTA", "Claim ID", "Evidence Source IDs", "Evidence URL", "Notes"]
+        headers = [labels[key] for key in ("rank", "category", "method", "variant", "score_numeric", "score_display", "paper_result", "year", "setting", "comparable", "sota", "claim_id", "evidence_source_ids", "evidence_url", "notes")]
         ws.append(headers)
         for claim in claims:
             first_url = ""
@@ -716,8 +1105,8 @@ def render_workbook(data: dict[str, Any], path: Path) -> None:
                     first_url = url
                     break
             ws.append([
-                claim.get("rank"), claim["section"], claim["method"], claim.get("variant"), claim.get("score_numeric"), claim["score_display"],
-                claim.get("paper_title"), claim.get("year"), _setting_text(claim.get("setting", {})), claim["comparability_complete"], claim["sota"],
+                claim.get("rank"), _display_value(claim["section"], labels), claim["method"], _display_value(claim.get("variant"), labels), claim.get("score_numeric"), claim["score_display"],
+                claim.get("paper_title"), claim.get("year"), _setting_text(claim.get("setting", {}), labels), _display_value(claim["comparability_complete"], labels), _display_value(claim["sota"], labels),
                 claim["claim_id"], ", ".join(claim["evidence_source_ids"]), first_url, claim.get("notes"),
             ])
             row = ws.max_row
@@ -746,13 +1135,43 @@ def _next_available_dir(base: Path) -> Path:
 
 
 def build_artifacts(data: dict[str, Any], output_root: Path | None = None, output_dir: Path | None = None) -> Path:
-    """Write all artifacts through a staging directory and return the allocated run directory."""
+    """Write all artifacts through staging and return the one final run directory."""
     _require((output_root is None) != (output_dir is None), "Provide exactly one of output_root or output_dir")
     if output_dir is not None:
         base = output_dir
+        # An explicit output directory is the single final destination for a
+        # run. Refuse accidental repeat builds instead of silently allocating
+        # bundle-2, which makes contradictory artifacts easy to deliver.
+        if base.exists() and any((base / name).exists() for name in DEFAULT_ARTIFACTS):
+            raise ContractError(
+                f"Refusing to build into an existing artifact directory: {base}. "
+                "Choose a new directory only for a separate research run."
+            )
+        # Also catch a model that changes only the directory name after an
+        # earlier build. A repeated run_id in sibling bundles is still one
+        # research run, not a new version. Keep output_root versioning intact
+        # for callers that intentionally start a separate run.
+        run_id = data["research_run"]["run_id"]
+        if base.parent.exists():
+            for sibling in base.parent.iterdir():
+                if sibling == base or not sibling.is_dir():
+                    continue
+                evidence_path = sibling / "evidence.json"
+                if not evidence_path.is_file():
+                    continue
+                try:
+                    prior = json.loads(evidence_path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    continue
+                if prior.get("research_run", {}).get("run_id") == run_id:
+                    raise ContractError(
+                        f"A bundle for run_id {run_id!r} already exists beside {base}: {sibling}. "
+                        "Reuse that bundle or choose a new run_id for a separate research run."
+                    )
+        target = base
     else:
         base = output_root / data["research_run"]["topic_slug"]
-    target = _next_available_dir(base)
+        target = _next_available_dir(base)
     target.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".sota-finder-", dir=target.parent))
     try:
@@ -789,7 +1208,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--input", required=True, type=Path, help="Prepared research-input JSON")
     destination = parser.add_mutually_exclusive_group()
     destination.add_argument("--output-root", type=Path, default=Path("outputs"), help="Root for outputs/<topic-slug>/ (default: outputs)")
-    destination.add_argument("--output-dir", type=Path, help="Explicit run directory; suffixes are still used to avoid overwrite")
+    destination.add_argument("--output-dir", type=Path, help="Explicit single final run directory; repeat builds for the same run_id are rejected")
     parser.add_argument("--validate-only", action="store_true", help="Normalize and validate without writing artifacts")
     return parser
 

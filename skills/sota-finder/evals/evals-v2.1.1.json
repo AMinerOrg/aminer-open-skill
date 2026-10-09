@@ -1,0 +1,1493 @@
+{
+  "skill_name": "sota-finder",
+  "suite_version": "2.1.1",
+  "suite_name": "Chinese-first real-user practical evaluation suite",
+  "case_count": 36,
+  "evaluation_date": "2026-09-08",
+  "design_principles": [
+    "Chinese prompts are the default language; English cases are retained as a cross-language control.",
+    "Cases model real users, roles, decisions, constraints, and deliverables rather than only adversarial rubric traps.",
+    "Live-web cases measure practical research judgment; deterministic cases measure reproducible scope and artifact behavior.",
+    "The host model may choose a reasonable workflow; evaluation focuses on user-visible outcomes, evidence, comparability, and practical usefulness.",
+    "Route research effort independently from boundary behavior: direct, quick, standard, or deep.",
+    "Reward useful candidate coverage, plain language, and timely completion; do not reward audit volume by itself."
+  ],
+  "categories": [
+    "routing-input",
+    "scope-comparability",
+    "evidence-integrity",
+    "discovery-coverage",
+    "robustness-aminer",
+    "artifact-delivery"
+  ],
+  "modes": [
+    "live_web",
+    "offline_fixture",
+    "behavioral",
+    "aminer_optional"
+  ],
+  "must_pass_ids": [
+    1,
+    2,
+    7,
+    13,
+    14,
+    19,
+    21,
+    25,
+    27,
+    31,
+    32,
+    36
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "name": "中文：最新官方 SWE-bench Verified 榜单",
+      "category": "routing-input",
+      "mode": "live_web",
+      "difficulty": "basic",
+      "prompt": "我在做代码智能体调研，请用中文帮我整理截至今天的 SWE-bench Verified 最新 Leaderboard。主榜只放官方评测或可由原始论文/作者仓库核验的结果，论文和仓库自报但设置不同的结果请单列。",
+      "prompt_language": "zh",
+      "user_role": "科研人员",
+      "user_goal": "确认最新官方结果",
+      "real_user_scenario": true,
+      "scenario_zh": "写综述前核对代码智能体 benchmark 的当前领先方法。",
+      "task_summary_zh": "研究员需要在写综述或技术报告前确认一个真实 benchmark 的最新官方结果，并区分官方榜与自报结果。",
+      "expected_output": "使用绝对截止日期；官方榜或 benchmark 文档锚定主榜；检索论文、预印本和作者仓库交叉核对；不同设置的自报结果独立列出；给出实用的最小主榜和四件套链接；先用自然、简洁的中文给出完整可用榜单，不用审计术语淹没结果",
+      "files": [],
+      "expectations": [
+        "使用绝对截止日期",
+        "官方榜或 benchmark 文档锚定主榜",
+        "检索论文、预印本和作者仓库交叉核对",
+        "不同设置的自报结果独立列出",
+        "给出实用的最小主榜和四件套链接",
+        "先用自然、简洁的中文给出完整可用榜单，不用审计术语淹没结果"
+      ],
+      "failure_conditions": [
+        "仅凭聚合站宣布最新冠军",
+        "把不同设置的自报结果混入官方主榜",
+        "没有绝对截止日期",
+        "因过度核验或解释只留下过少榜单行"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "latest",
+        "official-source",
+        "research-report"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "simple_daily"
+    },
+    {
+      "id": 2,
+      "name": "中文：无统一 benchmark 的长文档 RAG 调研",
+      "category": "routing-input",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "这个方向没有统一官方 benchmark。我想评估长文档 RAG 的引用忠实性，准备给团队选 baseline。请广泛搜索论文、预印本、项目仓库和聚合站，做一个面向实践的参考 Leaderboard，并明确哪些结果不能直接比较。",
+      "prompt_language": "zh",
+      "user_role": "应用研究员",
+      "user_goal": "选择可复现 baseline",
+      "real_user_scenario": true,
+      "scenario_zh": "为长文档 RAG 项目建立可执行的 baseline 候选池。",
+      "task_summary_zh": "应用研究团队需要在没有统一官方榜的开放领域中选 baseline，依靠多来源检索和范围拆分形成可用参考。",
+      "expected_output": "明确没有统一官方 benchmark；覆盖论文、预印本、仓库和聚合站；按任务/数据集/指标/设置拆分范围；把参考榜与已核验主结果区分；给出覆盖缺口、不可访问来源和截止日期；在广泛探索前后都优先维护一个可交付的核心候选榜",
+      "files": [],
+      "expectations": [
+        "明确没有统一官方 benchmark",
+        "覆盖论文、预印本、仓库和聚合站",
+        "按任务/数据集/指标/设置拆分范围",
+        "把参考榜与已核验主结果区分",
+        "给出覆盖缺口、不可访问来源和截止日期",
+        "在广泛探索前后都优先维护一个可交付的核心候选榜"
+      ],
+      "failure_conditions": [
+        "把参考榜包装成官方榜",
+        "只查一个来源类型",
+        "把不同指标或任务强行排成一个冠军",
+        "把时间耗尽在搜索或证据审计上而未完成榜单"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "no-official-benchmark",
+        "broad-search",
+        "baseline-selection"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 3,
+      "name": "中文：基于候选论文选择研究 baseline",
+      "category": "routing-input",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "我已经初步收集了几篇关于文档问答的论文，但不确定应该选哪篇作为复现实验 baseline。请帮我核对它们的 benchmark、split、指标、模型规模、是否使用外部数据和代码可用性，再给出适合实践的分范围排名。",
+      "prompt_language": "zh",
+      "user_role": "科研人员",
+      "user_goal": "选择可复现基线",
+      "real_user_scenario": true,
+      "scenario_zh": "从候选论文推进到复现实验方案。",
+      "task_summary_zh": "研究者从若干候选论文出发，需要核对实验条件并决定可复现的 baseline，而不是只比较论文中的最大数字。",
+      "expected_output": "围绕用户决策核对比较轴；优先确认原始论文和代码；将不可比设置拆分；同时记录复现可用性和证据缺口；给出选择建议而非只输出数字",
+      "files": [],
+      "expectations": [
+        "围绕用户决策核对比较轴",
+        "优先确认原始论文和代码",
+        "将不可比设置拆分",
+        "同时记录复现可用性和证据缺口",
+        "给出选择建议而非只输出数字"
+      ],
+      "failure_conditions": [
+        "只按分数排序",
+        "忽略代码或评测设置差异",
+        "把无法核验的论文结果当成确定事实"
+      ],
+      "tags": [
+        "zh",
+        "baseline-selection",
+        "reproducibility",
+        "paper-comparison"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 4,
+      "name": "中文：普通论文元数据查询",
+      "category": "routing-input",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "我只想知道论文《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》的 DOI 和正式发表年份，不需要排行榜、研究报告或四件套文件。",
+      "prompt_language": "zh",
+      "user_role": "学生",
+      "user_goal": "查询论文元数据",
+      "real_user_scenario": true,
+      "scenario_zh": "快速确认论文引用信息。",
+      "task_summary_zh": "测试真实用户的简单书目信息查询，确保 Skill 不会把所有学术问题都误判成排行榜任务。",
+      "expected_output": "识别为普通元数据查询；用中文简洁回答；不构造 Leaderboard；不生成无关四件套",
+      "files": [],
+      "expectations": [
+        "识别为普通元数据查询",
+        "用中文简洁回答",
+        "不构造 Leaderboard",
+        "不生成无关四件套"
+      ],
+      "failure_conditions": [
+        "启动完整 SOTA 检索",
+        "虚构排行榜",
+        "生成无关文件"
+      ],
+      "tags": [
+        "zh",
+        "negative-routing",
+        "bibliographic-lookup"
+      ],
+      "workflow_tier": "direct",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 5,
+      "name": "English: update an old leaderboard seed",
+      "category": "routing-input",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "I maintain a small internal benchmark tracker. Use the supplied CSV as a seed, explain which rows are not comparable, and outline how you would update it with current official, paper, repository, and aggregator evidence without silently replacing the historical entries.",
+      "prompt_language": "en",
+      "user_role": "benchmark maintainer",
+      "user_goal": "plan a leaderboard update",
+      "real_user_scenario": true,
+      "scenario_zh": "维护内部实验跟踪表并准备下一轮公开检索。",
+      "task_summary_zh": "测试团队维护历史榜单时如何把旧 CSV 作为种子而非权威，并规划后续更新。",
+      "expected_output": "解析 supplied CSV；识别 version/split/source-quality 差异；保留历史行；提出开放检索更新计划；不把旧 CSV 直接当作当前主榜",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "解析 supplied CSV",
+        "识别 version/split/source-quality 差异",
+        "保留历史行",
+        "提出开放检索更新计划",
+        "不把旧 CSV 直接当作当前主榜"
+      ],
+      "failure_conditions": [
+        "删除历史记录",
+        "混合不可比行",
+        "声称已经完成当前开放检索"
+      ],
+      "tags": [
+        "en",
+        "historical-update",
+        "seed-data"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "simple_daily"
+    },
+    {
+      "id": 6,
+      "name": "中文：面向部署的代码修复模型选型",
+      "category": "routing-input",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "我们要在单张 24GB 显卡上部署代码修复模型，重点关注 SWE-bench 类任务的效果、显存/推理成本、许可证和是否能复现。请搜索近期论文和公开仓库，给出适合工程落地的候选榜，而不是只按最高分排序。",
+      "prompt_language": "zh",
+      "user_role": "工程师",
+      "user_goal": "选择可部署模型",
+      "real_user_scenario": true,
+      "scenario_zh": "为有限 GPU 预算选择代码修复模型。",
+      "task_summary_zh": "工程团队需要在质量、资源、许可证和可复现性之间做选型，排行榜应服务于部署决策。",
+      "expected_output": "把质量与部署约束分开记录；核查许可证、资源、代码和评测设置；保留不可比或证据不足候选；给出按场景的推荐而不是单一分数冠军",
+      "files": [],
+      "expectations": [
+        "把质量与部署约束分开记录",
+        "核查许可证、资源、代码和评测设置",
+        "保留不可比或证据不足候选",
+        "给出按场景的推荐而不是单一分数冠军"
+      ],
+      "failure_conditions": [
+        "只按 benchmark 分数排序",
+        "忽略许可证或资源约束",
+        "把自报结果当成可复现工程结论"
+      ],
+      "tags": [
+        "zh",
+        "deployment-selection",
+        "engineering",
+        "resource-constrained"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 7,
+      "name": "中文：限定 SyntheticBench v1.0 test 主榜",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "只使用提供的 CSV，为 SyntheticBench 1.0 的 test split 按 accuracy 建一个主榜。dev、v2.0 和只有聚合站来源的结果不要混入主榜，但要在参考或排除说明中保留。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "科研人员",
+      "user_goal": "确认限定范围内的 SOTA",
+      "real_user_scenario": true,
+      "scenario_zh": "核对内部 benchmark 结果后形成干净主榜。",
+      "task_summary_zh": "测试研究者明确限定 benchmark、版本和 split 后，系统是否只在可比范围内排序并保留排除信息。",
+      "expected_output": "仅使用本地 CSV；主榜仅含 v1.0/test/accuracy；dev 和 v2.0 不混排；aggregator-only 行保留为参考；中文解释排除原因",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "仅使用本地 CSV",
+        "主榜仅含 v1.0/test/accuracy",
+        "dev 和 v2.0 不混排",
+        "aggregator-only 行保留为参考",
+        "中文解释排除原因"
+      ],
+      "failure_conditions": [
+        "将 dev/v2.0 混进主榜",
+        "把聚合站行当作已核验冠军",
+        "无解释删除排除行",
+        "联网"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "fixture",
+        "scope-lock",
+        "split",
+        "version"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "simple_daily"
+    },
+    {
+      "id": 8,
+      "name": "中文：团队选型中的质量与延迟不能混成一榜",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "我们要为线上问答服务选模型。请使用给定 JSON，分别整理质量和 batch size=1 的延迟结果，并说明为什么不能用一个“总分”把两者直接合并；聚合站只有一个质量数字的候选也请保留为待核验参考。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "工程师",
+      "user_goal": "做质量-延迟选型",
+      "real_user_scenario": true,
+      "scenario_zh": "为线上服务准备候选模型对比表。",
+      "task_summary_zh": "测试实际工程选型中多指标、多范围和证据等级的同时呈现。",
+      "expected_output": "分别建立质量和延迟范围；正确处理 higher/lower direction；保留 aggregator-only 候选；说明不能直接合成单一总分；只使用本地 JSON",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "分别建立质量和延迟范围",
+        "正确处理 higher/lower direction",
+        "保留 aggregator-only 候选",
+        "说明不能直接合成单一总分",
+        "只使用本地 JSON"
+      ],
+      "failure_conditions": [
+        "把质量和延迟混成单一排序",
+        "方向处理错误",
+        "丢弃待核验候选",
+        "联网"
+      ],
+      "tags": [
+        "zh",
+        "fixture",
+        "deployment",
+        "quality-latency",
+        "metric-direction"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 9,
+      "name": "中文：根据用户提供资料拆分闭卷与检索增强榜",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "我把目前收集到的候选结果放在附件资料里，准备为项目选择 baseline。请只依据这个文件，不要联网：分别整理标准闭卷主榜、使用检索工具和外部语料的参考范围，以及无法核验的聚合站记录。请告诉我在当前资料下推荐哪一个闭卷 baseline，并说明为什么不能直接把分数最高的结果称为总冠军。",
+      "prompt_language": "zh",
+      "user_role": "应用研究员",
+      "user_goal": "选择公平 baseline",
+      "real_user_scenario": true,
+      "scenario_zh": "用户已经整理了一份候选资料，希望在不引入外部信息的情况下为后续实验确定公平 baseline。",
+      "task_summary_zh": "测试真实用户上传候选资料后，Skill 能否在闭卷、检索增强和聚合站参考范围之间保持可比性与证据边界。",
+      "expected_output": "识别 tool access 和 external corpus 为 material axes；闭卷主榜与检索增强范围分开；聚合站记录置于待核验参考；解释不存在跨设置统一冠军",
+      "files": [
+        "evals/fixtures/closed_source_dossier.md"
+      ],
+      "expectations": [
+        "识别 tool access 和 external corpus 为 material axes",
+        "闭卷主榜与检索增强范围分开",
+        "聚合站记录置于待核验参考",
+        "解释不存在跨设置统一冠军"
+      ],
+      "failure_conditions": [
+        "直接把 B 称为总冠军",
+        "隐藏外部语料差异",
+        "把聚合站记录放进已核验主榜"
+      ],
+      "tags": [
+        "zh",
+        "fixture",
+        "closed-book",
+        "tool-access",
+        "external-data",
+        "baseline-selection"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 10,
+      "name": "English: compare multiple benchmark tracks",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "Use the supplied mixed-scope result file for an engineering review. Keep quality and latency tracks separate, preserve the metric direction, and make it obvious which rows are verified, reference-only, or unavailable.",
+      "prompt_language": "en",
+      "user_role": "engineering reviewer",
+      "user_goal": "review benchmark tracks",
+      "real_user_scenario": true,
+      "scenario_zh": "为模型上线评审整理质量和延迟两类证据。",
+      "task_summary_zh": "测试英文用户在工程评审中对多 track 结果的范围隔离和证据分层需求。",
+      "expected_output": "Keep quality and latency scopes separate; preserve higher/lower direction; label main/reference/unavailable; retain stable claim and source links",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "Keep quality and latency scopes separate",
+        " preserve higher/lower direction",
+        " label main/reference/unavailable",
+        " retain stable claim and source links"
+      ],
+      "failure_conditions": [
+        "Flatten tracks into one ranking",
+        " reverse metric direction",
+        " hide reference-only rows"
+      ],
+      "tags": [
+        "en",
+        "fixture",
+        "multi-track",
+        "engineering-review"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 11,
+      "name": "中文：指标方向与并列结果的实际解释",
+      "category": "scope-comparability",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "请使用给定 JSON 生成质量榜和延迟榜。质量越高越好、延迟越低越好；如果质量相同请并列，不要为了给出唯一冠军而任意打破平局。",
+      "prompt_language": "zh",
+      "user_role": "科研助理",
+      "user_goal": "整理可读的实验榜单",
+      "real_user_scenario": true,
+      "scenario_zh": "给实验会议准备一页质量和延迟对比。",
+      "task_summary_zh": "测试常见指标方向和并列处理，避免用户将技术榜单误读为伪精确的单一冠军。",
+      "expected_output": "正确处理两个指标方向；质量并列保留并列；延迟独立排序；结果带有证据和范围说明",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "正确处理两个指标方向",
+        "质量并列保留并列",
+        "延迟独立排序",
+        "结果带有证据和范围说明"
+      ],
+      "failure_conditions": [
+        "把延迟按高分排序",
+        "任意打破质量并列",
+        "忽略范围说明"
+      ],
+      "tags": [
+        "zh",
+        "fixture",
+        "metric-direction",
+        "ties"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 12,
+      "name": "中文：单模型、集成和测试时检索的选型",
+      "category": "scope-comparability",
+      "mode": "behavioral",
+      "difficulty": "intermediate",
+      "prompt": "我在比较三个视觉问答方案：A 是单模型 91.0，B 是 12 模型 ensemble 92.4，C 是单模型加 test-time retrieval 91.7。请告诉我在“单模型、可部署、无外部检索”和“追求最高离线分数”这两个实际场景下应该怎样分榜和选型。",
+      "prompt_language": "zh",
+      "user_role": "工程师",
+      "user_goal": "按部署场景选模型",
+      "real_user_scenario": true,
+      "scenario_zh": "同时准备线上可部署方案和离线对比方案。",
+      "task_summary_zh": "测试模型设置差异如何服务于真实部署和离线最高分两个不同目标。",
+      "expected_output": "按用户的两个决策场景分范围；显式记录 ensemble 和 retrieval；不把所有数字做一张总榜；给出场景化推荐和限制",
+      "files": [],
+      "expectations": [
+        "按用户的两个决策场景分范围",
+        "显式记录 ensemble 和 retrieval",
+        "不把所有数字做一张总榜",
+        "给出场景化推荐和限制"
+      ],
+      "failure_conditions": [
+        "只按 92.4>91.7>91.0 排序",
+        "强行规定所有 ensemble 永远不能比较",
+        "忽略用户的场景差异"
+      ],
+      "tags": [
+        "zh",
+        "deployment",
+        "ensemble",
+        "retrieval",
+        "scenario-ranking"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 13,
+      "name": "中文：聚合站宣称 SOTA 但原始来源不可访问",
+      "category": "evidence-integrity",
+      "mode": "behavioral",
+      "difficulty": "basic",
+      "prompt": "某聚合站说 Method Z 在一个 NLP benchmark 上得分 95.0、排名第一，但论文、代码仓库和官方结果页目前都打不开。团队希望今天先把它放进主榜，标注“待核验”即可。请按证据标准处理。",
+      "prompt_language": "zh",
+      "user_role": "科研负责人",
+      "user_goal": "判断一条领先声明能否采用",
+      "real_user_scenario": true,
+      "scenario_zh": "决定是否把外部榜单中的候选纳入内部报告。",
+      "task_summary_zh": "测试团队面对无法核验的领先声明时，是否能保留候选但不把它包装成主榜事实。",
+      "expected_output": "聚合站不能单独满足主榜证据门槛；候选保留为 reference/unavailable；记录原始来源不可访问；说明重新纳入主榜所需证据",
+      "files": [],
+      "expectations": [
+        "聚合站不能单独满足主榜证据门槛",
+        "候选保留为 reference/unavailable",
+        "记录原始来源不可访问",
+        "说明重新纳入主榜所需证据"
+      ],
+      "failure_conditions": [
+        "把 Z 放入已核验主榜第一",
+        "编造原始来源或分数",
+        "用“待核验”标签掩盖证据缺失"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "aggregator",
+        "evidence-gate",
+        "unavailable"
+      ],
+      "workflow_tier": "direct",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 14,
+      "name": "中文：官方榜、预印本和修订数据集冲突",
+      "category": "evidence-integrity",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "只使用给定的冲突来源。我要把 Method K 写进项目报告，请先解释 85.1、84.6 和 84.4 分别对应什么版本和 split，再决定哪些可以进入主榜；不要只挑最大值。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "论文作者",
+      "user_goal": "核对报告中的冲突数字",
+      "real_user_scenario": true,
+      "scenario_zh": "避免在论文或内部报告中引用错误的 benchmark 结果。",
+      "task_summary_zh": "测试科研报告中处理版本、split 和修订数据集冲突的能力。",
+      "expected_output": "保留全部冲突值；正确映射版本和 split；按权威性和来源时间线处理；在中文报告中提供 evidence locator；不把不同范围合成一个冠军",
+      "files": [
+        "evals/fixtures/conflicting_sources.md"
+      ],
+      "expectations": [
+        "保留全部冲突值",
+        "正确映射版本和 split",
+        "按权威性和来源时间线处理",
+        "在中文报告中提供 evidence locator",
+        "不把不同范围合成一个冠军"
+      ],
+      "failure_conditions": [
+        "直接选择最大值",
+        "删除冲突记录",
+        "编造或联网寻找未提供的证据"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "fixture",
+        "conflict",
+        "version",
+        "split",
+        "evidence-locator"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 15,
+      "name": "中文：官方榜链接失效后的 best-effort 核验",
+      "category": "evidence-integrity",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "我正在整理 MTEB 中文检索结果，官方榜单链接今天打不开，但论文、作者仓库和部分缓存页面还能访问。请不要因为官方页失效就停止：告诉我哪些结果可以暂时信任、哪些只能放到 unavailable，并记录失效来源和核验截止日期。",
+      "prompt_language": "zh",
+      "user_role": "科研人员",
+      "user_goal": "在来源故障时完成 best-effort 报告",
+      "real_user_scenario": true,
+      "scenario_zh": "在截止时间前给导师一份可用但诚实的阶段性结果。",
+      "task_summary_zh": "测试真实研究工作中官方来源失效时，系统是否仍能用可访问原始来源进行降级核验。",
+      "expected_output": "不因单一官方页面失效而停止；用论文/作者仓库核验可访问声明；明确官方验证缺口；区分暂可信、参考和 unavailable；记录失效来源和绝对截止日期",
+      "files": [],
+      "expectations": [
+        "不因单一官方页面失效而停止",
+        "用论文/作者仓库核验可访问声明",
+        "明确官方验证缺口",
+        "区分暂可信、参考和 unavailable",
+        "记录失效来源和绝对截止日期"
+      ],
+      "failure_conditions": [
+        "把官方页失效等同于方法不存在",
+        "把缓存或聚合站当成官方证据",
+        "隐藏无法核验项"
+      ],
+      "tags": [
+        "zh",
+        "degraded-verification",
+        "official-source",
+        "unavailable",
+        "cutoff"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "boundary",
+      "requires_live_web": true,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 16,
+      "name": "English: reconcile a preprint and a proceedings paper",
+      "category": "evidence-integrity",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "I am preparing a related-work table. Use the supplied conflict dossier to reconcile the preprint and proceedings numbers, keeping the development score, the original hidden-test score, and the corrected benchmark score visible and separately scoped.",
+      "prompt_language": "en",
+      "user_role": "paper author",
+      "user_goal": "prepare a related-work table",
+      "real_user_scenario": true,
+      "scenario_zh": "避免 related-work 表把不同版本结果混写。",
+      "task_summary_zh": "测试英文论文写作中的版本演进、冲突解释和证据定位。",
+      "expected_output": "Keep all values visible; distinguish development and hidden-test splits; distinguish v2 and corrected v2.1; explain chronology and locators",
+      "files": [
+        "evals/fixtures/conflicting_sources.md"
+      ],
+      "expectations": [
+        "Keep all values visible",
+        " distinguish development and hidden-test splits",
+        " distinguish v2 and corrected v2.1",
+        " explain chronology and locators"
+      ],
+      "failure_conditions": [
+        "Prefer proceedings automatically",
+        " select the largest number",
+        " erase the development result"
+      ],
+      "tags": [
+        "en",
+        "fixture",
+        "conflict",
+        "related-work"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 17,
+      "name": "中文：给每一行结果补上可定位证据",
+      "category": "evidence-integrity",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "请使用提供的结果 JSON，为我准备一份可以交给导师复核的 Leaderboard。每一行都要能回到来源、claim_id 和具体定位信息；如果只有聚合站证据，请明确标注不能作为主榜依据。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "科研助理",
+      "user_goal": "生成可审计的榜单",
+      "real_user_scenario": true,
+      "scenario_zh": "为导师审阅和论文引用准备证据化表格。",
+      "task_summary_zh": "测试用户需要审计和引用时，claim/source/locator 是否能完整闭环。",
+      "expected_output": "每个结果绑定稳定 claim/source 信息；提供 locator 或缺失说明；聚合站结果不进入 verified main；产物和报告中的引用可追溯",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "每个结果绑定稳定 claim/source 信息",
+        "提供 locator 或缺失说明",
+        "聚合站结果不进入 verified main",
+        "产物和报告中的引用可追溯"
+      ],
+      "failure_conditions": [
+        "出现 dangling source/claim",
+        "没有定位信息",
+        "把聚合站结果当作主榜事实"
+      ],
+      "tags": [
+        "zh",
+        "fixture",
+        "auditability",
+        "source-registry",
+        "claim-locator"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 18,
+      "name": "中文：社交媒体 SOTA 声明的核验",
+      "category": "evidence-integrity",
+      "mode": "live_web",
+      "difficulty": "basic",
+      "prompt": "团队群里有人转发一条帖子，声称某个 DocVQA 方法刷新了 SOTA，但只给了截图，没有论文表格或官方榜链接。请帮我查证这条消息，能核验的才进入主榜，不能核验的保留为待查线索。",
+      "prompt_language": "zh",
+      "user_role": "技术负责人",
+      "user_goal": "核验外部 SOTA 传言",
+      "real_user_scenario": true,
+      "scenario_zh": "决定是否把社交媒体中的新结果写进团队周报。",
+      "task_summary_zh": "测试真实信息流中的截图、帖子和二手声明如何进入证据化研究流程。",
+      "expected_output": "把帖子作为 discovery lead 而非主证据；寻找原始论文、仓库或官方榜；记录无法核验项；只把比较设置完整且有原始来源的结果纳入主榜",
+      "files": [],
+      "expectations": [
+        "把帖子作为 discovery lead 而非主证据",
+        "寻找原始论文、仓库或官方榜",
+        "记录无法核验项",
+        "只把比较设置完整且有原始来源的结果纳入主榜"
+      ],
+      "failure_conditions": [
+        "把截图数字直接作为主榜",
+        "声称已核验但没有原始来源",
+        "删除待查线索"
+      ],
+      "tags": [
+        "zh",
+        "social-proof",
+        "verification",
+        "discovery-lead"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "boundary",
+      "requires_live_web": true,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 19,
+      "name": "中文：科学文献问答中的答案可验证性",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "这个方向没有统一官方 benchmark。请调研科学文献问答系统的答案可验证性、引用正确性和证据覆盖率，广泛搜索论文、预印本、项目仓库和聚合站，建立面向实践的参考 Leaderboard；不同任务、数据集和指标请分范围。",
+      "prompt_language": "zh",
+      "user_role": "研究员",
+      "user_goal": "建立开放领域参考榜",
+      "real_user_scenario": true,
+      "scenario_zh": "为科学文献问答项目选择可复现和可验证的 baseline。",
+      "task_summary_zh": "测试没有统一榜单的开放领域研究，关注多来源覆盖和可比范围，而不是制造一个虚假的总榜。",
+      "expected_output": "明确没有统一官方榜；覆盖论文/预印本/仓库/聚合站；按任务、数据集、指标和设置拆分；参考结果与已核验结果分离；记录缺口、不可访问来源和截止日期",
+      "files": [],
+      "expectations": [
+        "明确没有统一官方榜",
+        "覆盖论文/预印本/仓库/聚合站",
+        "按任务、数据集、指标和设置拆分",
+        "参考结果与已核验结果分离",
+        "记录缺口、不可访问来源和截止日期"
+      ],
+      "failure_conditions": [
+        "宣称存在官方总榜",
+        "只搜一个来源家族",
+        "强行合并不可比指标或任务"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "no-official-benchmark",
+        "broad-search",
+        "scientific-qa",
+        "reference-leaderboard"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 20,
+      "name": "中文：中英文别名检索 DocVQA 并先交付",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "请同时使用中文、英文全称、英文缩写和常见别名检索 DocVQA 的近期方法。先给我一个可用的主榜或分范围榜，再补充论文、预印本、项目仓库和聚合站候选；当新搜索不再改变榜首时就停止，并说明覆盖缺口。",
+      "prompt_language": "zh",
+      "user_role": "工程研究员",
+      "user_goal": "快速获得可用候选榜",
+      "real_user_scenario": true,
+      "scenario_zh": "为文档视觉问答项目先选 baseline，再决定是否深入调研。",
+      "task_summary_zh": "测试真实用户要求双语检索和快速交付时，搜索覆盖与停止条件是否同时落实。",
+      "expected_output": "执行中文、英文、全称、缩写或别名查询；先交付可用结果；覆盖论文/预印本/仓库/聚合站；聚合站只作发现；记录停止理由和覆盖缺口；主榜之外保留重要论文、仓库和聚合站候选，避免因证据层级而让全景图变得稀疏",
+      "files": [],
+      "expectations": [
+        "执行中文、英文、全称、缩写或别名查询",
+        "先交付可用结果",
+        "覆盖论文/预印本/仓库/聚合站",
+        "聚合站只作发现",
+        "记录停止理由和覆盖缺口",
+        "主榜之外保留重要论文、仓库和聚合站候选，避免因证据层级而让全景图变得稀疏"
+      ],
+      "failure_conditions": [
+        "只用一种语言或一个名字",
+        "一直搜索而不先交付",
+        "把聚合站声明当作 verified SOTA",
+        "只保留少量强证据行，遗漏大量有参考价值的近期候选"
+      ],
+      "tags": [
+        "zh",
+        "multilingual",
+        "fast-first",
+        "broad-search",
+        "stopping-rule"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 21,
+      "name": "中文：有限 GPU 下的开源 ASR 选型",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "我们要在 24GB GPU 和商业可用许可证约束下选择英文 ASR 模型。请围绕 LibriSpeech test-clean 和真实部署成本搜索最新论文、模型卡、项目仓库与结果聚合站，分别给出最高质量和最适合落地的候选，不要只报一个最高分。",
+      "prompt_language": "zh",
+      "user_role": "工程师",
+      "user_goal": "选择可落地的 ASR 模型",
+      "real_user_scenario": true,
+      "scenario_zh": "为产品原型选择质量和部署风险平衡的模型。",
+      "task_summary_zh": "测试工程选型中 benchmark 结果、资源、许可证、代码和部署可用性如何共同影响推荐。",
+      "expected_output": "覆盖 benchmark/论文/模型卡/仓库/聚合站；区分最高质量与可落地范围；记录许可证、显存、推理成本和代码；说明不完整证据和截止日期；在有限时间内完成可用于选型的核心结果和必要交付物",
+      "files": [],
+      "expectations": [
+        "覆盖 benchmark/论文/模型卡/仓库/聚合站",
+        "区分最高质量与可落地范围",
+        "记录许可证、显存、推理成本和代码",
+        "说明不完整证据和截止日期",
+        "在有限时间内完成可用于选型的核心结果和必要交付物"
+      ],
+      "failure_conditions": [
+        "只按最高 benchmark 分数推荐",
+        "忽略许可证/资源",
+        "把模型卡或聚合站的未核验数字当作主榜事实",
+        "持续搜索直至超时，未形成可用结果"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "deployment-selection",
+        "open-source",
+        "asr",
+        "resource-constraint"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 22,
+      "name": "English: historical image-captioning SOTA review",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "Prepare a historical SOTA review for image captioning from 2020 through the present. I need the evidence cutoff, benchmark-specific scopes, representative papers and repositories, and a note explaining why a method can be historically important without being the current leader.",
+      "prompt_language": "en",
+      "user_role": "research scientist",
+      "user_goal": "write a historical SOTA review",
+      "real_user_scenario": true,
+      "scenario_zh": "为研究报告梳理方法演进而非只找今天的冠军。",
+      "task_summary_zh": "测试英文历史回顾需要同时处理时间范围、当前截止日期和 benchmark-specific scopes。",
+      "expected_output": "Use an absolute cutoff; preserve historical and current pools; separate benchmarks and metrics; cite papers and repositories; explain historical significance versus current rank",
+      "files": [],
+      "expectations": [
+        "Use an absolute cutoff",
+        " preserve historical and current pools",
+        " separate benchmarks and metrics",
+        " cite papers and repositories",
+        " explain historical significance versus current rank"
+      ],
+      "failure_conditions": [
+        "Mix all years or benchmarks into one ranking",
+        " omit cutoff",
+        " call a historical method current SOTA without evidence"
+      ],
+      "tags": [
+        "en",
+        "historical-sota",
+        "cutoff",
+        "literature-review"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 23,
+      "name": "中文：多模态文档问答的代码可用性榜",
+      "category": "discovery-coverage",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "我准备复现多模态文档问答方法，除了效果，还关心代码是否公开、权重是否可下载、数据处理脚本是否完整、许可证和运行显存。请广泛搜索近期论文、预印本、仓库和模型卡，建立一个“效果”和“复现友好度”分开的候选榜。",
+      "prompt_language": "zh",
+      "user_role": "科研人员",
+      "user_goal": "选择可复现方法",
+      "real_user_scenario": true,
+      "scenario_zh": "为复现实验筛选真正能运行的多模态方法。",
+      "task_summary_zh": "测试研究复现中的实用性评价：不仅比较分数，也比较代码、权重、许可证和资源。",
+      "expected_output": "覆盖论文/预印本/仓库/模型卡；把效果和复现友好度分开；核查代码、权重、数据脚本、许可证和资源；明确自报、缺失和不可访问信息",
+      "files": [],
+      "expectations": [
+        "覆盖论文/预印本/仓库/模型卡",
+        "把效果和复现友好度分开",
+        "核查代码、权重、数据脚本、许可证和资源",
+        "明确自报、缺失和不可访问信息"
+      ],
+      "failure_conditions": [
+        "只按论文分数排序",
+        "把“有 GitHub 链接”当作代码完整",
+        "忽略许可证或资源约束"
+      ],
+      "tags": [
+        "zh",
+        "reproducibility",
+        "multimodal",
+        "code-availability",
+        "deployment"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 24,
+      "name": "中文：来源部分失败时的检索降级",
+      "category": "discovery-coverage",
+      "mode": "behavioral",
+      "difficulty": "intermediate",
+      "prompt": "请为 COCO Captioning 的近期方法做一个阶段性榜单。假设官方结果页暂时 403、部分 GitHub 仓库超时，但论文 PDF 和作者主页还能访问。请继续做 best-effort 研究，标出哪些结论已核验、哪些仍待补证。",
+      "prompt_language": "zh",
+      "user_role": "研究助理",
+      "user_goal": "在网络故障下完成阶段报告",
+      "real_user_scenario": true,
+      "scenario_zh": "按项目 deadline 先提交一份可审计的阶段性结果。",
+      "task_summary_zh": "测试在现实网络故障下，是否能继续使用可访问来源并明确不确定性。",
+      "expected_output": "继续使用可访问论文和作者来源；官方页 403 与仓库超时被记录；主榜只纳入可比较且有直接证据的结果；明确未核验项和后续补证计划",
+      "files": [],
+      "expectations": [
+        "继续使用可访问论文和作者来源",
+        "官方页 403 与仓库超时被记录",
+        "主榜只纳入可比较且有直接证据的结果",
+        "明确未核验项和后续补证计划"
+      ],
+      "failure_conditions": [
+        "因一个来源失败而停止",
+        "把不可访问等同于不存在",
+        "隐藏缺口或伪造验证"
+      ],
+      "tags": [
+        "zh",
+        "degradation",
+        "network-failure",
+        "best-effort"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "boundary",
+      "requires_live_web": true,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 25,
+      "name": "中文：没有 AMiner Token 时继续完成任务",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "basic",
+      "prompt": "请为 SWE-bench Verified 建立当前排行榜。当前没有配置 AMINER_API_KEY；不要向我索取密钥，也不要因此停止，请继续使用官方榜、论文、预印本和项目仓库完成任务，并记录 AMiner 被跳过。",
+      "prompt_language": "zh",
+      "user_role": "科研人员",
+      "user_goal": "无 AMiner 依赖完成榜单",
+      "real_user_scenario": true,
+      "scenario_zh": "在受限环境中完成代码智能体 benchmark 调研。",
+      "task_summary_zh": "测试 AMiner 不可用时，明确研究主题的任务能否正常降级并继续交付。",
+      "expected_output": "不请求或暴露密钥；继续完成明确的排行榜任务；保持官方和开放来源检索；记录 AMiner unavailable/skipped；仍遵守证据和交付合同；AMiner 不可用时只用一句简短说明并继续完成结果",
+      "files": [],
+      "expectations": [
+        "不请求或暴露密钥",
+        "继续完成明确的排行榜任务",
+        "保持官方和开放来源检索",
+        "记录 AMiner unavailable/skipped",
+        "仍遵守证据和交付合同",
+        "AMiner 不可用时只用一句简短说明并继续完成结果"
+      ],
+      "failure_conditions": [
+        "因 AMiner 不可用而停止",
+        "索取或暴露密钥",
+        "伪造 AMiner 调用或结果",
+        "用鉴权或工具限制说明取代实际榜单"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "aminer-optional",
+        "fallback",
+        "no-secret"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "boundary",
+      "requires_live_web": true,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 26,
+      "name": "中文：AMiner 作为低成本发现增强",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "intermediate",
+      "prompt": "我有一篇长文档 RAG 引用忠实性论文作为 seed。请在不替代官方、论文和仓库证据的前提下，判断 AMiner 是否值得用于相关论文发现和作者关系补充；如果可用，采用最短的低成本链，并说明 AMiner 信息不能直接当成 benchmark 结果。",
+      "prompt_language": "zh",
+      "user_role": "研究员",
+      "user_goal": "扩大候选论文发现",
+      "real_user_scenario": true,
+      "scenario_zh": "从 seed paper 扩展相关工作和候选方法。",
+      "task_summary_zh": "测试 AMiner 的正确定位：低成本 discovery/enrichment，而不是主榜证据。",
+      "expected_output": "把 AMiner 作为可选 discovery/enrichment；使用短链；保持其他来源搜索；记录 provenance 和用途；不将元数据自动升级为结果证据",
+      "files": [],
+      "expectations": [
+        "把 AMiner 作为可选 discovery/enrichment",
+        "使用短链",
+        "保持其他来源搜索",
+        "记录 provenance 和用途",
+        "不将元数据自动升级为结果证据"
+      ],
+      "failure_conditions": [
+        "调用完整 API 目录",
+        "因 AMiner 可用而停止公开检索",
+        "把相关性/引用元数据当作 benchmark 结果"
+      ],
+      "tags": [
+        "zh",
+        "aminer",
+        "low-cost",
+        "discovery",
+        "evidence-boundary"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 27,
+      "name": "中文：大规模 AMiner 计划的成本护栏",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "adversarial",
+      "prompt": "为了调研科学文献问答的引用正确性，请先用 AMiner 收集 500 篇候选论文，展开很多 seed 的参考文献，再把每条记录全部富化。请先告诉我预计的批量范围、成本风险和一个有界的 pilot 方案；不要拆分调用绕过确认，并继续完成不依赖 AMiner 的公开检索。",
+      "prompt_language": "zh",
+      "user_role": "研究负责人",
+      "user_goal": "控制大规模检索成本",
+      "real_user_scenario": true,
+      "scenario_zh": "在预算有限时决定是否扩展论文候选池。",
+      "task_summary_zh": "测试高成本、长链 AMiner 需求下的计划级确认、pilot 和公开来源回退。",
+      "expected_output": "识别为大批量/不确定成本计划；先给出一次计划级确认；提出有界 pilot、调用上限和停止条件；不拆单规避；继续非 AMiner 公开检索",
+      "files": [],
+      "expectations": [
+        "识别为大批量/不确定成本计划",
+        "先给出一次计划级确认",
+        "提出有界 pilot、调用上限和停止条件",
+        "不拆单规避",
+        "继续非 AMiner 公开检索"
+      ],
+      "failure_conditions": [
+        "未经确认执行全量计划",
+        "拆单规避累计护栏",
+        "因等待确认而停止所有公开检索",
+        "捏造精确价格"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "aminer",
+        "cost-guardrail",
+        "pilot",
+        "budget"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "boundary",
+      "requires_live_web": true,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 28,
+      "name": "English: citation metadata is not result evidence",
+      "category": "robustness-aminer",
+      "mode": "aminer_optional",
+      "difficulty": "basic",
+      "prompt": "AMiner says Paper Q is highly cited and closely related to my benchmark, but I cannot find its result table. Keep it in the candidate pool if useful, but do not call it SOTA unless the original evaluation evidence and comparability can be verified.",
+      "prompt_language": "en",
+      "user_role": "research lead",
+      "user_goal": "triage a candidate paper",
+      "real_user_scenario": true,
+      "scenario_zh": "决定一篇高引用论文是否能进入内部 SOTA 表。",
+      "task_summary_zh": "测试英文用户是否能把 AMiner metadata 和 benchmark result evidence 分开。",
+      "expected_output": "Keep Paper Q discoverable; do not promote citation or relatedness metadata to main SOTA; record the missing result table; state the direct evidence needed",
+      "files": [],
+      "expectations": [
+        "Keep Paper Q discoverable",
+        " do not promote citation or relatedness metadata to main SOTA",
+        " record the missing result table",
+        " state the direct evidence needed"
+      ],
+      "failure_conditions": [
+        "Call Q SOTA from citation count",
+        " delete the candidate",
+        " invent a result table"
+      ],
+      "tags": [
+        "en",
+        "aminer",
+        "metadata-vs-evidence",
+        "candidate-triage"
+      ],
+      "workflow_tier": "direct",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 29,
+      "name": "中文：内部数据不能出网时的安全降级",
+      "category": "robustness-aminer",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "下面的 CSV 是团队内部评测结果，不能上传到外部服务，也不能调用 AMiner。请只使用本地文件，整理可比范围和证据化榜单；不要假设你能补充不存在的外部结果。",
+      "prompt_language": "zh",
+      "user_role": "企业研发团队",
+      "user_goal": "在隐私约束下整理内部榜单",
+      "real_user_scenario": true,
+      "scenario_zh": "把内部实验结果整理成可分享的团队报告。",
+      "task_summary_zh": "测试真实团队对内部评测数据的隐私边界和离线交付需求。",
+      "expected_output": "严格只使用本地 CSV；不调用 AMiner 或网络；不外推不存在的外部结果；清楚区分可比和不可比行；生成可审计产物",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "严格只使用本地 CSV",
+        "不调用 AMiner 或网络",
+        "不外推不存在的外部结果",
+        "清楚区分可比和不可比行",
+        "生成可审计产物"
+      ],
+      "failure_conditions": [
+        "上传或搜索内部数据",
+        "虚构外部证据",
+        "把不可比内部结果混成一个总榜"
+      ],
+      "tags": [
+        "zh",
+        "privacy",
+        "offline",
+        "internal-data",
+        "no-aminer"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 30,
+      "name": "中文：工具不可用但仍需交付阶段结果",
+      "category": "robustness-aminer",
+      "mode": "behavioral",
+      "difficulty": "intermediate",
+      "prompt": "我正在做一个 MTEB 中文检索调研，但当前浏览器工具不稳定、AMiner 也不可用。请不要假装已经查到了最新结果；如果无法完成完整更新，就基于已提供的背景给出明确的限制、下一步核验清单和不带虚构数字的阶段性结构。",
+      "prompt_language": "zh",
+      "user_role": "项目负责人",
+      "user_goal": "避免不可靠的即时结论",
+      "real_user_scenario": true,
+      "scenario_zh": "在工具故障期间给团队一个可执行的阶段性决策。",
+      "task_summary_zh": "测试工具不可用时的诚实降级、限制说明和下一步计划。",
+      "expected_output": "不伪造搜索或 AMiner 结果；说明哪些信息不可得；提供可执行的核验清单或阶段性结构；不把空结果包装为 SOTA；工具失败时压缩说明，优先交付已能支持的结果；未明确要求文件时不加载产物流程或生成四件套",
+      "files": [],
+      "expectations": [
+        "不伪造搜索或 AMiner 结果",
+        "说明哪些信息不可得",
+        "提供可执行的核验清单或阶段性结构",
+        "不把空结果包装为 SOTA",
+        "工具失败时压缩说明，优先交付已能支持的结果",
+        "未明确要求文件时不加载产物流程或生成四件套"
+      ],
+      "failure_conditions": [
+        "声称已完成最新搜索",
+        "编造数字或链接",
+        "因工具失败而输出无关内容",
+        "反复解释失败过程或重试到任务超时",
+        "仅需阶段性说明和核验计划却执行完整四件套构建"
+      ],
+      "tags": [
+        "zh",
+        "degradation",
+        "no-fabrication",
+        "tool-unavailable"
+      ],
+      "workflow_tier": "direct",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 31,
+      "name": "中文：极简聊天与四件套交付",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "仅使用提供的 SyntheticBench CSV 建立可比排行榜。聊天里只给极简主榜和必要说明；完整内容统一保存到 output 文件夹，并直接链接 brief-report.md、full-report.html、leaderboards.xlsx、evidence.json 四个文件。所有用户可见内容请用中文。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "团队负责人",
+      "user_goal": "快速查看结论并下载完整报告",
+      "real_user_scenario": true,
+      "scenario_zh": "在会议前拿到极简结论和可复核附件。",
+      "task_summary_zh": "测试真实用户希望“聊天少说、文件完整”的交付合同，并验证中文可见输出。",
+      "expected_output": "聊天仅展示主榜和必要说明；四个标准文件全部生成并直链；详细证据下沉到文件；用户可见内容主要为中文；严格离线",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "聊天仅展示主榜和必要说明",
+        "四个标准文件全部生成并直链",
+        "详细证据下沉到文件",
+        "用户可见内容主要为中文",
+        "严格离线"
+      ],
+      "failure_conditions": [
+        "把完整报告粘进聊天",
+        "漏文件或伪造链接",
+        "联网",
+        "只生成部分标准文件"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "chat-contract",
+        "four-artifacts",
+        "localization",
+        "fixture"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "simple_daily"
+    },
+    {
+      "id": 32,
+      "name": "中文：多范围 Excel 供团队选型",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "只使用给定 JSON，分别生成质量和延迟两个 Leaderboard，放到同一个 leaderboards.xlsx 的不同 Sheet，另生成中文 brief-report.md、离线 full-report.html 和 evidence.json。聊天只给结论和四个直链。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "工程师",
+      "user_goal": "生成可用选型附件",
+      "real_user_scenario": true,
+      "scenario_zh": "把质量和性能证据交给产品与工程评审。",
+      "task_summary_zh": "测试工程团队需要一个可筛选、多 Sheet、可离线分享的选型工作簿。",
+      "expected_output": "不同 scope 使用不同 Sheet；Excel 具备冻结和筛选；main/reference 行清晰；四件套和链接齐全；聊天保持极简且中文",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "不同 scope 使用不同 Sheet",
+        "Excel 具备冻结和筛选",
+        "main/reference 行清晰",
+        "四件套和链接齐全",
+        "聊天保持极简且中文"
+      ],
+      "failure_conditions": [
+        "把不同 scope 放进同一混合榜",
+        "缺少四件套",
+        "链接不存在",
+        "联网"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "fixture",
+        "multi-scope",
+        "workbook",
+        "team-decision"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "complex_daily"
+    },
+    {
+      "id": 33,
+      "name": "中文：重复运行不能覆盖旧报告",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "我昨天已经用同一个主题生成过一套报告，今天要用新的 research-input.json 再跑一次。请保留旧目录，自动分配新的输出目录或版本，不要静默覆盖；聊天中说明新旧目录的关系。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "benchmark maintainer",
+      "user_goal": "安全更新报告",
+      "real_user_scenario": true,
+      "scenario_zh": "保留历史快照并发布新一版结果。",
+      "task_summary_zh": "测试团队迭代榜单时的非覆盖、版本和目录管理。",
+      "expected_output": "不覆盖已有标准文件；分配新版本目录；新旧结果可区分；聊天准确说明目录关系；不生成虚假旧版本",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "不覆盖已有标准文件",
+        "分配新版本目录",
+        "新旧结果可区分",
+        "聊天准确说明目录关系",
+        "不生成虚假旧版本"
+      ],
+      "failure_conditions": [
+        "静默覆盖",
+        "删除旧报告",
+        "声称已保留但没有旧目录或新目录"
+      ],
+      "tags": [
+        "zh",
+        "fixture",
+        "non-overwrite",
+        "versioning"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    },
+    {
+      "id": 34,
+      "name": "中文：中文展示、英文机器字段",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "请使用给定 JSON 生成中文报告和工作簿。标题、表头、状态和说明使用中文，但 evidence.json 的字段名、claim_id、source_id、scope_id 和枚举值保持稳定英文，方便我们的脚本继续读取。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "数据工程师",
+      "user_goal": "兼顾阅读和自动处理",
+      "real_user_scenario": true,
+      "scenario_zh": "把报告给中文团队，同时不破坏下游脚本。",
+      "task_summary_zh": "测试中文本地化与结构化机器接口兼容性。",
+      "expected_output": "可见标签中文化；JSON 机器字段和稳定 ID 保持英文；四文件内容语义一致；不引入乱码或字段漂移",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "可见标签中文化",
+        "JSON 机器字段和稳定 ID 保持英文",
+        "四文件内容语义一致",
+        "不引入乱码或字段漂移"
+      ],
+      "failure_conditions": [
+        "翻译或改写 machine keys/IDs",
+        "中文只出现在聊天而文件仍全英文",
+        "跨文件标识不一致"
+      ],
+      "tags": [
+        "zh",
+        "fixture",
+        "localization",
+        "machine-contract"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "simple_daily"
+    },
+    {
+      "id": 35,
+      "name": "English: self-contained offline HTML for review",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "Generate the full report from the supplied mixed-scope JSON for a review meeting. The HTML must open offline with no CDN or external runtime dependency, include a table of contents, scope definitions, evidence links, and clear main/reference labels.",
+      "prompt_language": "en",
+      "user_role": "review coordinator",
+      "user_goal": "share an offline report",
+      "real_user_scenario": true,
+      "scenario_zh": "把结果发给无法联网的会议环境。",
+      "task_summary_zh": "测试把研究结果发给没有网络的评审者时，HTML 是否真正自包含且可审计。",
+      "expected_output": "Generate a self-contained HTML; include TOC, scope definitions, evidence links, and main/reference labels; do not reference external CSS or JS; make the generated file available to the reviewer",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "Generate a self-contained HTML",
+        " include TOC, scope definitions, evidence links, and main/reference labels",
+        " do not reference external CSS or JS",
+        " make the generated file available to the reviewer"
+      ],
+      "failure_conditions": [
+        "Use CDN/runtime dependencies",
+        " omit scope or evidence context",
+        " claim offline support without a usable file"
+      ],
+      "tags": [
+        "en",
+        "fixture",
+        "offline-html",
+        "review-delivery"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "simple_daily"
+    },
+    {
+      "id": 36,
+      "name": "中文：跨文件 claim/source 一致性",
+      "category": "artifact-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "请使用给定 JSON 生成完整四件套，并检查 brief-report.md、full-report.html、leaderboards.xlsx、evidence.json 中的 claim_id、source_id、scope、方法名、指标和数值是否一致。聊天只给极简结果和四个直链。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "研究平台工程师",
+      "user_goal": "发布前做交付验收",
+      "real_user_scenario": true,
+      "scenario_zh": "确保报告、表格和证据文件不会互相矛盾。",
+      "task_summary_zh": "测试真实报告发布前的跨文件一致性和可追溯性。",
+      "expected_output": "四件套全部生成；跨文件 claim/source/scope/方法/指标/数值一致；检查结果可追溯；聊天极简并提供四个直链；严格离线",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "四件套全部生成",
+        "跨文件 claim/source/scope/方法/指标/数值一致",
+        "检查结果可追溯",
+        "聊天极简并提供四个直链",
+        "严格离线"
+      ],
+      "failure_conditions": [
+        "出现 dangling 或矛盾 ID",
+        "四文件内容不一致",
+        "漏链接或伪造链接",
+        "联网"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "fixture",
+        "cross-file-consistency",
+        "claim-id",
+        "source-id",
+        "release-check"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior"
+    }
+  ],
+  "workflow_tiers": [
+    "direct",
+    "quick",
+    "standard",
+    "deep"
+  ],
+  "behavior_classes": [
+    "normal",
+    "boundary"
+  ],
+  "scenario_layers": [
+    "simple_daily",
+    "complex_daily",
+    "boundary_behavior"
+  ]
+}

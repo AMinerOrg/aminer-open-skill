@@ -1,0 +1,795 @@
+{
+  "skill_name": "sota-finder",
+  "suite_version": "3.0.0",
+  "evaluation_date": "2026-09-15",
+  "case_count": 14,
+  "categories": [
+    "benchmark-research",
+    "open-world-research",
+    "deployment-decision",
+    "input-grounded-update",
+    "robust-delivery"
+  ],
+  "modes": [
+    "live_web",
+    "offline_fixture",
+    "aminer_optional"
+  ],
+  "must_pass_ids": [
+    1,
+    2,
+    4,
+    7,
+    8,
+    11,
+    13,
+    14
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "name": "中文：最新官方 SWE-bench Verified 研究与选型",
+      "category": "benchmark-research",
+      "mode": "live_web",
+      "difficulty": "basic",
+      "prompt": "我们正在为代码智能体项目选择评测基线。请整理截至今天的 SWE-bench Verified 最新结果：先给出可直接使用的官方主榜，再补充论文或作者仓库中协议不同但有参考价值的结果；说明版本、设置和证据差异，推荐适合后续复现的候选，并生成可供团队复用的报告、工作簿和证据文件。",
+      "prompt_language": "zh",
+      "user_role": "工程研究员",
+      "user_goal": "确定代码智能体评测基线与复现候选",
+      "real_user_scenario": true,
+      "scenario_zh": "团队需要在开始复现实验前获得一个最新、可比且有来源依据的官方榜单。",
+      "task_summary_zh": "综合评测单一官方 benchmark 下的最新检索、证据核对、范围拆分、榜单构建、候选推荐和标准产物交付。",
+      "expected_output": "使用绝对截止日期，官方结果构成主榜；论文和仓库自报结果按协议差异单列；榜单包含足够候选、来源与设置说明，并给出复现建议和完整标准产物。",
+      "files": [],
+      "expectations": [
+        "使用绝对证据截止日期并确认 benchmark 版本与官方评测口径",
+        "检索官方榜、原始论文和作者仓库，不以聚合站作为主榜唯一证据",
+        "记录数据集、split、指标、协议和影响可比性的关键设置",
+        "建立完整可用的官方主榜，并把协议不同的自报结果放入参考范围",
+        "保留近期重要候选，不因证据层级差异把结果压缩成少量行",
+        "结合代码与证据可用性推荐可复现候选",
+        "聊天先展示榜单和必要说明，并交付简洁报告、完整报告、工作簿和证据文件"
+      ],
+      "failure_conditions": [
+        "仅凭聚合站或媒体文章宣布冠军",
+        "把不同 benchmark 版本或协议结果混入同一主榜",
+        "只给单个赢家或极少数结果，无法支持选型",
+        "缺少标准产物或聊天中没有可用榜单"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "official-source",
+        "latest",
+        "benchmark",
+        "reproducibility",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "simple_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "中文：DocVQA 近期方法全景与分范围榜",
+      "category": "benchmark-research",
+      "mode": "live_web",
+      "difficulty": "adversarial",
+      "prompt": "请为文档视觉问答项目整理 DocVQA 的近期方法全景。使用中文、英文全称、缩写和常见别名检索官方榜、论文、预印本、项目仓库、模型卡和聚合站；按单页、多页、信息图等实际可比范围建立榜单，先给可用核心结果，再补充重要候选、代码可用性、覆盖缺口和 baseline 建议，并生成完整产物。",
+      "prompt_language": "zh",
+      "user_role": "多模态算法工程师",
+      "user_goal": "选择 DocVQA 基线并掌握近期方法全景",
+      "real_user_scenario": true,
+      "scenario_zh": "项目立项阶段需要同时了解权威排名、近期候选和可复现性，而不是只看一张混合榜。",
+      "task_summary_zh": "综合评测多语言检索、多任务范围划分、官方与自报证据分级、近期候选覆盖、实践建议和产物交付。",
+      "expected_output": "覆盖主要名称和来源类型，按任务、数据集、split、指标和协议拆分主榜；保留论文、仓库和聚合站候选，区分核验状态，给出代码与复现建议、停止理由、覆盖缺口和四件套。",
+      "files": [],
+      "expectations": [
+        "实际执行中文、英文全称、缩写和常见别名检索",
+        "覆盖官方榜、论文、预印本、仓库、模型卡和聚合站等来源",
+        "按单页、多页、信息图或其他材料范围拆分可比榜单",
+        "官方或原始证据支持主榜，聚合站仅用于发现和交叉检查",
+        "先形成可用核心榜，再扩展近期方法、代码和模型候选",
+        "说明代码、权重、许可证或复现条件并给出 baseline 建议",
+        "记录绝对截止日期、停止理由和覆盖缺口",
+        "聊天展示完整可用榜单并交付四个标准文件"
+      ],
+      "failure_conditions": [
+        "把不同任务、split 或评测协议混成一个总榜",
+        "只保留少数强证据结果，遗漏大量有参考价值的近期候选",
+        "把聚合站数字直接视为已核验 SOTA",
+        "持续搜索却没有形成可交付榜单和产物"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "multilingual",
+        "latest",
+        "official-source",
+        "aggregator",
+        "code-availability",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "English: historical image-captioning benchmark review",
+      "category": "benchmark-research",
+      "mode": "live_web",
+      "difficulty": "adversarial",
+      "prompt": "Prepare a practical image-captioning benchmark review covering 2020 through the present. Separate datasets, splits, metrics, and evaluation protocols; identify both historical milestones and current leaders; verify representative papers and repositories; recommend baselines for a new project; and deliver a concise report, a full report, a workbook, and structured evidence.",
+      "prompt_language": "en",
+      "user_role": "Research lead",
+      "user_goal": "Choose historical and current image-captioning baselines",
+      "real_user_scenario": true,
+      "scenario_zh": "研究负责人需要理解方法演进，同时避免把不同数据集和指标的结果错误合并。",
+      "task_summary_zh": "综合评测历史与当前结果池、跨 benchmark 可比性、论文和仓库证据、baseline 推荐及结构化交付。",
+      "expected_output": "Use an absolute cutoff, preserve benchmark-specific scopes, distinguish historical milestones from current leaders, cite original papers and repositories, recommend practical baselines, and deliver the standard artifact bundle.",
+      "files": [],
+      "expectations": [
+        "Use an absolute evidence cutoff and cover the requested historical period",
+        "Search original papers, proceedings or preprints, and author repositories",
+        "Separate datasets, splits, metrics, and materially different evaluation protocols",
+        "Build benchmark-specific leaderboards rather than a universal ranking",
+        "Identify historical milestones separately from current leaders",
+        "Recommend baselines using result quality, reproducibility, and relevance",
+        "Retain uncertain or non-comparable candidates as labeled references",
+        "Present key results first and deliver all standard artifacts"
+      ],
+      "failure_conditions": [
+        "Ranks CIDEr, BLEU, SPICE, or different datasets as if directly comparable",
+        "Treats historical influence as proof of current leadership",
+        "Provides paper names without verifiable result evidence",
+        "Omits the usable leaderboard or standard artifacts"
+      ],
+      "tags": [
+        "en",
+        "historical",
+        "benchmark",
+        "scope",
+        "paper-repository",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "中文：无统一 benchmark 的长文档 RAG 参考榜",
+      "category": "open-world-research",
+      "mode": "aminer_optional",
+      "difficulty": "adversarial",
+      "prompt": "我们要为长文档 RAG 项目选择引用忠实性 baseline，但这个方向没有统一官方 benchmark。请广泛检索论文、预印本、仓库、数据集页面和聚合站，必要时可用 AMiner 辅助发现；选择少量有代表性的评测范围，建立可用于实践的参考榜和候选池，解释哪些结果不能比较，给出实验建议、覆盖缺口和完整产物。",
+      "prompt_language": "zh",
+      "user_role": "应用研究负责人",
+      "user_goal": "在开放领域中选择可执行的评测范围和 baseline",
+      "real_user_scenario": true,
+      "scenario_zh": "团队面对没有统一排行榜的方向，需要从分散结果中建立有边界的实践参考。",
+      "task_summary_zh": "综合评测开放世界发现、范围建模、非统一指标处理、参考榜构建、候选保留、实验建议与标准交付。",
+      "expected_output": "明确不存在统一官方榜，选择并解释代表性范围；覆盖多种原始来源与可选 AMiner 发现结果；按任务和协议分榜，保留不可比候选，给出 baseline、实验路线、缺口和四件套。",
+      "files": [],
+      "expectations": [
+        "明确说明没有统一官方 benchmark，避免制造虚假的总榜",
+        "覆盖论文、预印本、仓库、数据集页面和高质量聚合来源",
+        "AMiner 仅作可选发现增强，缺少访问能力也必须完成任务",
+        "选择少量代表性任务、数据集、指标和协议作为锚点范围",
+        "按可比范围建立参考榜，并保留重要但不可直接比较的候选",
+        "清楚标注证据强度、不可访问来源和仍待核验的设置",
+        "给出可执行的 baseline、评测组合和下一步实验建议",
+        "先交付核心结果，并生成四个标准文件"
+      ],
+      "failure_conditions": [
+        "把不同数据集或指标拼成统一排名",
+        "因缺少官方榜而只给文献列表，不构建实践参考榜",
+        "依赖 AMiner 才能开始或完成任务",
+        "过度筛选导致候选池和实践建议过于稀疏"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "no-official-benchmark",
+        "aminer-optional",
+        "open-world",
+        "reference-leaderboard",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "deep",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "中文：科研文献问答方案与答案可验证性",
+      "category": "open-world-research",
+      "mode": "aminer_optional",
+      "difficulty": "intermediate",
+      "prompt": "我们准备做一个面向科研人员的文献问答助手，需要答案能定位到论文证据。请调研近期相关 benchmark、方法、论文和开源仓库，必要时可用 AMiner 扩展相关工作；分别比较答案质量、引用可验证性和复现可用性，建立分范围候选榜，推荐适合快速原型和深入研究的 baseline，并输出完整报告与结构化结果。",
+      "prompt_language": "zh",
+      "user_role": "科研产品经理",
+      "user_goal": "选择兼顾答案质量和引用可验证性的文献问答方案",
+      "real_user_scenario": true,
+      "scenario_zh": "产品原型既需要问答效果，也需要可以追溯到论文证据和可运行代码。",
+      "task_summary_zh": "综合评测新兴任务发现、质量与可验证性分榜、论文证据、代码复现、产品选型和产物交付。",
+      "expected_output": "识别代表性 benchmark 与协议，覆盖论文和仓库；分别呈现答案质量、引用或证据可验证性与复现条件，不混合不可比指标；给出原型和研究 baseline，并交付完整产物。",
+      "files": [],
+      "expectations": [
+        "发现并解释代表性文献问答 benchmark、数据集和评测协议",
+        "检索原始论文、预印本、仓库和可选 AMiner 相关工作",
+        "把答案质量、引用正确性或证据可定位性拆成明确范围",
+        "核对 split、指标、模型设置和外部检索条件后再排名",
+        "建立足够完整的主榜和参考候选池，标明证据状态",
+        "记录代码、模型、数据处理和复现条件",
+        "分别推荐快速原型与深入研究 baseline，并解释取舍",
+        "聊天给出可用结果并生成标准四件套"
+      ],
+      "failure_conditions": [
+        "把答案质量和引用可验证性合成无依据总分",
+        "只列论文标题而没有 benchmark 结果或范围",
+        "把引用元数据当作结果分数的证明",
+        "没有给出可执行 baseline 或标准产物"
+      ],
+      "tags": [
+        "zh",
+        "aminer-optional",
+        "scientific-qa",
+        "citation-verification",
+        "code-availability",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "中文：多模态文档问答效果与复现友好度",
+      "category": "open-world-research",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "我要复现近期多模态文档问答方法。请搜索论文、预印本、官方榜、项目仓库和模型卡，按可比 benchmark 建立效果榜，同时独立整理代码、权重、数据脚本、许可证和显存要求，形成复现友好度候选表；推荐两到三个值得优先复现的方法，并生成完整产物。",
+      "prompt_language": "zh",
+      "user_role": "多模态研究工程师",
+      "user_goal": "选择结果可靠且容易复现的文档问答方法",
+      "real_user_scenario": true,
+      "scenario_zh": "复现实验需要同时考虑 benchmark 效果、代码完整性、许可和资源，而不是只追求最高分。",
+      "task_summary_zh": "综合评测近期来源发现、效果可比性、代码与资源核查、双维度榜单、复现推荐和标准交付。",
+      "expected_output": "按 benchmark 和协议建立效果榜，单独呈现复现友好度；覆盖论文、榜单、仓库和模型卡，记录代码、权重、脚本、许可证与资源；给出优先复现建议和完整产物。",
+      "files": [],
+      "expectations": [
+        "覆盖近期论文、预印本、官方结果、仓库和模型卡",
+        "按 benchmark、split、指标和协议建立可比效果榜",
+        "把效果排名与复现友好度分开呈现",
+        "核查代码、权重、数据脚本、许可证和显存或计算需求",
+        "对自报、聚合、缺失或不可访问结果进行清楚标注",
+        "保留有价值但暂不可完整比较的近期候选",
+        "推荐两到三个优先复现方法并解释选择依据",
+        "聊天先展示结果并交付标准四件套"
+      ],
+      "failure_conditions": [
+        "只按最高分推荐而忽略代码、许可和资源",
+        "把不同 benchmark 或协议结果混在一个效果榜",
+        "根据模型参数量直接断言显存一定可行",
+        "未形成候选榜、复现建议或标准产物"
+      ],
+      "tags": [
+        "zh",
+        "latest",
+        "code-availability",
+        "license",
+        "reproducibility",
+        "resource-constraint",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "中文：24GB GPU 下的商用 ASR 选型",
+      "category": "deployment-decision",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "我们要在单张 24GB GPU 上部署英文 ASR，并要求许可证允许商业使用。请围绕 LibriSpeech 等可比结果搜索最新论文、模型卡、仓库和聚合站，分别建立质量榜和部署候选表，核查许可证、模型规模、推理资源和代码可用性，给出最高质量候选、最适合落地候选及 PoC 顺序，并生成完整产物。",
+      "prompt_language": "zh",
+      "user_role": "语音工程负责人",
+      "user_goal": "选择质量、许可和资源均适合产品部署的 ASR 模型",
+      "real_user_scenario": true,
+      "scenario_zh": "产品选型不能只看最低 WER，还要确认商业许可、硬件可行性和实现成本。",
+      "task_summary_zh": "综合评测 benchmark 质量、部署资源、商业许可、代码证据、分榜推荐和交付效率。",
+      "expected_output": "建立严格可比的质量榜和部署候选表，区分实测、来源自报和估算；核对许可证、资源、代码与设置，给出质量冠军、落地候选和 PoC 顺序，并按时交付四件套。",
+      "files": [],
+      "expectations": [
+        "覆盖 benchmark、论文、模型卡、仓库和聚合来源",
+        "按数据集、split、指标和解码设置建立可比质量榜",
+        "单独整理商业许可证、模型规模、推理资源和代码状态",
+        "区分实测资源、来源自报要求和基于公开信息的估算",
+        "聚合站或模型卡数字未获原始证据时不得直接进入主榜",
+        "分别给出最高质量候选、24GB 落地候选和 PoC 顺序",
+        "说明证据缺口和绝对截止日期",
+        "在标准工作流时间内完成榜单和四件套"
+      ],
+      "failure_conditions": [
+        "只按最低 WER 推荐而忽略许可证和资源",
+        "把不同数据集、split 或解码协议混合排名",
+        "将未核验聚合数字放入主榜",
+        "持续搜索但没有形成可执行选型结果"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "deployment-selection",
+        "commercial-license",
+        "asr",
+        "resource-constraint",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "中文：代码修复模型的效果与部署决策",
+      "category": "deployment-decision",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "我们要为企业代码库选择可本地部署的代码修复模型，硬件上限是单张 24GB GPU。请调研近期 SWE-bench 类结果、论文和公开仓库，区分官方评测与不同协议自报结果，同时核查许可证、模型与推理资源、代码和复现条件；建立效果榜与部署候选表，给出按风险排序的推荐，并生成完整产物。",
+      "prompt_language": "zh",
+      "user_role": "代码智能体平台负责人",
+      "user_goal": "选择可本地部署并可复现的代码修复模型",
+      "real_user_scenario": true,
+      "scenario_zh": "企业落地需要平衡 benchmark 效果、数据协议、硬件资源、许可证和复现风险。",
+      "task_summary_zh": "综合评测代码修复结果检索、官方与自报协议分离、资源与许可核查、部署推荐及标准交付。",
+      "expected_output": "按官方与自报协议建立效果范围，独立整理部署约束；核对论文、仓库、许可证、模型规模和资源证据，保留不可比候选，给出风险分层推荐和完整产物。",
+      "files": [],
+      "expectations": [
+        "检索近期 benchmark、论文、官方结果和公开仓库",
+        "区分官方评测、不同 agent 框架和论文自报协议",
+        "建立可比效果榜并保留协议不同的参考候选",
+        "核查许可证、代码、模型权重、推理资源和复现条件",
+        "避免根据参数量或营销说明直接保证 24GB 可部署",
+        "给出效果、部署风险和复现成本分层的推荐",
+        "说明截止日期、证据不足和需要 PoC 验证的事项",
+        "聊天展示可用榜单并交付四个标准文件"
+      ],
+      "failure_conditions": [
+        "把不同 SWE-bench 版本或 agent 协议混成主榜",
+        "只看最高分而忽略许可证、硬件和复现条件",
+        "把推测的资源可行性写成已验证事实",
+        "没有给出部署建议或标准产物"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "deployment-selection",
+        "official-source",
+        "commercial-license",
+        "code-availability",
+        "resource-constraint",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "中文：质量与延迟双榜的线上模型选型",
+      "category": "deployment-decision",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "请只使用给定 JSON，为线上问答服务做模型选型。分别建立质量榜和 batch size=1 延迟榜，正确处理指标方向和并列结果；保留只有聚合来源的候选作为待核验参考，解释为什么不能随意合成一个总分，给出面向高质量和低延迟两种场景的推荐，并生成报告、工作簿和证据文件。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "在线服务架构师",
+      "user_goal": "从本地评测数据中选择质量或延迟优先的模型",
+      "real_user_scenario": true,
+      "scenario_zh": "团队需要在两个业务目标间做选择，不能用任意权重制造唯一冠军。",
+      "task_summary_zh": "综合评测本地输入解析、多指标范围划分、证据分级、双榜构建、场景推荐和产物交付。",
+      "expected_output": "只使用本地 JSON，分别建立质量和延迟榜，保留并列与来源状态；不构造无依据总分，给出两种业务场景的候选建议，并生成完整标准产物。",
+      "files": [
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "严格只使用给定 JSON，不调用网络或 AMiner",
+        "识别质量和延迟的不同 scope、设置与指标方向",
+        "分别建立质量榜和 batch size=1 延迟榜",
+        "正确保留并列结果，不为制造唯一冠军而任意破局",
+        "聚合来源候选保留在待核验参考范围",
+        "解释不应随意合成总分，并给出质量优先和延迟优先建议",
+        "生成中文简洁报告、完整报告、分 Sheet 工作簿和证据文件"
+      ],
+      "failure_conditions": [
+        "联网补充未提供的数据",
+        "把延迟按越高越好排序或把两个指标混成一榜",
+        "删除聚合来源候选或将其当成已核验主结果",
+        "缺少业务建议或标准产物"
+      ],
+      "tags": [
+        "zh",
+        "metric-direction",
+        "multi-objective",
+        "user-files",
+        "offline-only",
+        "aggregator",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "simple_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "English: update a historical leaderboard seed",
+      "category": "input-grounded-update",
+      "mode": "live_web",
+      "difficulty": "intermediate",
+      "prompt": "Use the supplied historical CSV as a seed and update the tracker with current official, paper, repository, and aggregator evidence. Preserve the historical rows, separate incompatible versions and splits, add newly discovered candidates without overwriting provenance, recommend the current baseline, and deliver the updated leaderboard, reports, workbook, and structured evidence.",
+      "prompt_language": "en",
+      "user_role": "Benchmark maintainer",
+      "user_goal": "Update an existing tracker without losing history or comparability",
+      "real_user_scenario": true,
+      "scenario_zh": "榜单维护者需要在保留历史数据和来源的同时补充当前结果。",
+      "task_summary_zh": "综合评测本地种子解析、联网更新、历史保留、范围拆分、证据补全、当前推荐和产物交付。",
+      "expected_output": "Parse and preserve the supplied seed, search current sources, separate versions and splits, retain provenance, add verified and reference candidates, recommend a current baseline, and deliver the complete updated artifact bundle.",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "Parse the supplied CSV and preserve every historical row and provenance field",
+        "Search current official, paper, repository, and aggregator sources",
+        "Separate incompatible benchmark versions, splits, metrics, and protocols",
+        "Add newly discovered results without silently replacing historical values",
+        "Keep aggregator-only or incomplete results as labeled references",
+        "Recommend a current baseline using evidence quality and practical availability",
+        "Record an absolute cutoff and unresolved update gaps",
+        "Deliver the updated leaderboard and all standard artifacts"
+      ],
+      "failure_conditions": [
+        "Overwrites or removes historical rows",
+        "Treats the old seed as a current authoritative leaderboard",
+        "Merges incompatible versions or splits",
+        "Fails to produce an updated result and artifact bundle"
+      ],
+      "tags": [
+        "en",
+        "user-files",
+        "latest",
+        "historical-preservation",
+        "official-source",
+        "aggregator",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": true,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "中文：闭卷与检索增强结果的 baseline 选择",
+      "category": "input-grounded-update",
+      "mode": "offline_fixture",
+      "difficulty": "basic",
+      "prompt": "请只依据附件资料为项目选择 baseline，不要联网。分别建立标准闭卷主榜、使用检索工具或外部语料的参考榜，以及无法核验的聚合记录；核对数据集、split、指标和工具条件，推荐一个闭卷 baseline 和一个检索增强候选，解释为什么不存在跨设置总冠军，并生成完整产物。",
+      "prompt_language": "zh",
+      "user_role": "项目研究员",
+      "user_goal": "从已有资料中选择闭卷和检索增强 baseline",
+      "real_user_scenario": true,
+      "scenario_zh": "团队已有一份来源混合的候选材料，需要在不外部检索的情况下形成可执行结论。",
+      "task_summary_zh": "综合评测附件解析、工具条件识别、范围拆分、证据分级、双场景推荐和标准交付。",
+      "expected_output": "只使用附件，按闭卷、检索增强和待核验范围整理结果；核对材料差异，建立实用榜单，分别推荐候选，解释可比性边界，并生成四个标准文件。",
+      "files": [
+        "evals/fixtures/closed_source_dossier.md"
+      ],
+      "expectations": [
+        "严格只使用给定附件，不调用网络或 AMiner",
+        "识别工具访问、外部语料、数据集、split 和指标等材料差异",
+        "建立标准闭卷主榜和检索增强参考榜",
+        "将无法核验的聚合记录保留为明确标注的候选",
+        "不把不同设置的最高分称为跨范围总冠军",
+        "分别推荐闭卷 baseline 和检索增强候选并解释依据",
+        "交付简洁聊天结果和四个标准文件"
+      ],
+      "failure_conditions": [
+        "联网补充或推测附件之外的结果",
+        "把闭卷、检索工具和外部语料设置混在同一主榜",
+        "删除聚合候选或把它当成已核验事实",
+        "没有给出 baseline 建议或标准产物"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "user-files",
+        "offline-only",
+        "scope",
+        "aggregator",
+        "baseline-selection",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "quick",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "simple_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "English: multi-file engineering leaderboard package",
+      "category": "input-grounded-update",
+      "mode": "offline_fixture",
+      "difficulty": "intermediate",
+      "prompt": "Use both supplied files to prepare an engineering leaderboard package without web access. Preserve the historical tracker, reconcile only clearly matching current rows, keep quality and latency scopes separate, label unresolved mappings and evidence status, recommend candidates for a review meeting, and produce a concise report, a self-contained HTML report, a multi-sheet workbook, and structured evidence.",
+      "prompt_language": "en",
+      "user_role": "Engineering review coordinator",
+      "user_goal": "Turn multiple local result files into a decision-ready review package",
+      "real_user_scenario": true,
+      "scenario_zh": "评审会议前需要整合格式和范围不同的本地文件，同时保留历史与证据边界。",
+      "task_summary_zh": "综合评测多文件解析、历史保留、跨文件映射、范围和指标处理、推荐及完整离线产物。",
+      "expected_output": "Use both local files only, preserve historical records, merge only comparable rows, separate quality and latency scopes, retain unresolved items, recommend review candidates, and deliver self-contained reports, a multi-sheet workbook, and evidence.",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv",
+        "evals/fixtures/mixed_scope_results.json"
+      ],
+      "expectations": [
+        "Use both supplied files and make no network or AMiner calls",
+        "Preserve historical rows and their source fields",
+        "Map rows only when benchmark, split, metric, and settings are sufficiently aligned",
+        "Keep quality and latency scopes separate with correct metric direction",
+        "Label unresolved mappings, secondary evidence, and unavailable information",
+        "Recommend candidates for the review meeting with clear tradeoffs",
+        "Generate a concise report, self-contained HTML, multi-sheet workbook, and structured evidence",
+        "Keep visible prose clear while preserving stable machine fields and identifiers"
+      ],
+      "failure_conditions": [
+        "Silently merges rows with incompatible scopes",
+        "Drops historical records or provenance",
+        "Uses external resources despite the offline instruction",
+        "Produces incomplete or externally dependent review artifacts"
+      ],
+      "tags": [
+        "en",
+        "user-files",
+        "multi-file",
+        "metric-direction",
+        "offline-only",
+        "localization",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "normal",
+      "requires_live_web": false,
+      "scenario_layer": "complex_daily",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "中文：冲突来源下的完整榜单与推荐",
+      "category": "robust-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "请只使用给定的冲突来源，为项目报告建立完整榜单。先解释 Method K 的 85.1、84.6 和 84.4 分别对应什么版本、split 和来源，再按可比范围决定哪些结果进入主榜、参考榜或冲突记录；不要只挑最大值。最后给出可安全引用的结论、推荐后续核验顺序，并生成完整产物。禁止联网。",
+      "prompt_language": "zh",
+      "user_role": "技术报告作者",
+      "user_goal": "在来源冲突时形成可引用且不误导的榜单结论",
+      "real_user_scenario": true,
+      "scenario_zh": "报告撰写前发现官方榜、预印本和修订数据集给出不同数字，需要完整处理而不是回避冲突。",
+      "task_summary_zh": "综合评测冲突材料解析、范围映射、证据权威性、主榜与参考榜、引用结论、补证建议和产物交付。",
+      "expected_output": "保留并解释全部冲突值，正确映射版本和 split；按可比性与来源权威性建立主榜和参考记录，给出可引用结论、补证顺序和标准四件套。",
+      "files": [
+        "evals/fixtures/conflicting_sources.md"
+      ],
+      "expectations": [
+        "严格只使用给定冲突材料，不联网寻找替代数字",
+        "保留 85.1、84.6 和 84.4 并解释各自版本、split 和来源",
+        "核对指标、协议、时间线和来源权威性后确定可比范围",
+        "建立主榜、参考榜和冲突记录，不只选择最大值",
+        "给出项目报告中可以安全引用的结论和限定条件",
+        "提供有优先级的后续核验顺序及可能改变的结论",
+        "生成聊天榜单、简洁报告、完整报告、工作簿和证据文件"
+      ],
+      "failure_conditions": [
+        "只保留最大值或删除冲突数字",
+        "把不同版本或 split 的结果混入同一主榜",
+        "使用附件之外的联网信息",
+        "因冲突而拒绝构建榜单或缺少标准产物"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "conflict",
+        "user-files",
+        "offline-only",
+        "source-authority",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "中文：保密评测数据的离线榜单交付",
+      "category": "robust-delivery",
+      "mode": "offline_fixture",
+      "difficulty": "adversarial",
+      "prompt": "附件 CSV 是团队保密的内部评测结果，不能上传到任何外部服务，也不能调用网络或 AMiner。请仅在本地解析数据，识别可比与不可比范围，建立证据化榜单，保留来源和历史信息，给出适合当前项目的候选建议，并生成可离线查看的简洁报告、完整 HTML、工作簿和证据文件。不要补造附件中不存在的外部结果。",
+      "prompt_language": "zh",
+      "user_role": "企业研发负责人",
+      "user_goal": "在严格保密约束下获得完整可审查的榜单和选型建议",
+      "real_user_scenario": true,
+      "scenario_zh": "企业内部结果不能出网，但仍需要完成与普通项目同等质量的榜单分析和交付。",
+      "task_summary_zh": "综合评测保密边界、本地文件解析、范围和证据处理、榜单构建、选型建议与完整离线交付。",
+      "expected_output": "不进行任何联网或 AMiner 调用，仅使用本地 CSV；按版本、split、指标和来源拆分结果，建立主榜与参考记录，保留历史和证据，给出候选建议，并生成完整离线四件套。",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "严格遵守保密约束，不调用网络、AMiner 或外部服务",
+        "完整解析本地 CSV 并保留历史行、来源和现有字段",
+        "按 benchmark 版本、split、指标和设置区分可比范围",
+        "建立证据化主榜，并把不可比或证据不足行保留为参考",
+        "不推测或补造附件中不存在的外部结果",
+        "基于现有证据给出适合项目的候选建议和限制",
+        "生成可离线查看的简洁报告、HTML、工作簿和证据文件"
+      ],
+      "failure_conditions": [
+        "调用网络、AMiner 或上传附件内容",
+        "补造外部方法、分数或来源",
+        "把不同版本或 split 结果混成一个榜单",
+        "只说明保密限制而没有完成榜单、建议和产物"
+      ],
+      "tags": [
+        "must-pass",
+        "zh",
+        "offline-only",
+        "privacy",
+        "user-files",
+        "historical-preservation",
+        "artifact-bundle"
+      ],
+      "workflow_tier": "standard",
+      "behavior_class": "boundary",
+      "requires_live_web": false,
+      "scenario_layer": "boundary_behavior",
+      "capabilities": [
+        "scope-definition",
+        "evidence-acquisition",
+        "comparability-analysis",
+        "evidence-quality",
+        "leaderboard-construction",
+        "practical-recommendation",
+        "artifact-delivery"
+      ]
+    }
+  ]
+}
