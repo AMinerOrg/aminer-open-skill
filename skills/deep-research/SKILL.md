@@ -100,7 +100,7 @@ system's job, not the skill's.
 | Anything the web knows and AMiner does not: project pages, docs, standards, leaderboards, releases, news | the host's native `WebSearch` and `WebFetch` |
 | Probes, outline, sources, claims (with verbatim `--evidence`), datums (captured data points), coverage gaps, citation numbering, spend | `scripts/evidence.py` — offline ledger |
 | The round-end decision surface: complexity tier, round summaries, direction memos, decisions, evaluator signals, citation-faithfulness verify | `scripts/evidence.py` — `tier` / `round` / `memo` / `decide` / `signals` / `verify` (all offline; the engine computes every number, gates every threshold) |
-| The writing surface before drafting: per-section targets vs material on file, material blocks (claims + verbatim evidence + source notes), the ranked re-read list, the uncited pool, memos | `scripts/evidence.py render --material` (offline, engine-assembled — write the draft from it, not from memory) |
+| The writing surface before drafting: per-section targets vs material on file, material blocks (claims + verbatim evidence + source notes), the ranked re-read list, the uncited pool, memos | `evidence.py render --material` (offline, engine-assembled — write the draft from it, not from memory) |
 | A registered figure rendered to a PNG — charts that visualize ledger-verified numbers, or a structural timeline of dated events | `scripts/chartrender.py` — matplotlib templates (`bar` / `hbar` / `line` / `pie` / `heatmap` / `timeline`) or a sandboxed B script; record the result back with `evidence.py figure mark-rendered` |
 
 Rules:

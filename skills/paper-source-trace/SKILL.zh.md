@@ -120,7 +120,7 @@ json/extraction/*.json          # only when structured intermediates are saved
 9. 如果启用 AMiner，只补充元数据，不替代本地证据。
 10. 先写入 `json/graph/citation_graph.json`，再生成可视化产物。
 11. 写入 `analysis.md`；只有用户明确要求模板或固定格式时才使用 `references/analysis_template.md`。
-12. 用同一条渲染命令生成 `citation_map.html` 和已确认的 SVG 输出：`scripts/render_html.py --graph <output>/json/graph/citation_graph.json --output <output>/citation_map.html --svg <radial|chain|both> --language auto`。
+12. 用同一条渲染命令生成 `citation_map.html` 和已确认的 SVG 输出：`python3 scripts/render_html.py --graph <output>/json/graph/citation_graph.json --output <output>/citation_map.html --svg <radial|chain|both> --language auto`。
 13. 不要临场手写 SVG 或 HTML；静态 SVG 两种模式与 HTML 的 `radial / chain` 视图必须共享渲染器布局、配色、语言包、换行、节点优先级和边线规则。
 14. 最终回复前验证产物。
 

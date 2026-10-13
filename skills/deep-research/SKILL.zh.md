@@ -75,7 +75,7 @@ Deep Research Engine (scripts/evidence.py + scripts/aminer_open.py)
 | web 知道而 AMiner 不知道的：项目页、文档、标准、排行榜、发布、新闻 | 宿主原生的 `WebSearch` 与 `WebFetch` |
 | probes、outline、sources、claims（含逐字 `--evidence`）、datums（采集的数据点）、覆盖缺口、引用编号、spend | `scripts/evidence.py` — 离线台账 |
 | 轮末决策面：复杂度档位、轮次小结、方向备忘录、决策记录、评估信号、引证忠实性核验 | `scripts/evidence.py` — `tier` / `round` / `memo` / `decide` / `signals` / `verify`（全部离线；每个数字由引擎算出，每道阈值由引擎把关） |
-| 写草稿前的写作准备面：每节写作目标与现有素材量、素材块（claims + 逐字证据 + 来源笔记）、按引用次数排序的回读清单、未引用池、备忘录 | `scripts/evidence.py render --material`（离线、引擎拼装——草稿从它出发写，不凭记忆） |
+| 写草稿前的写作准备面：每节写作目标与现有素材量、素材块（claims + 逐字证据 + 来源笔记）、按引用次数排序的回读清单、未引用池、备忘录 | `evidence.py render --material`（离线、引擎拼装——草稿从它出发写，不凭记忆） |
 | 把一个已登记的 figure 渲染成 PNG —— 可视化台账已核验数字的图表，或按日期事件的结构化时间线 | `scripts/chartrender.py` — matplotlib 模板（`bar` / `hbar` / `line` / `pie` / `heatmap` / `timeline`）或沙箱 B 脚本；用 `evidence.py figure mark-rendered` 把结果记回 |
 
 规则：

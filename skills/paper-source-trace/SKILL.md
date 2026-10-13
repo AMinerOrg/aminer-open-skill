@@ -120,7 +120,7 @@ Use only these labels unless the user explicitly extends the taxonomy:
 9. If AMiner is enabled, enrich metadata without replacing local evidence.
 10. Write `json/graph/citation_graph.json` before visual artifacts.
 11. Write `analysis.md`; use `references/analysis_template.md` only for explicit template or fixed-format requests.
-12. Generate `citation_map.html` and the confirmed SVG output with one renderer command: `scripts/render_html.py --graph <output>/json/graph/citation_graph.json --output <output>/citation_map.html --svg <radial|chain|both> --language auto`.
+12. Generate `citation_map.html` and the confirmed SVG output with one renderer command: `python3 scripts/render_html.py --graph <output>/json/graph/citation_graph.json --output <output>/citation_map.html --svg <radial|chain|both> --language auto`.
 13. Do not hand-write ad hoc SVG or HTML; both static SVG modes and the HTML `radial / chain` views must share the renderer layout, colors, language pack, text wrapping, node priority, and edge rules.
 14. Validate artifacts before the final reply.
 
