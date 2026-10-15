@@ -1,0 +1,5 @@
+method,benchmark,benchmark_version,split,metric,direction,score,setting,source_type,source_url,evidence_locator
+Legacy-A,SyntheticBench,1.0,test,accuracy,higher,88.4,single model; no external data,primary,https://example.org/legacy-a,"Table 3, test accuracy"
+Legacy-B,SyntheticBench,1.0,dev,accuracy,higher,90.1,single model; no external data,primary,https://example.org/legacy-b,"Table 2, dev accuracy"
+Legacy-C,SyntheticBench,2.0,test,accuracy,higher,89.7,single model; no external data,official,https://example.org/v2-results,"Official v2 row Legacy-C"
+Legacy-D,SyntheticBench,1.0,test,accuracy,higher,91.0,setting unavailable,aggregator,https://example.org/index,"Aggregator row Legacy-D"

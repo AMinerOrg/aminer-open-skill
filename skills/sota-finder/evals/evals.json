@@ -1,0 +1,307 @@
+{
+  "skill_name": "sota-finder",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "我们准备启动代码智能体项目。请查找截至今天 SWE-bench Verified 的当前 SOTA，优先核对官方 leaderboard，再查看论文、预印本、作者仓库和常用聚合站。请给出按同一评测口径可直接比较的榜单，不要只列冠军；协议不同或仅自报的强结果单独列出，并说明最值得复现的候选和当前覆盖缺口。",
+      "expected_output": "建立有足够头部候选的官方主榜，并把协议不同的自报结果放入参考表；明确指出当前证据最充分的 SOTA，并给出适合复现的强基线；说明未覆盖提交、闭源依赖、复现材料不足和榜单更新时间等缺口。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 SWE-bench Verified、官方榜单名称、方法名及常见代码智能体别名",
+        "覆盖官方 leaderboard、原始论文或预印本、作者仓库，并用聚合站辅助发现",
+        "区分 benchmark 版本、提交轨道、解析率口径、是否使用额外工具或专有模型",
+        "逐项核对分数、提交或发布日期、评测设置与原始来源",
+        "建立有足够头部候选的官方主榜，并把协议不同的自报结果放入参考表",
+        "先给出清晰、面向用户的结论；明确指出当前证据最充分的 SOTA，并给出适合复现的强基线",
+        "说明未覆盖提交、闭源依赖、复现材料不足和榜单更新时间等缺口"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Find the current state of the art on LiveCodeBench as of today. Search the official leaderboard first, then relevant papers, preprints, model repositories or cards, and reputable aggregators. Build a useful leaderboard rather than naming one winner, separate benchmark releases and evaluation windows when they are not comparable, identify the best-supported leader, and state the main coverage gaps.",
+      "expected_output": "Build a sufficiently broad comparable leaderboard and retain non-comparable recent leaders in labeled reference sections；Name the best-supported current SOTA for each valid scope and distinguish it from weaker self-reported claims；Report missing submissions, inaccessible models, possible contamination concerns, and freshness limits。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "Use LiveCodeBench, LCB, code generation, benchmark release names, evaluation windows, and model aliases",
+        "Cover the official leaderboard, primary papers or technical reports, model repositories or cards, and aggregators for discovery",
+        "Separate benchmark releases, test periods, scoring variants, model modes, and pass@k settings",
+        "Verify scores, model versions, dates, and evaluation settings against primary or official sources",
+        "Build a sufficiently broad comparable leaderboard and retain non-comparable recent leaders in labeled reference sections",
+        "Lead with a clear user-facing conclusion; name the best-supported current SOTA for each valid scope and distinguish it from weaker self-reported claims",
+        "Report missing submissions, inaccessible models, possible contamination concerns, and freshness limits"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "请整理截至今天的 DocVQA 近期 SOTA 全景。检索中文名、英文全称、DocVQA 缩写以及 Document VQA、MP-DocVQA、InfographicsVQA 等常见名称，覆盖官方榜、论文、预印本、项目仓库、模型卡和聚合站。请按单页、多页、信息图等可比范围分别建榜，保留重要近期候选，指出各范围最可信的 SOTA、代码可用性和覆盖缺口。",
+      "expected_output": "分别建立可用的主榜，并将验证集、自报或协议不同结果作为参考候选保留；为每个主要任务范围识别证据最充分的 SOTA，并简述近期方法路线；说明闭源模型缺位、验证集污染风险、未提交官方测试集等覆盖缺口。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "使用中文名、英文全称、缩写、子任务名和常见别名进行多轮检索",
+        "覆盖 RRC 等官方榜、论文、预印本、仓库、模型卡和聚合站",
+        "按单页、多页、信息图、数据集 split、指标及验证集或隐藏测试集拆分",
+        "核验方法名称、ANLS 等指标、提交日期、论文版本和代码链接",
+        "分别建立可用的主榜，并将验证集、自报或协议不同结果作为参考候选保留",
+        "先给出清晰、面向用户的结论；为每个主要任务范围识别证据最充分的 SOTA，并简述近期方法路线",
+        "说明闭源模型缺位、验证集污染风险、未提交官方测试集等覆盖缺口"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "请查找截至今天 LibriSpeech 自动语音识别的当前 SOTA。以论文、预印本、作者仓库和可信聚合榜为线索，分别整理 test-clean 与 test-other 的 WER，并区分单模型、集成、外部语言模型或额外训练数据等设置。请给出完整可比榜单，明确 WER 越低越好，指出最可信的领先结果、适合公开复现的强基线和覆盖缺口。",
+      "expected_output": "按可比设置建立 lower-is-better 榜单，并保留协议不同的强结果作为参考；分别识别主要测试集与设置下最可信的最低 WER，并推荐可复现基线；说明缺少官方统一提交榜、闭源系统、训练资源和复现信息等限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 LibriSpeech、ASR、WER、test-clean、test-other 以及主流模型别名",
+        "覆盖原始论文或预印本、作者仓库、模型卡和可信聚合榜",
+        "区分 test-clean 与 test-other、单模型与集成、语言模型和额外数据设置",
+        "核对 WER 数值、指标方向、训练数据、解码设置及论文或仓库版本",
+        "按可比设置建立 lower-is-better 榜单，并保留协议不同的强结果作为参考",
+        "先给出清晰、面向用户的结论；分别识别主要测试集与设置下最可信的最低 WER，并推荐可复现基线",
+        "说明缺少官方统一提交榜、闭源系统、训练资源和复现信息等限制"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "请调研截至今天 COCO object detection test-dev 的 SOTA。覆盖官方评测入口、论文、预印本、作者代码仓库、模型库和聚合站，重点记录 box AP、backbone、模型规模、预训练数据、输入分辨率和 test-time augmentation。请建立口径清楚的榜单，必要时拆分纯 COCO、额外数据或集成设置，并指出各范围的领先方法与尚未核实的候选。",
+      "expected_output": "建立主要公平设置榜单，并将额外数据、超大模型或集成结果单独保留；识别各主要可比范围的 SOTA，避免用资源更强但协议不同的结果取代主榜冠军；说明官方榜可访问性、旧结果更新滞后、模型细节缺失和未核验候选。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "组合 COCO detection、test-dev、box AP、模型名、backbone 和榜单别名检索",
+        "覆盖官方评测信息、原始论文或预印本、作者仓库、模型库和聚合站",
+        "按 box AP、训练数据、模型规模、输入尺度、增强、集成和提交设置拆分",
+        "核验 AP 数值、表格位置、模型配置、代码或权重及提交口径",
+        "建立主要公平设置榜单，并将额外数据、超大模型或集成结果单独保留",
+        "先给出清晰、面向用户的结论；识别各主要可比范围的 SOTA，避免用资源更强但协议不同的结果取代主榜冠军",
+        "说明官方榜可访问性、旧结果更新滞后、模型细节缺失和未核验候选"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "请查找截至今天 ImageNet-1K 图像分类的 SOTA。综合论文、预印本、官方或作者仓库、模型卡与可信聚合榜，记录 top-1 accuracy、参数量、输入分辨率、预训练或额外数据、蒸馏和集成设置。请按可比训练条件建榜，明确当前领先结果，并给出一个公开可复现的强基线和主要覆盖缺口。",
+      "expected_output": "建立公平训练设置下的主榜，并单列额外数据或特殊推理配置结果；指出各主要设置中证据最充分的最高 top-1 结果和可复现强基线；说明不同模型库口径、缺失配置、私有数据和复现成本等缺口。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 ImageNet-1K、ILSVRC、top-1 accuracy、classification 和模型常见别名",
+        "覆盖论文或预印本、作者仓库、模型卡、公开模型库和可信聚合榜",
+        "区分纯 ImageNet 训练、额外预训练数据、蒸馏、输入分辨率和集成设置",
+        "核验 top-1 数值、模型版本、参数量、训练数据及评测分辨率",
+        "建立公平训练设置下的主榜，并单列额外数据或特殊推理配置结果",
+        "先给出清晰、面向用户的结论；指出各主要设置中证据最充分的最高 top-1 结果和可复现强基线",
+        "说明不同模型库口径、缺失配置、私有数据和复现成本等缺口"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "请核对截至今天 KITTI 3D object detection 官方 leaderboard 的 SOTA。按 Car、Pedestrian、Cyclist 以及 Easy、Moderate、Hard 拆分结果，注明 AP 指标版本、传感器输入和是否使用额外数据；再用论文、预印本和作者仓库补充方法信息。请给出有代表性的官方榜单，指出各主范围冠军和复现材料缺口，不要把 2D、BEV 与 3D 指标混在一起。",
+      "expected_output": "建立官方 3D 主榜并覆盖代表性头部方法，其他任务或设置单独列示；指出 Car Moderate 等主要范围及其他类别中的官方领先者和可复现候选；说明匿名提交、方法映射不明、代码缺失和榜单更新时间等限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 KITTI 3D detection、官方榜任务名、类别、难度、AP 版本和方法别名",
+        "优先官方 leaderboard，并以论文、预印本和作者仓库补充方法与代码信息",
+        "区分 3D、BEV、2D，按类别、难度、AP 版本、传感器和额外数据拆分",
+        "核验官方分数、提交名称、论文身份、时间与具体评测列",
+        "建立官方 3D 主榜并覆盖代表性头部方法，其他任务或设置单独列示",
+        "先给出清晰、面向用户的结论；指出 Car Moderate 等主要范围及其他类别中的官方领先者和可复现候选",
+        "说明匿名提交、方法映射不明、代码缺失和榜单更新时间等限制"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "请调研截至今天 BraTS 脑肿瘤分割的 SOTA。先确定仍具代表性的挑战年份与任务，再检索官方挑战页面、论文、预印本、代码仓库和聚合资料。请按年份、数据集版本、验证或测试集、肿瘤区域及 Dice/HD95 等指标建立可比榜单，明确每个范围的领先方法，并说明代码、数据可得性和证据缺口。",
+      "expected_output": "为主要年份和任务建立分范围榜，避免把跨年份或不同区域结果混排；识别每个有效范围内证据最充分的领先方法并给出可复现候选；说明测试标签不可见、挑战页面缺失、医学数据访问和复现细节限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 BraTS 全称、年份、segmentation、challenge、Dice、HD95 和任务别名",
+        "覆盖官方挑战页面、原始论文或预印本、作者仓库和可信聚合资料",
+        "按年份、数据版本、split、肿瘤区域、Dice 或 HD95 及集成设置拆分",
+        "核验成绩来源、评测阶段、指标方向、团队或方法映射和发布日期",
+        "为主要年份和任务建立分范围榜，避免把跨年份或不同区域结果混排",
+        "先给出清晰、面向用户的结论；识别每个有效范围内证据最充分的领先方法并给出可复现候选",
+        "说明测试标签不可见、挑战页面缺失、医学数据访问和复现细节限制"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Find the current SOTA on LongBench v2 as of today. Search the official project or leaderboard, the benchmark paper, model reports and repositories, and reputable aggregators. Build a comparable leaderboard with model version, score, evaluation setting, open or closed status, and date; separate incompatible protocols, identify the best-supported leader and a reproducible baseline, and summarize coverage gaps.",
+      "expected_output": "Build a useful comparable leaderboard with both frontier and reproducible candidates；Identify the best-supported current leader for the main protocol and a strong open baseline；State missing model submissions, opaque proprietary settings, benchmark freshness, and unverified claims。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "Use LongBench v2, benchmark aliases, task categories, model names, and leaderboard terminology",
+        "Cover the official project or leaderboard, benchmark paper, model reports, repositories, and aggregators",
+        "Separate benchmark versions, official versus self-reported runs, model modes, context settings, and score variants",
+        "Verify scores, model versions, dates, evaluation scripts, and primary source locations",
+        "Build a useful comparable leaderboard with both frontier and reproducible candidates",
+        "Lead with a clear user-facing conclusion; identify the best-supported current leader for the main protocol and a strong open baseline",
+        "State missing model submissions, opaque proprietary settings, benchmark freshness, and unverified claims"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "请查找截至今天 ChartQA 的当前 SOTA。覆盖基准论文或项目页、后续论文与预印本、作者仓库、模型卡和聚合站，记录 test split、relaxed accuracy 或其他指标、是否使用 OCR、额外训练数据和推理设置。请按兼容协议建榜，保留协议不同但重要的近期方法，指出最可信的 SOTA 与当前证据缺口。",
+      "expected_output": "按兼容协议建立主榜，并单列其他指标或自报设置的重要候选；识别主要官方或社区标准协议下证据最充分的领先方法；说明评测脚本差异、复现材料缺失、闭源模型和未提交结果。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 ChartQA、chart question answering、relaxed accuracy、数据划分和方法别名",
+        "覆盖基准项目或论文、后续论文与预印本、作者仓库、模型卡和聚合站",
+        "区分数据 split、指标实现、OCR 使用、额外数据、模型版本和推理协议",
+        "核验成绩表、评测脚本、模型卡数字、版本与原始链接",
+        "按兼容协议建立主榜，并单列其他指标或自报设置的重要候选",
+        "先给出清晰、面向用户的结论；识别主要官方或社区标准协议下证据最充分的领先方法",
+        "说明评测脚本差异、复现材料缺失、闭源模型和未提交结果"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "请调研截至今天 MTEB 中文 retrieval 的 SOTA。优先使用官方排行榜或项目数据，并核对论文、模型卡、仓库与聚合站。请同时给出中文检索平均分榜和主要数据集分榜，记录模型版本、embedding 维度、是否需要指令、评测版本及开闭源状态；指出总体冠军、不同数据集冠军、适合落地的公开模型和覆盖缺口。",
+      "expected_output": "建立中文检索总榜及若干业务相关数据集分榜，保留可复现信息；分别指出总体和分数据集的领先者，并给出公开可用强候选；说明榜单动态更新、缺失模型、私有模型、维度与资源差异等限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 MTEB、Massive Text Embedding Benchmark、Chinese retrieval、任务和模型别名",
+        "覆盖官方排行榜或结果数据、论文、模型卡、仓库和聚合站",
+        "区分语言、retrieval 子集、平均方式、数据集、评测版本、模型尺寸和指令设置",
+        "核验平均分与分项分数、模型版本、发布日期、评测配置和来源",
+        "建立中文检索总榜及若干业务相关数据集分榜，保留可复现信息",
+        "先给出清晰、面向用户的结论；分别指出总体和分数据集的领先者，并给出公开可用强候选",
+        "说明榜单动态更新、缺失模型、私有模型、维度与资源差异等限制"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "请整理截至今天 MMMU 的最新 SOTA。检索官方项目或榜单、论文、预印本、模型技术报告、仓库和聚合站；先给总体榜，再尽可能整理主要学科或子集的领先结果。请区分 MMMU 版本、验证或测试集、直接回答与思维增强设置、模型版本和是否使用外部工具，指出各范围最可信的领先者及覆盖缺口。",
+      "expected_output": "建立总体主榜，并在证据允许时建立学科或子集分榜；识别总体冠军及重要学科中的领先模型，避免以单一分项代表总体 SOTA；说明官方分项缺失、自报协议、闭源设置和榜单更新差异。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 MMMU 全称、官方项目、总体分、学科类别、模型名和评测设置别名",
+        "覆盖官方项目或榜单、论文与预印本、技术报告、仓库和聚合站",
+        "区分 benchmark 版本、split、总体与学科分项、提示或工具设置和模型版本",
+        "核验总分与分项分数、表格列、评测日期、模型身份和来源层级",
+        "建立总体主榜，并在证据允许时建立学科或子集分榜",
+        "先给出清晰、面向用户的结论；识别总体冠军及重要学科中的领先模型，避免以单一分项代表总体 SOTA",
+        "说明官方分项缺失、自报协议、闭源设置和榜单更新差异"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "请调研截至今天 Video-MME 的 SOTA。覆盖官方项目、论文、预印本、模型报告或仓库和聚合站，给出总体结果，并按短、中、长视频以及有无音频或字幕等可获得赛道拆分。记录模型版本、帧数或视频输入策略和评测协议，指出每个主要范围的领先者、公开可复现候选与覆盖缺口。",
+      "expected_output": "建立总体榜和可获得的时长或输入设置分榜，保留近期强候选；分别识别总体和关键赛道的证据充分领先模型与公开基线；说明分项披露不足、帧预算差异、闭源配置和未核验自报结果。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 Video-MME、视频多模态评测、时长分组、音频字幕设置和模型别名",
+        "覆盖官方项目、基准论文、后续论文或预印本、模型仓库或报告和聚合站",
+        "区分总体与时长分项、音频或字幕输入、帧采样、模型版本和评测协议",
+        "核验总体与分项分数、模型配置、日期及原始表格或榜单",
+        "建立总体榜和可获得的时长或输入设置分榜，保留近期强候选",
+        "先给出清晰、面向用户的结论；分别识别总体和关键赛道的证据充分领先模型与公开基线",
+        "说明分项披露不足、帧预算差异、闭源配置和未核验自报结果"
+      ]
+    },
+    {
+      "id": 14,
+      "prompt": "Trace the historical and current SOTA for image captioning across the major benchmarks. Search benchmark or challenge pages, papers and preprints, author repositories, model cards, and aggregators. Build separate leaderboards for comparable datasets, splits and metrics such as CIDEr or SPICE, highlight milestone methods and current leaders, and explain where modern multimodal-model results cannot be compared directly with older benchmark submissions.",
+      "expected_output": "Build dataset-specific leaderboards that show both historical milestones and current comparable leaders；Identify the strongest supported result in each active scope without inventing one universal captioning champion；Explain retired servers, metric limitations, sparse recent submissions, and protocol discontinuities。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "Use image captioning, caption generation, benchmark names, challenge names, metrics, and method aliases across time",
+        "Cover benchmark or challenge pages, primary papers and preprints, repositories, model cards, and aggregators",
+        "Separate datasets, splits, online test servers, metrics, ensemble settings, and historical versus modern protocols",
+        "Verify milestone and current scores, publication dates, method identity, and original result locations",
+        "Build dataset-specific leaderboards that show both historical milestones and current comparable leaders",
+        "Lead with a clear user-facing conclusion; identify the strongest supported result in each active scope without inventing one universal captioning champion",
+        "Explain retired servers, metric limitations, sparse recent submissions, and protocol discontinuities"
+      ]
+    },
+    {
+      "id": 15,
+      "prompt": "附件是一份历史 leaderboard CSV。请先识别其中的 benchmark、split、指标和已有来源，再联网检索截至今天的官方页面、论文、预印本、项目仓库和聚合站，补充遗漏的新方法并核验旧记录。保留仍有价值的历史结果，纠正错误或过时结论，按可比范围重建榜单，并指出当前 SOTA、发生变化的排名和覆盖缺口。",
+      "expected_output": "在保留历史脉络的同时建立更新后的主榜和必要分榜；明确指出与旧榜相比当前 SOTA 和排名变化，并区分新证据与原有记录；说明仍未找到的来源、未覆盖的新提交、时间截止与可能继续变化之处。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [
+        "evals/fixtures/prior_leaderboard.csv"
+      ],
+      "expectations": [
+        "从附件实体扩展 benchmark 全称、缩写、任务别名、方法名和近期年份进行检索",
+        "覆盖附件已有来源以及官方页面、论文、预印本、项目仓库和聚合站",
+        "解析并保持 benchmark、版本、split、指标方向和设置边界，新增结果不得混入错误范围",
+        "逐行核验关键旧记录和新增领先记录，标记更正、替换与无法确认项",
+        "在保留历史脉络的同时建立更新后的主榜和必要分榜",
+        "先给出清晰、面向用户的结论；明确指出与旧榜相比当前 SOTA 和排名变化，并区分新证据与原有记录",
+        "说明仍未找到的来源、未覆盖的新提交、时间截止与可能继续变化之处"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "我们要评估长文档 RAG 的引用忠实度，但这个方向没有统一官方 leaderboard。请广泛检索论文、预印本、项目仓库、公开评测页面和聚合资料，先归纳主流任务、数据集与 citation faithfulness 指标，再在可比范围内建立多个参考榜。请找出证据最充分的领先方法和可复现方案，同时保留不可直接比较但有价值的候选，明确覆盖缺口和停止检索的理由。",
+      "expected_output": "为证据足够的主要范围建立参考榜，并保留不可比但重要的方法地图；按范围识别最有根据的领先方法，避免虚构全领域唯一 SOTA，并推荐可复现方案；明确统一榜缺失、指标定义差异、公开实现不足、检索盲区和停止理由。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "扩展 long-document RAG、citation faithfulness、attribution、grounded QA、长上下文检索及常见别名",
+        "广泛覆盖论文、预印本、作者仓库、公开评测项目、数据集页面和聚合资料",
+        "先归纳任务、数据集、指标、语料长度和检索或生成设置，再建立多个可比范围",
+        "核验关键分数、评测定义、数据集版本、代码和结果出处",
+        "为证据足够的主要范围建立参考榜，并保留不可比但重要的方法地图",
+        "先给出清晰、面向用户的结论；按范围识别最有根据的领先方法，避免虚构全领域唯一 SOTA，并推荐可复现方案",
+        "明确统一榜缺失、指标定义差异、公开实现不足、检索盲区和停止理由"
+      ]
+    },
+    {
+      "id": 17,
+      "prompt": "请调研科研文献问答中兼顾答案质量与可验证性的 SOTA。广泛搜索论文、预印本、基准或数据集页面、作者仓库和聚合站；如环境可用，可选用 AMiner 补充论文发现，但不能依赖它才能完成。请先划分科学问答、文献检索增强、引用或证据核验等可比范围，再建立参考榜，指出各范围领先方法、公开实现和主要覆盖缺口。",
+      "expected_output": "按任务和指标建立多个可比参考榜，并保留跨范围的重要近期方法；识别各主要范围证据最充分的领先方案及适合产品验证的公开候选；说明统一评测缺失、答案和引用指标脱节、数据污染及检索覆盖限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 scientific QA、literature QA、evidence-grounded answering、citation verification 及中文别名",
+        "覆盖论文、预印本、基准与数据集页面、作者仓库、聚合站，并可选用 AMiner 扩展发现",
+        "区分答案正确性、证据检索、引用准确性、数据集领域、闭卷与检索增强设置",
+        "核验关键成绩、指标定义、论文版本、代码或数据可用性和原始出处",
+        "按任务和指标建立多个可比参考榜，并保留跨范围的重要近期方法",
+        "先给出清晰、面向用户的结论；识别各主要范围证据最充分的领先方案及适合产品验证的公开候选",
+        "说明统一评测缺失、答案和引用指标脱节、数据污染及检索覆盖限制"
+      ]
+    },
+    {
+      "id": 18,
+      "prompt": "请寻找截至今天可复现的多模态文档问答 SOTA。广泛检索 DocVQA 及相关文档理解基准的官方页、论文、预印本、仓库、模型卡和聚合站；如可用，可选用 AMiner 扩展论文发现。请按数据集和协议建立榜单，同时把代码、权重、许可证和推理资源纳入说明，区分绝对最高分与公开可复现领先者，并报告尚未覆盖或无法核验的候选。",
+      "expected_output": "按可比 benchmark 建立性能榜，并附公开可复现状态而不以可复现性筛掉高分结果；分别指出绝对 SOTA 与证据充分的公开可复现 SOTA，并推荐验证顺序；说明闭源结果、代码失效、许可证不明、资源不可得和未覆盖基准。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 multimodal document QA、document understanding、DocVQA 相关任务、方法别名和复现关键词",
+        "覆盖官方页、论文、预印本、作者仓库、模型卡、聚合站，并可选用 AMiner 发现论文",
+        "区分数据集、split、指标、OCR 或无 OCR、模型尺寸、闭源 API 与公开权重设置",
+        "核验结果表、评测协议、代码与权重状态、许可证、资源需求和版本",
+        "按可比 benchmark 建立性能榜，并附公开可复现状态而不以可复现性筛掉高分结果",
+        "先给出清晰、面向用户的结论；分别指出绝对 SOTA 与证据充分的公开可复现 SOTA，并推荐验证顺序",
+        "说明闭源结果、代码失效、许可证不明、资源不可得和未覆盖基准"
+      ]
+    },
+    {
+      "id": 19,
+      "prompt": "Find the current SOTA for text-to-image prompt following across GenEval, DPG-Bench, T2I-CompBench and other widely used evaluations. Search benchmark pages, papers and preprints, model reports or cards, repositories, and aggregators. Build separate comparable leaderboards, verify evaluator and protocol differences, identify the strongest supported model in each scope, retain useful non-comparable candidates, and explain why no single overall winner may exist.",
+      "expected_output": "Build benchmark-specific leaderboards and a clearly labeled cross-benchmark coverage matrix；Identify the strongest supported model per scope and avoid unsupported averaging into a universal champion；Report proprietary model gaps, evaluator bias, unavailable prompts or outputs, and missing standardized submissions。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "Use text-to-image prompt following, compositional generation, benchmark names, evaluator names, and model aliases",
+        "Cover benchmark pages, primary papers and preprints, model reports or cards, repositories, and aggregators",
+        "Separate benchmarks, versions, automated versus human evaluation, evaluator models, resolutions, and generation settings",
+        "Verify scores, benchmark versions, model variants, evaluation procedures, and source dates",
+        "Build benchmark-specific leaderboards and a clearly labeled cross-benchmark coverage matrix",
+        "Lead with a clear user-facing conclusion; identify the strongest supported model per scope and avoid unsupported averaging into a universal champion",
+        "Report proprietary model gaps, evaluator bias, unavailable prompts or outputs, and missing standardized submissions"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "请调研截至今天文档抽取与 OCR 的 SOTA 全景。广泛搜索官方挑战或数据集页面、论文、预印本、项目仓库、模型卡和聚合站，先区分文字识别、版面分析、关键信息抽取、表格或端到端文档解析等任务，再在主要 benchmark 内分别建榜。请指出各范围证据最充分的领先方法、公开可复现候选、不可直接比较的工业方案和覆盖缺口。",
+      "expected_output": "在主要 benchmark 内建立分任务榜，并保留工业系统与跨任务模型作为独立参考；分别识别各任务范围的最可信 SOTA 与可复现领先方案，不生成虚假的统一总冠军；说明统一榜缺失、私有数据或 API、语言覆盖、评测协议和复现材料限制。结果应先给用户可直接使用的榜单和简洁结论。",
+      "files": [],
+      "expectations": [
+        "覆盖 OCR、document extraction、document parsing、KIE、layout analysis、table extraction 及中英文别名",
+        "覆盖官方挑战或数据集页面、论文、预印本、作者仓库、模型卡和聚合站",
+        "区分任务类型、数据集、语言、split、指标、端到端或分阶段设置及专有 API",
+        "核验关键成绩、指标方向、数据版本、论文与仓库对应关系和公开可用性",
+        "在主要 benchmark 内建立分任务榜，并保留工业系统与跨任务模型作为独立参考",
+        "先给出清晰、面向用户的结论；分别识别各任务范围的最可信 SOTA 与可复现领先方案，不生成虚假的统一总冠军",
+        "说明统一榜缺失、私有数据或 API、语言覆盖、评测协议和复现材料限制"
+      ]
+    }
+  ]
+}
