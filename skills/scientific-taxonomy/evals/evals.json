@@ -1,0 +1,44 @@
+{
+  "skill_name": "scientific-taxonomy",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Organize these papers into a taxonomy: P1 has title 'Retrieval-Augmented Generation for Scientific QA', an abstract about grounding answers in retrieved papers, venue ACL, year 2024, and AMiner URL https://www.aminer.cn/pub/P1; P2 has title 'Dense Retrieval for Scholarly Search', an abstract about scientific-document retrieval, venue SIGIR, year 2023, and AMiner URL https://www.aminer.cn/pub/P2; P3 has title 'Named Entity Recognition in Materials Science', an abstract about extracting material entities, venue EMNLP, year 2022, and AMiner URL https://www.aminer.cn/pub/P3; P4 has title 'Event Extraction from Biomedical Articles', an abstract about biomedical event extraction, venue BioNLP, year 2021, and AMiner URL https://www.aminer.cn/pub/P4.",
+      "expected_output": "Create taxonomy.md containing one coherent hierarchy. Group the retrieval papers separately from the information-extraction papers, preserve all four titles, and list each paper exactly once under a leaf heading using the format 'venue abbreviation year — linked exact title'. Do not visibly display paper IDs.",
+      "files": [],
+      "expectations": [
+        "Produced a Markdown taxonomy rather than JSON or a directory tree",
+        "Included all four paper titles exactly once each without visibly displaying P1, P2, P3, or P4",
+        "Preserved the supplied paper titles",
+        "Displayed venue abbreviation and year before each linked paper title",
+        "Linked each title to the supplied AMiner URL",
+        "Used meaningful topic headings and no Other or Miscellaneous category"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Build a taxonomy for the research papers in my local PDF folder. I have not extracted their titles or abstracts.",
+      "expected_output": "Recognize that the taxonomy input is incomplete and invoke an available local PDF-extraction capability first. Consume the extracted titles and abstracts, then create taxonomy.md. Do not implement PDF parsing inside this Skill and do not create paper folders or symbolic links.",
+      "files": [],
+      "expectations": [
+        "Obtained title and abstract metadata before classifying",
+        "Used a separate local PDF-extraction capability",
+        "Created only the Markdown taxonomy output",
+        "Did not create a folder hierarchy or symbolic links"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Create a taxonomy from this aminer-deep-search result. Every paper has an AMiner ID, title, and a 300-character abstract_slice, but no complete abstract.",
+      "expected_output": "Treat abstract_slice as insufficient. Use aminer-academic-search paper_detail for only the selected paper IDs, respecting authorization and cost rules, then generate taxonomy.md from verified titles and complete abstracts. If a complete abstract remains unavailable, classify from the verified title and available slice and append a concise metadata note.",
+      "files": [],
+      "expectations": [
+        "Did not treat abstract_slice as a complete abstract",
+        "Called aminer-academic-search paper_detail before taxonomy generation",
+        "Did not add unrelated papers from search results",
+        "Did not invent or expand missing abstracts",
+        "Recorded unresolved metadata in a note after the taxonomy"
+      ]
+    }
+  ]
+}

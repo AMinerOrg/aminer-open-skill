@@ -1,0 +1,147 @@
+{
+  "skill_name": "aminer-pdf-ocr",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Parse this paper PDF, extract the experiment information, and give me both a summary and the structured JSON. File: data/pdf/applsci-14-11736.pdf",
+      "expected_output": "Check AMINER_API_KEY, run scripts/ocr.py on the PDF, write result.md / response.json / images/, extract experiments.json with no justification fields, then reply with a Markdown summary, an experiment summary, the full JSON in a json code block, and artifact paths.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Checked that AMINER_API_KEY is set before calling the script",
+        "Ran scripts/ocr.py with --input pointing at the given PDF",
+        "Wrote result.md, response.json, and experiments.json under outputs/aminer-pdf-ocr/SCIREX/",
+        "Chat reply includes a short Markdown summary of the paper",
+        "Chat reply includes the full experiments.json object in a json code block, not only a summary",
+        "Structured JSON has no justification keys"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "OCR this PDF and extract experiments: data/pdf/applsci-14-11736.pdf. I have not set AMINER_API_KEY.",
+      "expected_output": "Detect that AMINER_API_KEY is missing; stop immediately; do not run ocr.py; tell the user to generate a token at https://open.aminer.cn/open/board?tab=control and export AMINER_API_KEY=<token>. Never print a real token, host, or IP.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Reported that AMINER_API_KEY is missing",
+        "Did not run scripts/ocr.py",
+        "Did not fabricate OCR text or experiment JSON",
+        "Pointed the user to https://open.aminer.cn/open/board?tab=control",
+        "Did not hardcode a PDF OCR host or IP in the reply"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Extract the experiments from that machine learning paper I mentioned.",
+      "expected_output": "No local file or URL was given. Stop and ask the user for a PDF/JPG/PNG path or http(s) URL. Do not invent an input file.",
+      "files": [],
+      "expectations": [
+        "Did not run scripts/ocr.py",
+        "Asked the user for a local file path or URL",
+        "Did not invent a PDF path or fabricate experiment JSON"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "/aminer-pdf-ocr input: data/pdf/applsci-14-11736.pdf ocr-only: yes",
+      "expected_output": "Run OCR only. Write result.md and related OCR artifacts. Skip experiment extraction. Do not write experiments.json or paste experiment JSON.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Ran scripts/ocr.py on the given PDF",
+        "Did not write experiments.json",
+        "Did not present a full experiment JSON object",
+        "Told the user the OCR artifact paths (result.md / response.json / images/)"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "请解析这篇论文并抽取实验信息，输入：data/pdf/applsci-14-11736.pdf",
+      "expected_output": "Handle Chinese input with the same pipeline: OCR then extract. User-facing summary may be Chinese; JSON keys stay English. Reply must still include the full structured JSON.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Ran scripts/ocr.py on data/pdf/applsci-14-11736.pdf",
+        "Wrote experiments.json",
+        "JSON keys are English (research_problem, experiments, methods, datasets, metrics)",
+        "Chat reply includes the full JSON in a json code block",
+        "JSON has no justification fields"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Parse data/pdf/applsci-14-11736.pdf but keep the queue backoff short. max-upload-attempts: 2 output: outputs/aminer-pdf-ocr/applsci/summary.json",
+      "expected_output": "Run ocr.py with --max-upload-attempts 2 and --output. The open API parses whole documents only; page ranges are not supported, so do not pass --start-page-id/--end-page-id. Still present Markdown summary, experiment summary, and full JSON.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Called scripts/ocr.py with --max-upload-attempts 2 and --output",
+        "Did not pass --start-page-id or --end-page-id (unsupported by the open API)",
+        "Did not invent scores or datasets absent from the parsed document",
+        "Chat reply includes the full experiments.json object"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Are the references in data/pdf/applsci-14-11736.pdf real? Please verify the citations.",
+      "expected_output": "Do not use this skill for citation verification. Route the user to pdf-citation-verifier. Do not run PDF OCR for this request.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Did not run scripts/ocr.py for citation verification",
+        "Told the user to use pdf-citation-verifier",
+        "Did not fabricate REAL/FAKE citation labels"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "OCR this file: data/pdf/definitely_missing.pdf",
+      "expected_output": "After AMINER_API_KEY exists, the script should fail because the local file is missing. Surface the error verbatim. Do not extract or invent experiments.",
+      "files": [],
+      "expectations": [
+        "Did not present a fabricated result.md or experiments.json",
+        "Reported that the local file was not found (or equivalent script error)",
+        "Did not invent experiment fields"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "Convert https://example.com/paper.pdf to Markdown and extract the experimental setup.",
+      "expected_output": "Run ocr.py with the URL as --input (script downloads then uploads). If download/parse succeeds, extract experiments and paste the full JSON. If download fails, report the error verbatim.",
+      "files": [],
+      "expectations": [
+        "Passed the http(s) URL to scripts/ocr.py --input",
+        "Did not skip the script and pretend to OCR the URL in-chat",
+        "On success, reply includes full experiments.json; on failure, reports the script error without fabricated JSON"
+      ]
+    },
+    {
+      "id": 10,
+      "prompt": "I only want a brief recap of the experiments in data/pdf/applsci-14-11736.pdf. Do not dump JSON.",
+      "expected_output": "Still run OCR + extraction. A brief recap is allowed, but the skill requires the full structured JSON in the reply anyway. Write experiments.json and paste the unmodified object.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Ran OCR and experiment extraction",
+        "Chat reply still includes the full experiments.json in a json code block",
+        "Did not omit the JSON just because the user asked for a recap"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "Parse data/pdf/applsci-14-11736.pdf and fill justification quotes for every method and dataset.",
+      "expected_output": "Run the normal extraction schema which has no justification fields. Do not add research_problem_justification, methods[].justification, or datasets[].justification.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Wrote experiments.json using the current schema",
+        "Output JSON does not contain any justification keys",
+        "Chat reply includes the full structured JSON"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/aminer-pdf-ocr input: data/pdf/applsci-14-11736.pdf no-save-images: yes",
+      "expected_output": "Run ocr.py with --no-save-images, then extract experiments from result.md. Present Markdown summary, experiment summary, full JSON, and artifact paths.",
+      "files": ["data/pdf/applsci-14-11736.pdf"],
+      "expectations": [
+        "Called scripts/ocr.py with --no-save-images",
+        "Still wrote result.md and experiments.json",
+        "Chat reply includes the full experiments.json object",
+        "JSON keys stay English and include research_problem and experiments"
+      ]
+    }
+  ]
+}

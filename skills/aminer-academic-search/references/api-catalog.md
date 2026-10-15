@@ -1,7 +1,8 @@
 # AMiner Open Platform API Complete Reference
 
 **Base URL**: `https://datacenter.aminer.cn/gateway/open_platform`  
-**Authentication**: All endpoints should default to `Authorization: ${AMINER_API_KEY}` and include `X-Platform: openclaw` in the request headers.  
+**Authentication**: All endpoints should default to `Authorization: ${AMINER_API_KEY}` and include `X-Platform` (current host: `claude-code` / `cursor` / `codex` / `openclaw`; `unknown` if it cannot be determined) in the request headers.  
+**Skill identity** (required on every call; missing headers should be logged as `unknown`, never rejected): `X-Skill-Name: aminer-academic-search`, `X-Skill-Version` = this skill's `SKILL.md` frontmatter `version`. The gateway can aggregate API volume by name × version × platform × path.  
 **Token**: Log in to the [Console](https://open.aminer.cn/open/board?tab=control) to generate one, then export it as `AMINER_API_KEY`.
 
 ---
@@ -73,7 +74,9 @@ Spend ¥0.30 on QA Search Pro only for: a sentence query, a range filter, a bool
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?page=1&size=10&title=Looking+at+CTR+Prediction+Again%3A+Is+Attention+All+You+Need' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -118,7 +121,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search/pro?title=transformer&author=Vaswani&order=n_citation&page=0&size=5' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -177,7 +182,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/qa/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"use_topic": true, "query": "deep learning protein structure prediction", "size": 10, "sci_flag": true}'
 ```
 
@@ -187,7 +194,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/qa/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{
     "use_topic": true,
     "topic_high": "[[\\"transformer\\",\\"self-attention\\"],[\\"protein folding\\"]]",
@@ -277,7 +286,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/qa/searchPro' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{
     "query": "大模型比较新的高引论文",
     "query_type": "auto",
@@ -293,7 +304,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/qa/searchPro' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"cursor":"<NEXT_CURSOR_FROM_PREVIOUS_RESPONSE>"}'
 ```
 
@@ -338,7 +351,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/info' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"ids": ["53e9ab9bb7602d97023e53b2", "53e9a98eb7602d9703e42e5a"]}'
 ```
 
@@ -385,7 +400,9 @@ curl -X POST \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/detail?id=53e9ab9bb7602d97023e53b2' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 **Usage Note:**
@@ -420,7 +437,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/relation?id=53e9ab9bb7602d97023e53b2' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -456,7 +475,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/list/citation/by/keywords?page=0&size=10&keywords=%5B%22deep+learning%22%2C%22object+detection%22%5D' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -495,7 +516,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/platform/allpubs/more/detail/by/ts/org/venue?year=2023&venue_id=<VENUE_ID>' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -538,7 +561,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/person/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"name": "Andrew Ng", "size": 5}'
 ```
 
@@ -576,7 +601,9 @@ curl -X POST \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/person/detail?id=53f3ae78dabfae4b34b0c75d' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -608,7 +635,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/person/figure?id=53f3ae78dabfae4b34b0c75d' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -638,7 +667,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/person/paper/relation?id=53f3ae78dabfae4b34b0c75d' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -670,7 +701,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/person/patent/relation?id=53f3ae78dabfae4b34b0c75d' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -706,7 +739,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/project/person/v3/open?id=53f3ae78dabfae4b34b0c75d' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -740,7 +775,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"orgs": ["Tsinghua University"]}'
 ```
 
@@ -778,7 +815,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/detail' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"ids": ["5f71b2091c455f439fe9a7d7"]}'
 ```
 
@@ -812,7 +851,9 @@ curl -X POST \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/person/relation?org_id=5f71b2091c455f439fe9a7d7&offset=0' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -844,7 +885,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/paper/relation?org_id=5f71b2091c455f439fe9a7d7&offset=0' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -875,7 +918,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/patent/relation?id=6233173d0a6eb145604733e2&page=1&page_size=100' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -904,7 +949,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/na' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"org": "MIT CSAIL"}'
 ```
 
@@ -938,7 +985,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/na/pro' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"org": "Department of Computer Science, Tsinghua University"}'
 ```
 
@@ -975,7 +1024,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/venue/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"name": "tkde"}'
 ```
 
@@ -1010,7 +1061,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/venue/detail' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"id": "<VENUE_ID>"}'
 ```
 
@@ -1047,7 +1100,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/venue/paper/relation' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"id": "<VENUE_ID>", "year": 2023, "offset": 0, "limit": 20}'
 ```
 
@@ -1086,7 +1141,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/patent/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"page":0,"query":"Si02","size":20}'
 ```
 
@@ -1124,7 +1181,9 @@ curl -X POST \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/patent/info?id=<PATENT_ID>' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -1167,7 +1226,9 @@ curl -X GET \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/patent/detail?id=<PATENT_ID>' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0'
 ```
 
 ---
@@ -1178,7 +1239,7 @@ curl -X GET \
 
 - **URL**: `POST /api/v3/paper/search/experiment_data/SearchPro`
 - **Price**: ¥0.10/call
-- **Authentication**: `Authorization: ${AMINER_API_KEY}`, `X-Platform: openclaw`
+- **Authentication**: `Authorization: ${AMINER_API_KEY}`, `X-Platform` (current host), plus the two `X-Skill-*` headers above
 - **Description**: Retrieve original structured Experiment JSON. Exact filters plus Elasticsearch `search_text`. Use only for explicit experiment-level requests.
 
 **Skill Parameters:**
@@ -1194,7 +1255,7 @@ curl -X GET \
 At least one of `paper_id`, `method`, `dataset_name`, or `search_text` must be non-empty.
 
 **`search_text` covers these indexed text fields:**
-`paper_title`, `experiment_name`, `research_problem`, `research_problem_description`, `research_goal`, `method`, `method_description`, `conclusion`, `limitations`, `key_results`.
+`paper_title`, `experiment_name`, `research_problem`, `research_problem_description`, `research_goal`, method name/description text, `conclusion`, `limitations`, `key_results`.
 
 **Backend Request Body:**
 
@@ -1227,9 +1288,11 @@ A single Experiment object is recognized by the presence of `paper_id` or `exper
 | experiment_name | Experiment name |
 | research_problem / research_problem_description | Research problem text |
 | research_goal | Research goal |
-| method / method_description | Method text |
+| methods | Method list; each entry is an object with `name` / `description` (see migration note below) |
 | datasets | Dataset objects; `dataset_name` maps to backend `dataset` |
 | conclusion / limitations / key_results | Result narrative fields |
+
+> **Method field migration.** Each result now returns `methods` as a list (`[{name, description, ...}]`) instead of the flat `method` / `method_description` pair; some older records may still carry the flat fields. When reading results, take `methods` first and fall back to the flat pair; never flatten a `methods` list into a single `method` string (that silently drops all but the first entry). The backend `method` request filter is unchanged and still takes a single string.
 
 **Matching and Output Rules:**
 - `paper_id` / `method` / `dataset` are exact filters; `search_text` is ES full-text. No client-side re-filtering.
@@ -1243,7 +1306,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/v3/paper/search/experiment_data/SearchPro' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H 'Authorization: ${AMINER_API_KEY}' \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.4.0' \
   -d '{"paper_id":"<PAPER_ID>","method":"","dataset":"","search_text":"Baseline"}'
 ```
 

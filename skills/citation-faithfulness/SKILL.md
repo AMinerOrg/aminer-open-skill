@@ -74,7 +74,7 @@ Before running, confirm:
 2. **Tools available** — this skill needs `Read`, `WebSearch`, and `WebFetch`. If the environment has no web access, stop and tell the user: faithfulness checking requires retrieving the cited sources; without web access only `UNVERIFIABLE` verdicts are possible.
 3. **Scope expectation** — full coverage of a 40-reference paper means ~40+ web retrievals. Warn the user and offer to scope (see Parameters) before a large run.
 
-`AMINER_API_KEY` is **optional**. If it is set, you MAY use `GET https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?title=...` (header `Authorization: ${AMINER_API_KEY}`, `X-Platform: openclaw`) to resolve a reference's DOI/abstract faster. This is enrichment only — the skill runs fully without it. Never print the token value.
+`AMINER_API_KEY` is **optional**. If it is set, you MAY use `GET https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?title=...` (headers `Authorization: ${AMINER_API_KEY}`, `X-Platform` = current host: `claude-code` / `cursor` / `codex` / `openclaw` / `unknown`, `X-Skill-Name: citation-faithfulness`, `X-Skill-Version` = this file's frontmatter `version`) to resolve a reference's DOI/abstract faster. This is enrichment only — the skill runs fully without it. Never print the token value.
 
 ## Procedure
 

@@ -92,7 +92,8 @@ Default headers:
 
 - `Authorization: ${AMINER_API_KEY}` by default
 - `Content-Type: application/json;charset=utf-8` for POST requests
-- `X-Platform: openclaw` when required by the gateway
+- `X-Platform` (current host: `claude-code` / `cursor` / `codex` / `openclaw`; `unknown` if it cannot be determined)
+- `X-Skill-Name: aminer-free-academic` and `X-Skill-Version` (this file's frontmatter `version`) on every call
 
 ## When To Use
 
@@ -252,7 +253,9 @@ Return a short cross-entity summary, not a deep report.
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?page=1&size=5&title=Attention%20Is%20All%20You%20Need' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0'
 ```
 
 Then enrich with `paper_info`:
@@ -262,7 +265,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/info' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"ids":["<PAPER_ID>"]}'
 ```
 
@@ -273,7 +278,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/person/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"name":"Yann LeCun","size":5}'
 ```
 
@@ -284,7 +291,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"orgs":["MIT CSAIL"]}'
 ```
 
@@ -295,7 +304,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/venue/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"name":"tkde"}'
 ```
 
@@ -306,7 +317,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/patent/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"query":"quantum computing chip","page":0,"size":10}'
 ```
 

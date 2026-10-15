@@ -1,0 +1,4 @@
+interface:
+  display_name: "Scientific Taxonomy"
+  short_description: "Organize papers into a Markdown taxonomy"
+  default_prompt: "Use $scientific-taxonomy to organize the supplied paper titles and abstracts into taxonomy.md."

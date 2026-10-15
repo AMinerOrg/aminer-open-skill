@@ -28,6 +28,8 @@ from typing import Any
 import requests
 
 DEFAULT_BASE_URL = "https://datacenter.aminer.cn/gateway/open_platform"
+SKILL_NAME = "pdf-citation-verifier"
+SKILL_VERSION = "1.0.0"
 UPLOAD_PATH = "/api/v3/paper/citation/verify/upload"
 RESULT_PATH = "/api/v3/paper/citation/result"
 JOB_ID_PATTERN = re.compile(r"^verify_\d{8}T\d{6}Z_[0-9a-f]{8}$")
@@ -37,8 +39,51 @@ def _resolve_base_url() -> str:
     return os.environ.get("PDF_CITATION_VERIFIER_BASE_URL", DEFAULT_BASE_URL).rstrip("/")
 
 
+def detect_skill_runtime() -> str:
+    explicit = (os.environ.get("AMINER_SKILL_RUNTIME") or "").strip().lower().replace("_", "-")
+    if explicit:
+        return explicit
+    if os.environ.get("CLAUDE_CODE") or os.environ.get("CLAUDECODE") or os.environ.get("CLAUDE_PROJECT_DIR"):
+        return "claude-code"
+    if os.environ.get("CURSOR_TRACE_ID") or os.environ.get("CURSOR_AGENT"):
+        return "cursor"
+    if os.environ.get("CODEX_HOME") or os.environ.get("CODEX_CLI"):
+        return "codex"
+    if os.environ.get("OPENCLAW") or os.environ.get("OPENCLAW_HOME"):
+        return "openclaw"
+    return "unknown"
+
+
+def _skill_md_version(fallback: str) -> str:
+    path = Path(__file__).resolve().parents[1] / "SKILL.md"
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return fallback
+    if not text.startswith("---"):
+        return fallback
+    end = text.find("\n---", 3)
+    if end < 0:
+        return fallback
+    for line in text[3:end].splitlines():
+        key, sep, value = line.partition(":")
+        if sep and key.strip() == "version":
+            version = value.strip().strip("'\"")
+            if version:
+                return version
+    return fallback
+
+
+def skill_identity_headers() -> dict[str, str]:
+    return {
+        "X-Platform": detect_skill_runtime(),
+        "X-Skill-Name": SKILL_NAME,
+        "X-Skill-Version": _skill_md_version(SKILL_VERSION),
+    }
+
+
 def _auth_headers(api_key: str) -> dict[str, str]:
-    return {"Authorization": api_key}
+    return {"Authorization": api_key, **skill_identity_headers()}
 
 
 def _unwrap_gateway(body: dict[str, Any], *, context: str) -> Any:

@@ -46,9 +46,17 @@ No other environment variables are required.
 
 ```
 POST https://datacenter.aminer.cn/gateway/open_platform/api/v3/paper/rec5
-Authorization: ${AMINER_API_KEY}
-Content-Type: application/json;charset=utf-8
 ```
+
+Required headers:
+
+| Header | Value |
+| --- | --- |
+| `Authorization` | `${AMINER_API_KEY}` |
+| `X-Platform` | Current host: `claude-code` / `cursor` / `codex` / `openclaw`; `unknown` if it cannot be determined |
+| `X-Skill-Name` | `aminer-daily-paper` |
+| `X-Skill-Version` | The `version` field in this file's frontmatter |
+| `Content-Type` | `application/json;charset=utf-8` |
 
 ### Request Fields
 

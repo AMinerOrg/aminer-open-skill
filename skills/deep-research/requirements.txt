@@ -1,0 +1,8 @@
+# deep-research — third-party Python dependencies.
+#
+# scripts/chartrender.py lazily imports matplotlib (headless Agg backend) to
+# render figures to a PNG. scripts/evidence.py and scripts/aminer_open.py are
+# pure Python standard library and need nothing here. If matplotlib is absent,
+# chartrender degrades gracefully and prints an install hint rather than
+# crashing the offline ledger engine.
+matplotlib>=3.5

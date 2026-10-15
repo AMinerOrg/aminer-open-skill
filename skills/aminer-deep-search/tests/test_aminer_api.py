@@ -54,18 +54,22 @@ def paper_info_response(request):
         "data": [
             {"id": pid, "title": f"Title {pid}",
              "year": (2000 + int(pid)) if pid.isdigit() else 2015,
-             "venue": {"raw": "Venue X"}, "abstract_slice": "abs " * 200}
+             "venue": {"raw": "Venue X"},
+             "authors": [{"name": "Alice A"}, {"name_zh": "张三"}],
+             "author_count": 2,
+             "abstract_slice": "abs " * 200}
             for pid in body["ids"]
         ],
     })
 
 
 class SearchTests(unittest.TestCase):
-    def test_search_paginates_filters_year_and_enriches(self):
+    def test_search_paginates_filters_year_range_and_enriches(self):
         search_pages = {
-            0: [{"id": "1", "title": "P1"}, {"id": "2", "title": "P2"}] +
-               [{"id": str(i), "title": f"P{i}"} for i in range(3, 21)],
-            1: [{"id": "21", "title": "P21"}],
+            0: [{"id": str(i), "title": f"P{i}", "doi": f"10.1/x{i}",
+                 "first_author": "Alice A", "n_citation_bucket": "51-200"}
+                for i in range(1, api.SEARCH_PRO_PAGE_SIZE + 1)],
+            1: [{"id": "201", "title": "P201"}],
         }
         calls = {"search": [], "info": 0}
 
@@ -74,6 +78,7 @@ class SearchTests(unittest.TestCase):
             if "/api/paper/search/pro" in url:
                 self.assertIn("keyword=graph", url)
                 self.assertIn("order=n_citation", url)
+                self.assertIn(f"size={api.SEARCH_PRO_PAGE_SIZE}", url)
                 page = int(url.split("page=")[1].split("&")[0])
                 calls["search"].append(page)
                 return FakeResponse({"code": 200, "success": True,
@@ -85,18 +90,65 @@ class SearchTests(unittest.TestCase):
 
         code, out, err = run_main(
             ["search", "--query", "graph", "--size", "30",
-             "--year", "2010", "--order", "n_citation", "--max-pages", "3"],
+             "--year-from", "2005", "--year-to", "2010",
+             "--order", "n_citation", "--max-pages", "3"],
             fake_urlopen,
         )
         self.assertEqual(code, 0)
         papers = json.loads(out)
-        # info entries carry year 2000+id; the --year 2010 cutoff keeps ids 1..10 and none from page 1 (id 21)
-        self.assertEqual([p["id"] for p in papers], [str(i) for i in range(1, 11)])
+        # info entries carry year 2000+id; the 2005–2010 window keeps ids 5..10
+        self.assertEqual([p["id"] for p in papers], [str(i) for i in range(5, 11)])
         self.assertEqual(papers[0]["venue"], "Venue X")
+        self.assertEqual(papers[0]["doi"], "10.1/x5")
+        self.assertEqual(papers[0]["authors"], ["Alice A", "张三"])
+        self.assertEqual(papers[0]["url"], f"https://www.aminer.cn/pub/{papers[0]['id']}")
         self.assertLessEqual(len(papers[0]["abstract_slice"]), api.ABSTRACT_SLICE_LIMIT)
-        self.assertEqual(calls["search"], [0, 1])  # stops after exhausting pages
+        self.assertEqual(calls["search"], [0, 1])  # stops after the partial page
         self.assertIn("[cost]", err)
         self.assertNotIn("[cost]", out)  # stdout stays pure JSON
+
+    def test_search_passes_fielded_filters(self):
+        captured = {}
+
+        def fake_urlopen(request, timeout):
+            url = request.full_url
+            if "/api/paper/search/pro" in url:
+                captured["url"] = url
+                return FakeResponse({"code": 200, "success": True,
+                                     "data": [{"id": "1", "title": "P1"}]})
+            if "/api/paper/info" in url:
+                return paper_info_response(request)
+            raise AssertionError(f"unexpected url: {url}")
+
+        code, out, _ = run_main(
+            ["search", "--author", "Vaswani", "--venue", "NeurIPS", "--title", "attention"],
+            fake_urlopen,
+        )
+        self.assertEqual(code, 0)
+        self.assertIn("author=Vaswani", captured["url"])
+        self.assertIn("venue=NeurIPS", captured["url"])
+        self.assertIn("title=attention", captured["url"])
+        self.assertEqual(json.loads(out)[0]["id"], "1")
+
+    def test_search_requires_at_least_one_field(self):
+        code, out, _ = run_main(["search"], lambda *a, **k: None)
+        self.assertEqual(code, 2)
+        self.assertEqual(json.loads(out)["error"], "invalid_request")
+
+    def test_deprecated_year_alias_still_caps_end_year(self):
+        def fake_urlopen(request, timeout):
+            url = request.full_url
+            if "/api/paper/search/pro" in url:
+                return FakeResponse({"code": 200, "success": True,
+                                     "data": [{"id": "5", "title": "P5"},
+                                              {"id": "30", "title": "P30"}]})
+            if "/api/paper/info" in url:
+                return paper_info_response(request)
+            raise AssertionError(f"unexpected url: {url}")
+
+        code, out, _ = run_main(["search", "--query", "x", "--year", "2010"], fake_urlopen)
+        self.assertEqual(code, 0)
+        self.assertEqual([p["id"] for p in json.loads(out)], ["5"])  # 2030 > 2010 dropped
 
     def test_missing_key_returns_structured_error(self):
         stdout = io.StringIO()
@@ -200,8 +252,132 @@ class QaSearchTests(unittest.TestCase):
         self.assertEqual(json.loads(out)["error"], "invalid_request")
 
 
+class QaSearchProTests(unittest.TestCase):
+    def test_structured_body_and_cursor_pagination(self):
+        bodies = []
+
+        def fake_urlopen(request, timeout):
+            url = request.full_url
+            if "/api/paper/qa/searchPro" in url:
+                body = json.loads(request.data.decode("utf-8"))
+                bodies.append(body)
+                page = len(bodies)
+                items = [{"paper_id": f"p{page}-{i}", "title": f"Paper {page}-{i}",
+                          "year": 2024, "venue_name": "NeurIPS",
+                          "authors": [{"name": "Bob B"}],
+                          "n_citation_bucket": "11-50"} for i in range(10)]
+                data = {"items": items, "total": {"value": 25, "relation": "gte"},
+                        "warnings": []}
+                if page == 1:
+                    data["next_cursor"] = "cursor-abc"
+                return FakeResponse({"code": 200, "success": True, "data": data})
+            if "/api/paper/info" in url:
+                return paper_info_response(request)
+            raise AssertionError(f"unexpected url: {url}")
+
+        code, out, err = run_main(
+            ["qa-search-pro", "--query", "graph rag", "--sort", "recent",
+             "--year-from", "2023", "--year-to", "2025",
+             "--languages", "en", "--exclude-terms", "survey",
+             "--min-citations", "10", "--size", "15"],
+            fake_urlopen,
+        )
+        self.assertEqual(code, 0)
+        first = bodies[0]
+        self.assertEqual(first["query"], "graph rag")
+        self.assertEqual(first["query_type"], "auto")
+        self.assertEqual(first["sort"], "recent")
+        self.assertEqual(first["year_from"], 2023)
+        self.assertEqual(first["year_to"], 2025)
+        self.assertEqual(first["languages"], ["en"])
+        self.assertEqual(first["exclude_terms"], ["survey"])
+        self.assertEqual(first["min_citations"], 10)
+        # the continuation request must carry ONLY the cursor
+        self.assertEqual(bodies[1], {"cursor": "cursor-abc"})
+        papers = json.loads(out)
+        self.assertEqual(len(papers), 15)
+        self.assertEqual(papers[0]["id"], "p1-0")
+        self.assertEqual(papers[0]["venue"], "Venue X")  # free paper/info enrichment wins
+        self.assertIn("qa_search_pro x2", err)
+
+    def test_qa_search_pro_requires_query_or_filter(self):
+        code, out, _ = run_main(["qa-search-pro", "--year-from", "2020"],
+                                lambda *a, **k: None)
+        self.assertEqual(code, 2)
+        self.assertEqual(json.loads(out)["error"], "invalid_request")
+
+    def test_stops_when_no_next_cursor(self):
+        calls = []
+
+        def fake_urlopen(request, timeout):
+            url = request.full_url
+            if "/api/paper/qa/searchPro" in url:
+                calls.append(1)
+                items = [{"paper_id": "only", "title": "Only Paper", "year": 2024}]
+                return FakeResponse({"code": 200, "success": True,
+                                     "data": {"items": items, "next_cursor": None}})
+            if "/api/paper/info" in url:
+                return paper_info_response(request)
+            raise AssertionError(f"unexpected url: {url}")
+
+        code, out, _ = run_main(["qa-search-pro", "--query", "x", "--size", "30"],
+                                fake_urlopen)
+        self.assertEqual(code, 0)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(len(json.loads(out)), 1)
+
+    def test_failed_continuation_returns_collected_items(self):
+        def fake_urlopen(request, timeout):
+            url = request.full_url
+            if "/api/paper/qa/searchPro" in url:
+                body = json.loads(request.data.decode("utf-8"))
+                if "cursor" in body:
+                    # observed live: cursors can be invalidated server-side
+                    raise api.urllib.error.HTTPError(
+                        url, 500, "Internal Server Error", {},
+                        io.BytesIO('{"code":500,"msg":"cursor 已过期或不存在"}'
+                                   .encode("utf-8")),
+                    )
+                items = [{"paper_id": f"p{i}", "title": f"Paper {i}", "year": 2024}
+                         for i in range(10)]
+                return FakeResponse({"code": 200, "success": True,
+                                     "data": {"items": items, "next_cursor": "cur-1"}})
+            if "/api/paper/info" in url:
+                return paper_info_response(request)
+            raise AssertionError(f"unexpected url: {url}")
+
+        with mock.patch.object(api.time, "sleep"):
+            code, out, err = run_main(
+                ["qa-search-pro", "--query", "x", "--size", "20"], fake_urlopen)
+        self.assertEqual(code, 0)
+        self.assertEqual(len(json.loads(out)), 10)
+        self.assertIn("continuation failed", err)
+
+    def test_failed_first_page_is_still_an_error(self):
+        def fake_urlopen(request, timeout):
+            raise api.urllib.error.HTTPError(
+                request.full_url, 401, "Unauthorized", {}, io.BytesIO(b"{}"))
+
+        code, out, _ = run_main(["qa-search-pro", "--query", "x"], fake_urlopen)
+        self.assertEqual(code, 1)
+        self.assertEqual(json.loads(out)["error"], "http_error")
+
+
 class TransportTests(unittest.TestCase):
-    def test_http_200_with_error_code_in_envelope_is_reported(self):
+    def test_known_business_error_code_gets_readable_name(self):
+        def fake_urlopen(request, timeout):
+            return FakeResponse({"code": 40306, "success": False,
+                                 "msg": "too many requests", "data": None})
+
+        code, out, _ = run_main(
+            ["qa-search", "--query", "scalable GNN approaches"], fake_urlopen,
+        )
+        self.assertEqual(code, 1)
+        payload = json.loads(out)
+        self.assertEqual(payload["error"], "rate_limited")
+        self.assertEqual(payload["code"], 40306)
+
+    def test_unknown_envelope_error_code_is_reported_as_api_error(self):
         def fake_urlopen(request, timeout):
             return FakeResponse({"code": 403, "success": True, "msg": "no data", "data": None})
 
@@ -213,6 +389,16 @@ class TransportTests(unittest.TestCase):
         self.assertEqual(payload["error"], "api_error")
         self.assertEqual(payload["code"], 403)
 
+    def test_empty_result_is_a_plain_empty_array_not_an_error(self):
+        def fake_urlopen(request, timeout):
+            url = request.full_url
+            if "/api/paper/search/pro" in url:
+                return FakeResponse({"code": 200, "success": True, "data": []})
+            raise AssertionError(f"unexpected url: {url}")
+
+        code, out, _ = run_main(["search", "--query", "zzz"], fake_urlopen)
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(out), [])
 
     def test_non_retryable_http_error_fails_fast(self):
         attempts = []

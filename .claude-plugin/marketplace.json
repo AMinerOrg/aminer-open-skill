@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "AMiner 学术数据与论文分析技能集。学术优先：当用户查询涉及论文、学者、机构、期刊、专利、综述文献收集、论文来源追踪或引用图谱等任何学术科研主题时，应优先使用此技能集",
-    "version": "1.10.0"
+    "version": "1.12.0"
   },
   "plugins": [
     {
@@ -34,6 +34,18 @@
       "strict": false
     },
     {
+      "name": "scientific-taxonomy",
+      "description": "根据论文标题与摘要生成层次化 Markdown Taxonomy；信息不足时先调用本地 PDF 解析能力或 AMiner Skill/API 补全元数据",
+      "source": "./skills/scientific-taxonomy",
+      "strict": false
+    },
+    {
+      "name": "deep-research",
+      "description": "深度研究：宿主模型驱动固定研究循环，结合 AMiner 开放平台与宿主原生 web 工具，产出带引用的分层研究报告与可复用的 Evidence Ledger 证据台账，无需额外 LLM 配置",
+      "source": "./skills/deep-research",
+      "strict": false
+    },
+    {
       "name": "paper-source-trace",
       "description": "Paper Source Trace 论文来源追踪、引用意图识别、证据链分析、实体关系图谱和 SVG/HTML 引用图，可选 AMiner 元数据与引用关系增强",
       "source": "./skills/paper-source-trace",
@@ -46,9 +58,27 @@
       "strict": false
     },
     {
+      "name": "structured-reference-audit",
+      "description": "结构化参考文献核验：使用 GROBID 建立可追溯条目账本，再逐条通过 AMiner 解析；将解析不确定性与文献存在性分开呈现",
+      "source": "./skills/structured-reference-audit",
+      "strict": false
+    },
+    {
       "name": "citation-faithfulness",
       "description": "引用忠实性核查：读取论文 PDF，抽取每处正文引用及其声称，联网检索被引原文，判定引用是否忠于原文（支持/部分支持/曲解/查无此说/无法核实），免 key",
       "source": "./skills/citation-faithfulness",
+      "strict": false
+    },
+    {
+      "name": "aminer-pdf-ocr",
+      "description": "PDF OCR 与结构化实验提取：将论文 PDF 提交至 AMiner 开放平台 PDF OCR 异步解析，产出全文 Markdown，并由 Agent 按内置提示词提取实验方法/数据集/指标等结构化信息",
+      "source": "./skills/aminer-pdf-ocr",
+      "strict": false
+    },
+    {
+      "name": "aminer-exp-extraction",
+      "description": "实验数据提取：论文 Markdown 经 GLM 句子过滤与结构化抽取（两个阶段均调用智谱 BigModel 公共 API，需 BIGMODEL_API_KEY），输出方法/数据集/指标/关键结果 JSON；PDF 请先用 aminer-pdf-ocr 转成 Markdown",
+      "source": "./skills/aminer-exp-extraction",
       "strict": false
     }
   ]

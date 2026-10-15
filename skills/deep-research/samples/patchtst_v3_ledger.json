@@ -1,0 +1,52 @@
+{
+  "version": 2,
+  "topic": "Does patch tokenisation improve long-horizon forecasting?",
+  "probes": [
+    {"id": "p1", "axis": "topic", "query": "patch tokenisation long-horizon forecasting transformer", "via": "paper_qa_search_pro", "returned": 10, "new": 10, "dup": 0},
+    {"id": "p2", "axis": "topic", "query": "are transformers effective for time series forecasting linear model", "via": "paper_qa_search_pro", "returned": 10, "new": 9, "dup": 1},
+    {"id": "p3", "axis": "topic", "query": "multivariate forecasting channel independence cross-series dependency", "via": "paper_qa_search_pro", "returned": 10, "new": 8, "dup": 2}
+  ],
+  "outline": [
+    {"id": "1", "title": "Methods", "from_probes": ["p1", "p2"], "children": [
+      {"id": "1.1", "title": "Patch tokenisation", "kind": "topic", "from_probes": ["p1"]},
+      {"id": "1.2", "title": "Disagreement: are transformers effective for forecasting", "kind": "disagreement", "from_probes": ["p2"]}
+    ]},
+    {"id": "2", "title": "Frontier", "from_probes": ["p3"], "children": [
+      {"id": "2.1", "title": "Multivariate regimes", "kind": "topic", "from_probes": ["p3"]},
+      {"id": "2.2", "title": "Disagreement: channel-independence limits", "kind": "disagreement", "from_probes": ["p3"]}
+    ]}
+  ],
+  "sources": [
+    {"key": "paper:2211.14730", "kind": "paper", "id": "2211.14730", "n": 1,
+     "title": "A Time Series is Worth 64 Words: Long-term Forecasting with Transformers (PatchTST)",
+     "url": "https://arxiv.org/abs/2211.14730", "via": "paper_detail",
+     "sections": ["1", "1.1"], "probes": ["p1"], "depth": "detail",
+     "year": 2023, "venue": "ICLR", "authors": ["Yuqi Nie", "Nathaniel Nguyen", "Sinong Wang"],
+     "keywords": ["patching", "transformer", "channel-independence"]},
+    {"key": "paper:2205.13504", "kind": "paper", "id": "2205.13504", "n": 2,
+     "title": "Are Transformers Effective for Time Series Forecasting? (DLinear)",
+     "url": "https://arxiv.org/abs/2205.13504", "via": "paper_detail",
+     "sections": ["1.2"], "probes": ["p2"], "depth": "detail",
+     "year": 2023, "venue": "AAAI", "authors": ["Ailing Zeng", "Muxi Chen"],
+     "keywords": ["linear-model", "debate"]},
+    {"key": "paper:2310.06625", "kind": "paper", "id": "2310.06625", "n": 3,
+     "title": "iTransformer: Inverted Transformers are Effective for Time Series",
+     "url": "https://arxiv.org/abs/2310.06625", "via": "paper_info",
+     "sections": ["2", "2.1"], "probes": ["p3"], "depth": "slice",
+     "year": 2024, "venue": "ICLR", "authors": ["Yong Liu", "Haoran Zhang"],
+     "keywords": ["inverted-attention", "multivariate"]}
+  ],
+  "claims": [
+    {"id": "c1", "text": "Patch tokenisation reduces the sequence length fed to the transformer, lowering noise and improving long-horizon MSE.",
+     "supports": [1], "type": "interpretation", "section": "1.1"},
+    {"id": "c2", "text": "A simple linear model (DLinear) outperforms Transformer-based forecasters on standard benchmarks.",
+     "supports": [2], "type": "interpretation", "section": "1.2",
+     "conflict": "DLinear claims transformers are ineffective for forecasting; PatchTST shows transformers match or beat linear models once patch tokenisation is applied."},
+    {"id": "c3", "text": "Patching has not been benchmarked under high-dimensional multivariate regimes with cross-series dependencies.",
+     "supports": [], "type": "observed", "section": "2.1"}
+  ],
+  "spend": {
+    "paper_qa_search_pro": {"calls": 3, "unit_cny": 0.70, "subtotal": 2.10},
+    "paper_detail": {"calls": 2, "unit_cny": 0.01, "subtotal": 0.02}
+  }
+}

@@ -22,3 +22,4 @@ skills/*/.cache/
 # Personal research notes (not part of the shared skill code)
 docs/
 CONTRIBUTING.zh.md
+.claude/

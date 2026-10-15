@@ -7,13 +7,59 @@ import ssl
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
 from typing import Any
 
 from scripts.constants import AMINER_PAPER_URL_TEMPLATE, DEFAULT_REC5_URL
 
+SKILL_NAME = "aminer-daily-paper"
+SKILL_VERSION = "1.1.2"
 DEFAULT_TIMEOUT_SECONDS = 30
 DEFAULT_RETRY_ATTEMPTS = 2
 RETRYABLE_HTTP_CODES = {429, 500, 502, 503, 504}
+
+
+def detect_skill_runtime() -> str:
+    explicit = (os.environ.get("AMINER_SKILL_RUNTIME") or "").strip().lower().replace("_", "-")
+    if explicit:
+        return explicit
+    if os.environ.get("CLAUDE_CODE") or os.environ.get("CLAUDECODE") or os.environ.get("CLAUDE_PROJECT_DIR"):
+        return "claude-code"
+    if os.environ.get("CURSOR_TRACE_ID") or os.environ.get("CURSOR_AGENT"):
+        return "cursor"
+    if os.environ.get("CODEX_HOME") or os.environ.get("CODEX_CLI"):
+        return "codex"
+    if os.environ.get("OPENCLAW") or os.environ.get("OPENCLAW_HOME"):
+        return "openclaw"
+    return "unknown"
+
+
+def _skill_md_version(fallback: str) -> str:
+    path = Path(__file__).resolve().parents[1] / "SKILL.md"
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return fallback
+    if not text.startswith("---"):
+        return fallback
+    end = text.find("\n---", 3)
+    if end < 0:
+        return fallback
+    for line in text[3:end].splitlines():
+        key, sep, value = line.partition(":")
+        if sep and key.strip() == "version":
+            version = value.strip().strip("'\"")
+            if version:
+                return version
+    return fallback
+
+
+def skill_identity_headers() -> dict[str, str]:
+    return {
+        "X-Platform": detect_skill_runtime(),
+        "X-Skill-Name": SKILL_NAME,
+        "X-Skill-Version": _skill_md_version(SKILL_VERSION),
+    }
 
 
 def _clean_text(value: Any) -> str:
@@ -167,7 +213,7 @@ def call_rec5_api(
                 "Content-Type": "application/json;charset=utf-8",
                 "Authorization": token,
                 "User-Agent": "aminer-rec/1.0",
-                "X-Platform": "openclaw",
+                **skill_identity_headers(),
             },
             method="POST",
         )

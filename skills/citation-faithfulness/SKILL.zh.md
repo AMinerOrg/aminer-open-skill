@@ -74,7 +74,7 @@ metadata:
 2. **工具可用** — 本 skill 需要 `Read`、`WebSearch`、`WebFetch`。若环境无联网，停下并告知：忠实性核查必须取到被引原文，无联网时只能给 `UNVERIFIABLE`。
 3. **范围预期** — 全覆盖一篇 40 篇参考的论文≈40+ 次联网检索。大批量前先提醒用户并提供缩小范围选项（见参数）。
 
-`AMINER_API_KEY` 为**可选**。若已设置，可用 `GET https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?title=...`（请求头 `Authorization: ${AMINER_API_KEY}`、`X-Platform: openclaw`）更快解析某条参考文献的 DOI/摘要。仅作增强——不设也能完整运行。**禁止回显 token 值。**
+`AMINER_API_KEY` 为**可选**。若已设置，可用 `GET https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?title=...`（请求头 `Authorization: ${AMINER_API_KEY}`、`X-Platform` 写成当前宿主：`claude-code` / `cursor` / `codex` / `openclaw` / `unknown`、`X-Skill-Name: citation-faithfulness`、`X-Skill-Version` 为本文件 frontmatter 的 `version`）更快解析某条参考文献的 DOI/摘要。仅作增强——不设也能完整运行。**禁止回显 token 值。**
 
 ## 执行流程
 

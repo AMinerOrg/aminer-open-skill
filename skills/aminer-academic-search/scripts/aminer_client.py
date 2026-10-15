@@ -36,9 +36,12 @@ import urllib.request
 import urllib.error
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
 from typing import Any, Optional
 
 BASE_URL = "https://datacenter.aminer.cn/gateway/open_platform"
+SKILL_NAME = "aminer-academic-search"
+SKILL_VERSION = "1.4.0"
 
 REQUEST_TIMEOUT_SECONDS = 30
 MAX_RETRIES = 3
@@ -97,6 +100,49 @@ def reset_cost() -> None:
         _cost_log.clear()
 
 
+def detect_skill_runtime() -> str:
+    explicit = (os.environ.get("AMINER_SKILL_RUNTIME") or "").strip().lower().replace("_", "-")
+    if explicit:
+        return explicit
+    if os.environ.get("CLAUDE_CODE") or os.environ.get("CLAUDECODE") or os.environ.get("CLAUDE_PROJECT_DIR"):
+        return "claude-code"
+    if os.environ.get("CURSOR_TRACE_ID") or os.environ.get("CURSOR_AGENT"):
+        return "cursor"
+    if os.environ.get("CODEX_HOME") or os.environ.get("CODEX_CLI"):
+        return "codex"
+    if os.environ.get("OPENCLAW") or os.environ.get("OPENCLAW_HOME"):
+        return "openclaw"
+    return "unknown"
+
+
+def _skill_md_version(fallback: str) -> str:
+    path = Path(__file__).resolve().parents[1] / "SKILL.md"
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return fallback
+    if not text.startswith("---"):
+        return fallback
+    end = text.find("\n---", 3)
+    if end < 0:
+        return fallback
+    for line in text[3:end].splitlines():
+        key, sep, value = line.partition(":")
+        if sep and key.strip() == "version":
+            version = value.strip().strip("'\"")
+            if version:
+                return version
+    return fallback
+
+
+def skill_identity_headers() -> dict[str, str]:
+    return {
+        "X-Platform": detect_skill_runtime(),
+        "X-Skill-Name": SKILL_NAME,
+        "X-Skill-Version": _skill_md_version(SKILL_VERSION),
+    }
+
+
 # ──────────────────────────────────────────────────────────────────────────────
 # Core HTTP Utilities
 # ──────────────────────────────────────────────────────────────────────────────
@@ -108,8 +154,8 @@ def _request(token: str, method: str, path: str,
     url = BASE_URL + path
     headers = {
         "Authorization": token,
-        "X-Platform": "openclaw",
         "Content-Type": "application/json;charset=utf-8",
+        **skill_identity_headers(),
     }
 
     if method.upper() == "GET" and params:
@@ -348,7 +394,9 @@ def paper_detail_by_condition(token: str, year: int, venue_id: str = None) -> An
 # ──────────────────────────────────────────────────────────────────────────────
 
 # Exact filters + ES search_text (paper_title, experiment_name, research_problem(+_description),
-# research_goal, method(+_description), conclusion, limitations, key_results).
+# research_goal, method name/description text, conclusion, limitations, key_results).
+# Results carry methods: [{name, description, ...}] (legacy flat method/method_description
+# may still appear); objects are passed through unmodified.
 # No client-side result filtering and no paper-title resolution.
 
 
@@ -1112,7 +1160,7 @@ Docs: https://open.aminer.cn/open/docs
         "--search-text",
         help=(
             "[experiment] ES full-text query over paper_title, experiment_name, "
-            "research_problem(+_description), research_goal, method(+_description), "
+            "research_problem(+_description), research_goal, method name/description text, "
             "conclusion, limitations, key_results. Map experiment-name intent here."
         ),
     )

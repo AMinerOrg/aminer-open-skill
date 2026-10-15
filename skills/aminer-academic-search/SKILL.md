@@ -1,6 +1,6 @@
 ---
 name: aminer-academic-search
-version: 1.4.0
+version: 1.4.1
 author: AMiner
 contact: report@aminer.cn
 description: >
@@ -56,7 +56,7 @@ Check `AMINER_API_KEY` exists before any API call. Never expose token in plain t
 
 - If `${AMINER_API_KEY}` exists: proceed. If not: check `--token` parameter. If neither: **stop**, guide user to [Console](https://open.aminer.cn/open/board?tab=control) to generate one.
 - If the user provides `AMINER_API_KEY` inline (e.g. "My token is xxx"), accept it for the current session, but recommend setting it as an environment variable for better security.
-- Default headers: `Authorization: ${AMINER_API_KEY}`, `X-Platform: openclaw`, `Content-Type: application/json;charset=utf-8` (POST).
+- Default headers: `Authorization: ${AMINER_API_KEY}`, `X-Platform` (current host: `claude-code` / `cursor` / `codex` / `openclaw`; `unknown` if it cannot be determined), `X-Skill-Name: aminer-academic-search`, `X-Skill-Version` (this file's frontmatter `version`), `Content-Type: application/json;charset=utf-8` (POST). Always send `X-Platform` and the two `X-Skill-*` headers.
 
 ---
 
@@ -117,7 +117,8 @@ Legacy `paper_qa_search` — what only it can do:
 Experiment retrieval selection:
 - Use `experiment_search` only for explicit experiment-level intent (¥0.10/call).
 - Exact filters: `paper_id`, `method`, `dataset_name` (→ backend `dataset`).
-- Free text (paper title, experiment name, problem/method/conclusion, etc.) → `search_text` (ES over `paper_title`, `experiment_name`, `research_problem`, `research_problem_description`, `research_goal`, `method`, `method_description`, `conclusion`, `limitations`, `key_results`).
+- Free text (paper title, experiment name, problem/method/conclusion, etc.) → `search_text` (ES over `paper_title`, `experiment_name`, `research_problem`, `research_problem_description`, `research_goal`, method name/description text, `conclusion`, `limitations`, `key_results`).
+- Response shape: each result carries `methods: [{name, description, ...}]` (a list); some older records may still have flat `method` / `method_description`. Return objects as-is — read `methods` first, and never flatten the list into a single `method` string.
 - Do not call `paper_search` to resolve titles; do not send a separate `experiment_name` parameter.
 - At least one of `paper_id`, `method`, `dataset_name`, `search_text` must be non-empty. Trim-only; do not invent fields.
 - Raw JSON requests return `{ "results": [...] }` without rewriting Experiment objects.

@@ -1,0 +1,25 @@
+# ── 工作区（宿主分配的 test_cwd/）：台账/图/报告/草稿/scratch 全在此，整体封口 ──
+test_cwd/
+
+# 仓库根 CLAUDE.md：项目级设计规范（Claude Code 进仓库自动加载），不随 skill 发布
+/CLAUDE.md
+
+# 人工草稿 / 外部论文（仓库根 docs/，gitignore 不发布）
+docs/
+
+# 防御：若误从仓库根运行，运行时也会落到根下这些目录 — 一并 ignore
+knowledge/
+.zscience/
+
+# Skill 运行时默认工作区（宿主施加的 outputs/ 默认；引擎不做任何目录假设）
+outputs/
+
+# 密钥
+.env
+
+# Python 字节码
+__pycache__/
+*.pyc
+
+# macOS Finder
+.DS_Store

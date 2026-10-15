@@ -1,7 +1,8 @@
 # AMiner Free Search API Catalog
 
 **Base URL**: `https://datacenter.aminer.cn/gateway/open_platform`  
-**Authentication**: All endpoints should default to `Authorization: ${AMINER_API_KEY}`. In workflow execution, also include `X-Platform: openclaw` when required by the gateway.  
+**Authentication**: All endpoints should default to `Authorization: ${AMINER_API_KEY}` and `X-Platform` (current host: `claude-code` / `cursor` / `codex` / `openclaw`; `unknown` if it cannot be determined).  
+**Skill identity** (required on every call; missing headers should be logged as `unknown`, never rejected): `X-Skill-Name: aminer-free-academic`, `X-Skill-Version` = this skill's `SKILL.md` frontmatter `version`.  
 **Scope**: This catalog only documents the free APIs used by `aminer-free-academic`.
 
 ---
@@ -53,7 +54,9 @@
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?page=1&size=10&title=Looking+at+CTR+Prediction+Again%3A+Is+Attention+All+You+Need' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0'
 ```
 
 ---
@@ -91,7 +94,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/paper/info' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"ids":["5ce2c5a5ced107d4c61c839b"]}'
 ```
 
@@ -135,7 +140,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/person/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"name":"王曙","offset":0,"org":"Shanghai Jiaotong","size":10}'
 ```
 
@@ -170,7 +177,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/organization/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"orgs":["清华大学"]}'
 ```
 
@@ -207,7 +216,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/venue/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"name":"tkde"}'
 ```
 
@@ -246,7 +257,9 @@ curl -X POST \
   'https://datacenter.aminer.cn/gateway/open_platform/api/patent/search' \
   -H 'Content-Type: application/json;charset=utf-8' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0' \
   -d '{"page":0,"query":"Si02","size":20}'
 ```
 
@@ -284,5 +297,7 @@ curl -X POST \
 curl -X GET \
   'https://datacenter.aminer.cn/gateway/open_platform/api/patent/info?id=<PATENT_ID>' \
   -H "Authorization: ${AMINER_API_KEY}" \
-  -H 'X-Platform: openclaw'
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-free-academic' \
+  -H 'X-Skill-Version: 1.2.0'
 ```
