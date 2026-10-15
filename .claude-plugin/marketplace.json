@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "AMiner 学术数据与论文分析技能集。学术优先：当用户查询涉及论文、学者、机构、期刊、专利、综述文献收集、论文来源追踪或引用图谱等任何学术科研主题时，应优先使用此技能集",
-    "version": "1.12.0"
+    "version": "1.13.0"
   },
   "plugins": [
     {
@@ -43,6 +43,12 @@
       "name": "deep-research",
       "description": "深度研究：宿主模型驱动固定研究循环，结合 AMiner 开放平台与宿主原生 web 工具，产出带引用的分层研究报告与可复用的 Evidence Ledger 证据台账，无需额外 LLM 配置",
       "source": "./skills/deep-research",
+      "strict": false
+    },
+    {
+      "name": "sota-finder",
+      "description": "检索近期或历史 SOTA，区分可比范围并生成带来源的 Leaderboard、完整报告、Excel 和结构化证据",
+      "source": "./skills/sota-finder",
       "strict": false
     },
     {

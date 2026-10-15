@@ -1,4 +1,0 @@
-interface:
-  display_name: "SOTA Finder"
-  short_description: "Find evidence-backed SOTA and build leaderboards"
-  default_prompt: "Find the current SOTA for this task, separate materially different scopes, and build an evidence-backed leaderboard with the standard artifact bundle."

@@ -1157,11 +1157,13 @@ def build_artifacts(data: dict[str, Any], output_root: Path | None = None, outpu
                 if sibling == base or not sibling.is_dir():
                     continue
                 evidence_path = sibling / "evidence.json"
-                if not evidence_path.is_file():
-                    continue
                 try:
+                    if not evidence_path.is_file():
+                        continue
                     prior = json.loads(evidence_path.read_text(encoding="utf-8"))
                 except (OSError, json.JSONDecodeError):
+                    # Output parents such as /tmp may contain unreadable sibling
+                    # directories owned by another process or user.
                     continue
                 if prior.get("research_run", {}).get("run_id") == run_id:
                     raise ContractError(
