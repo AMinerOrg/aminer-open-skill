@@ -1,7 +1,7 @@
 # aminer-open-skill
 
-[![Version](https://img.shields.io/badge/version-1.12.0-0969da)](.claude-plugin/marketplace.json)
-[![Available Skills](https://img.shields.io/badge/available_skills-10-2da44e)](#choose-a-skill)
+[![Version](https://img.shields.io/badge/version-1.13.0-0969da)](.claude-plugin/marketplace.json)
+[![Available Skills](https://img.shields.io/badge/available_skills-13-2da44e)](#choose-a-skill)
 [![License](https://img.shields.io/badge/license-MIT-6f42c1)](LICENSE)
 
 English | [中文](README.zh.md)
@@ -27,6 +27,7 @@ A typical workflow moves from finding literature, to understanding a paper's sou
 | `aminer-daily-paper` | Get personalized paper recommendations from topics, scholars, authors, or an AMiner account | Required | [SKILL.md](skills/aminer-daily-paper/SKILL.md) |
 | `aminer-deep-search` | Build a large survey bibliography through multi-round search, deduplication, and citation expansion | Required | [SKILL.md](skills/aminer-deep-search/SKILL.md) |
 | `deep-research` | Produce a cited, hierarchically numbered research report plus a reusable Evidence Ledger from AMiner data and the host's web tools | Required; free-first, billed APIs capped (¥20 hard stop) | [SKILL.md](skills/deep-research/SKILL.md) |
+| `sota-finder` | Find recent or historical SOTA, separate comparable scopes, and build practical leaderboards with structured artifacts | Optional; only needed for AMiner enrichment | [SKILL.md](skills/sota-finder/SKILL.md) |
 
 ### 🗂️ Organize paper collections
 
@@ -114,6 +115,7 @@ The following prompts can be used directly after the corresponding Skill is inst
 | Collect literature for a survey | "Collect 200 candidate papers on retrieval-augmented generation, expand from strong seed papers, remove duplicates, and export the bibliography." | `aminer-deep-search` |
 | Organize a paper collection | "Group these paper titles and abstracts into a coherent hierarchical taxonomy and save it as taxonomy.md." | `scientific-taxonomy` |
 | Produce a sourced research report | "Research the Chinese LLM industry and write a cited report with an evidence ledger backing every claim." | `deep-research` |
+| Find SOTA and build a leaderboard | "Find the current DocVQA SOTA, separate incompatible evaluation scopes, and return a sourced leaderboard with the standard artifact bundle." | `sota-finder` |
 | Trace a paper's sources | "Analyze this PDF. Trace each key claim to its citation context and source, explain the citation intent, and generate the Markdown, JSON, SVG, and HTML outputs." | `paper-source-trace` |
 | Parse a PDF and extract experiments | "OCR this paper PDF, convert it to Markdown, and extract the experiment methods, datasets, and metrics as JSON." | `aminer-pdf-ocr` |
 | Extract experiments from Markdown | "Read this paper's Markdown file and extract the experiment methods, datasets, metrics, and key results as one JSON file." | `aminer-exp-extraction` |

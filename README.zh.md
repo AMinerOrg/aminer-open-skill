@@ -1,7 +1,7 @@
 # aminer-open-skill
 
-[![版本](https://img.shields.io/badge/version-1.12.0-0969da)](.claude-plugin/marketplace.json)
-[![可用 Skill](https://img.shields.io/badge/available_skills-10-2da44e)](#选择-skill)
+[![版本](https://img.shields.io/badge/version-1.13.0-0969da)](.claude-plugin/marketplace.json)
+[![可用 Skill](https://img.shields.io/badge/available_skills-13-2da44e)](#选择-skill)
 [![许可证](https://img.shields.io/badge/license-MIT-6f42c1)](LICENSE)
 
 [English](README.md) | 中文
@@ -27,6 +27,7 @@
 | `aminer-daily-paper` | 根据主题、学者、作者或 AMiner 账号获取个性化论文推荐 | 必须配置 | [SKILL.md](skills/aminer-daily-paper/SKILL.md) |
 | `aminer-deep-search` | 通过多轮检索、去重和引用扩展构建大规模综述文献集 | 必须配置 | [SKILL.zh.md](skills/aminer-deep-search/SKILL.zh.md) |
 | `deep-research` | 驱动固定研究循环，结合 AMiner 开放平台与宿主原生 web 工具，产出带引用的分层研究报告与可复用的 Evidence Ledger | 必须配置；免费优先，计费上限 ¥20 | [SKILL.zh.md](skills/deep-research/SKILL.zh.md) |
+| `sota-finder` | 查找近期或历史 SOTA，拆分可比范围，并生成实用榜单与结构化产物 | 可选；仅在使用 AMiner 增强时需要 | [SKILL.zh.md](skills/sota-finder/SKILL.zh.md) |
 
 ### 🗂️ 整理论文集合
 
@@ -114,6 +115,7 @@ openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 | 为综述收集文献 | “收集 200 篇检索增强生成方向的候选论文，从高质量种子论文继续扩展，去重后导出文献清单。” | `aminer-deep-search` |
 | 整理论文集合 | “把这些论文的标题和摘要组织成层次清晰的 Taxonomy，并保存为 taxonomy.md。” | `scientific-taxonomy` |
 | 产出带出处的研究报告 | “调研中国大模型行业，写一份带引用的报告，每个论断都有证据台账支撑。” | `deep-research` |
+| 查找 SOTA 并建立榜单 | “查找当前 DocVQA SOTA，拆分不可比的评测范围，并生成带来源的榜单和标准产物。” | `sota-finder` |
 | 追踪论文来源 | “分析这篇 PDF，将每个关键论点追踪到引用上下文和来源，解释引用意图，并生成 Markdown、JSON、SVG 和 HTML 产物。” | `paper-source-trace` |
 | 解析 PDF 并抽取实验 | “把这篇论文 PDF 转成 Markdown，并抽取实验方法、数据集和指标的 JSON。” | `aminer-pdf-ocr` |
 | 从 Markdown 抽取实验 | “读取这篇论文的 Markdown 文件，抽取实验方法、数据集、指标和关键结果，输出为一个 JSON 文件。” | `aminer-exp-extraction` |
