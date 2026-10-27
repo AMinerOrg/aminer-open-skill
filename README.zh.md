@@ -1,7 +1,7 @@
 # aminer-open-skill
 
-[![版本](https://img.shields.io/badge/version-1.13.0-0969da)](.claude-plugin/marketplace.json)
-[![可用 Skill](https://img.shields.io/badge/available_skills-13-2da44e)](#选择-skill)
+[![版本](https://img.shields.io/badge/version-1.14.0-0969da)](.claude-plugin/marketplace.json)
+[![可用 Skill](https://img.shields.io/badge/available_skills-15-2da44e)](#选择-skill)
 [![许可证](https://img.shields.io/badge/license-MIT-6f42c1)](LICENSE)
 
 [English](README.md) | 中文
@@ -42,6 +42,8 @@
 | `paper-source-trace` | 将论文关键论点追踪到引用上下文和来源，并生成证据报告与引用图 | 可选；仅在使用 AMiner 增强时需要 | [SKILL.zh.md](skills/paper-source-trace/SKILL.zh.md) / [使用说明](skills/paper-source-trace/README_zh.md) |
 | `aminer-pdf-ocr` | 将论文 PDF 提交 AMiner PDF OCR 服务转为 Markdown，再由 Agent 按内置提示词抽取实验方法、数据集与指标 | 必须配置 | [SKILL.zh.md](skills/aminer-pdf-ocr/SKILL.zh.md) |
 | `aminer-exp-extraction` | 从论文 Markdown 出发，用固定脚本的两阶段 GLM 流水线（句子过滤 + 结构化抽取）产出方法/数据集/指标/关键结果 JSON；如果只有 PDF，先用 `aminer-pdf-ocr` 转出 Markdown | 需要 `BIGMODEL_API_KEY`（智谱 BigModel）；不需要 AMiner Token | [SKILL.md](skills/aminer-exp-extraction/SKILL.md) |
+| `paper-reference-extraction` | 把论文的参考文献变成有原文依据的结构化记录（标题、作者、年份、出处、DOI/arXiv/URL、类型）并统计正文被引位置，导出 JSON / BibTeX / Markdown | 不需要；本地运行 | [SKILL.zh.md](skills/paper-reference-extraction/SKILL.zh.md) |
+| `paper-insight-classification` | 评估论文相对被引文献的洞察增量（InsightEval）：句子分为背景/引用/观点，观点句做 Depth/Breadth/Height 三维评分，章节分型，生成论文级 insight 报告 | 不需要；证据检索使用免费学术接口 | [SKILL.zh.md](skills/paper-insight-classification/SKILL.zh.md) |
 
 ### ✅ 核验引用
 
@@ -122,6 +124,8 @@ openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 | 识别虚假参考文献 | “核验这篇论文 PDF 中的所有参考文献，标出不存在、可疑或需要人工复核的条目。” | `pdf-citation-verifier` |
 | 保守核验结构化参考文献 | “将这篇 PDF 拆成参考文献账本，再逐条通过 AMiner 解析；未命中不能直接当作伪造。” | `structured-reference-audit` |
 | 核查引用忠实性 | “逐条检查这篇论文的正文引用，获取被引来源，并判断上下文中的论断是否得到原文支持。” | `citation-faithfulness` |
+| 提取结构化参考文献 | “提取这篇论文的参考文献，输出结构化记录，标出列而未引和重复条目，并导出 BibTeX。” | `paper-reference-extraction` |
+| 评估论文的洞察深度 | “给这篇论文的句子分类，把观点句对照它引用的文献，从深度、广度、高度三个维度打分，并生成 insight 报告。” | `paper-insight-classification` |
 
 ## 注意事项
 
