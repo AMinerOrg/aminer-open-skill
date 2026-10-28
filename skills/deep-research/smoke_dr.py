@@ -10,7 +10,7 @@ Two modes:
       ledger, so check may legitimately flag it — what matters is the engine
       runs cleanly and emits a verdict, not that ok == True.
 
-  --live  (needs AMINER_API_KEY, ~¥0.70)
+  --live  (needs AMINER_API_KEY, ~¥0.30)
       Runs the real engine on a question: init → probe → one live
       paper_qa_search_pro call → add the real results to the ledger → minimal
       outline + one claim → gaps → render. Proves REAL AMiner data flows
@@ -361,7 +361,7 @@ def live_mode(question: str) -> int:
     print(f"[live] workspace: {work}")
     print(f"[live] ledger: {os.environ['DR_LEDGER']}")
     print(f"[live] question: {question}")
-    print(f"[live] cost estimate: ~¥0.70 (1× paper_qa_search_pro; paper_info free)")
+    print(f"[live] cost estimate: ~¥0.30 (1× paper_qa_search_pro; paper_info free)")
 
     a = lambda *args: _run([str(AMINER), *args])
 
@@ -429,7 +429,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Deep Research end-to-end smoke.")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--fixture", action="store_true", help="no-key fixture mode (default)")
-    mode.add_argument("--live", action="store_true", help="real AMiner run (needs AMINER_API_KEY, ~¥0.70)")
+    mode.add_argument("--live", action="store_true", help="real AMiner run (needs AMINER_API_KEY, ~¥0.30)")
     parser.add_argument("--question", default="patch tokenisation long-horizon forecasting",
                         help="research question for --live")
     args = parser.parse_args()

@@ -16,7 +16,7 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/evidence.py" init --topic "LLM agent long-t
 # python3 "${CLAUDE_SKILL_DIR}/scripts/evidence.py" init --topic "中国大模型行业调研" --genre industry
 ```
 
-3. **Scout with 3–4 topic probes.** `paper_qa_search_pro` is the search of record: ¥0.70 per call, about ¥2.80 for the whole scout. Register each probe before you run it — the ledger uses the registration to measure whether the probe earned its keep.
+3. **Scout with 3–4 topic probes.** `paper_qa_search_pro` is the search of record: ¥0.30 per call, about ¥1.20 for the whole scout. Register each probe before you run it — the ledger uses the registration to measure whether the probe earned its keep.
 
 **Send the query in `query_type: "auto"` — query mode — unless you need literal term matching.** `auto` runs a server-side LLM over your text and parses it into topic, filters, translation and sort intent. Measured: about 5 s per call against about 0.4 s for the non-LLM modes — slower, but comfortably inside the uniform 30 s timeout. You pay that latency for recall, and the recall is the point.
 
@@ -30,7 +30,7 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/evidence.py" init --topic "LLM agent long-t
 
 Query mode recovered a subfield that literal matching had silently dropped. `topic` recovers it too — but only once `all_terms` pins the concept, which is the point of that field.
 
-**Separate probes by object and filter, not by wording.** What makes a second probe worth ¥0.70 is a different topic phrase, a different entity, or a different structured filter — `all_terms` / `any_terms` / `venues` / `year_from` / `min_citations`. The two MoE probes above differ that way and returned 19 distinct papers out of 20, overlapping on one. Two probes that differ only in phrasing do the opposite: `auto` normalises differently-worded questions down to the same parsed topic, so "how is long-term memory implemented in LLM agents" and "how is long-term memory in LLM agents evaluated" came back with 8 of the same 10 papers. Rephrasing is not a second probe; `gaps` reports it as `low_yield_probes`.
+**Separate probes by object and filter, not by wording.** What makes a second probe worth ¥0.30 is a different topic phrase, a different entity, or a different structured filter — `all_terms` / `any_terms` / `venues` / `year_from` / `min_citations`. The two MoE probes above differ that way and returned 19 distinct papers out of 20, overlapping on one. Two probes that differ only in phrasing do the opposite: `auto` normalises differently-worded questions down to the same parsed topic, so "how is long-term memory implemented in LLM agents" and "how is long-term memory in LLM agents evaluated" came back with 8 of the same 10 papers. Rephrasing is not a second probe; `gaps` reports it as `low_yield_probes`.
 
 ```bash
 python3 "${CLAUDE_SKILL_DIR}/scripts/evidence.py" probe --axis topic --via paper_qa_search_pro \
@@ -48,7 +48,7 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/aminer_open.py" --api paper_qa_search_pro \
 
 Three properties of this endpoint shape the scout:
 
-- **Page size is fixed at 10.** Do not send `size`. Four probes give about forty results — enough to induce an outline, not enough to be the whole evidence base. Paginating with `cursor` costs another ¥0.70 per page, and a cursor request may carry nothing but the cursor.
+- **Page size is fixed at 10.** Do not send `size`. Four probes give about forty results — enough to induce an outline, not enough to be the whole evidence base. Paginating with `cursor` costs another ¥0.30 per page, and a cursor request may carry nothing but the cursor.
 - **Search results carry no abstract** — only `paper_id`, `title`, `title_zh`, `authors[].name`, `year`. Step 4 is not optional.
 - **Read `warnings` and `total`.** `aminer_open.py` hoists both onto the result. A warning such as `QUERY_CONDITION_IGNORED` means the query that ran is not the query you sent.
 
@@ -56,7 +56,7 @@ Three properties of this endpoint shape the scout:
 
 | `total` | What it means | What to do |
 | --- | --- | --- |
-| `{"relation":"gte","value":10000}` | your ten results are under 0.1% of the field | narrow with `all_terms` / `venues` / `min_citations` / a tighter `year_from`, or spend one ¥0.70 `cursor` page — and say in Limitations that the slice was thin |
+| `{"relation":"gte","value":10000}` | your ten results are under 0.1% of the field | narrow with `all_terms` / `venues` / `min_citations` / a tighter `year_from`, or spend one ¥0.30 `cursor` page — and say in Limitations that the slice was thin |
 | `{"relation":"eq","value":9666}` | still a broad field, same treatment | as above |
 | `{"relation":"eq","value":34}` | you have nearly all of it | move on; no more spending on this axis |
 
@@ -197,15 +197,15 @@ The charting manual — the `--type` selection matrix, the ≥3-datum sufficienc
 
 Per round, run at most **2 paid `paper_qa_search_pro` calls** plus any number of ¥0.01 `paper_search_pro` calls, and at most 3 native web calls, spread across sections that still need evidence.
 
-The cap sits on the ¥0.70 endpoint because that is where the money goes. A real run spent ¥6.09: ¥5.60 on eight searches and ¥0.49 on forty-nine full abstracts. Rationing abstracts protects pennies while an unnecessary search costs seventy times as much.
+The cap sits on the ¥0.30 endpoint because that is where the money goes. A real run spent ¥2.89: ¥2.40 on eight searches and ¥0.49 on forty-nine full abstracts. Rationing abstracts protects pennies while an unnecessary search costs thirty times as much.
 
 **Two searches in the same round must be semantically distant: a different outline section *and* a different retrieval axis** — time window, subfield, named entity, venue, or method-versus-critique framing. Rewording the same question is not a second search.
 
-This is not a style rule. In a real run, two near-synonym `paper_qa_search_pro` queries at ¥0.70 each ("architectures for X" and "benchmarks for X") returned 10 results of which 9 were identical: ¥0.70 bought one new source. `gaps` reports this as `low_yield_probes`. When it fires, change the axis — do not retry the phrasing.
+This is not a style rule. In a real run, two near-synonym `paper_qa_search_pro` queries at ¥0.30 each ("architectures for X" and "benchmarks for X") returned 10 results of which 9 were identical: ¥0.30 bought one new source. `gaps` reports this as `low_yield_probes`. When it fires, change the axis — do not retry the phrasing.
 
 Route by query shape, not by habit:
 
-- **Topic or multi-filter search** → `paper_qa_search_pro` at ¥0.70, the default. Send the query in `query_type: "auto"`; drop to `"topic"` only for literal term matching, and pin the concept with `all_terms` when you do. Page size is fixed at 10 and search results carry no abstract, so pair it with `paper_info`, then `paper_detail` for whatever a claim will cite.
+- **Topic or multi-filter search** → `paper_qa_search_pro` at ¥0.30, the default. Send the query in `query_type: "auto"`; drop to `"topic"` only for literal term matching, and pin the concept with `all_terms` when you do. Page size is fixed at 10 and search results carry no abstract, so pair it with `paper_info`, then `paper_detail` for whatever a claim will cite.
 - **Structured filter** (author / org / venue / keyword, with citation or year ordering) → `paper_search_pro` at ¥0.01, when you already know exactly what you are filtering on. **After the scout you usually do know** — establishing the field's controlled vocabulary is what the scout was for, so later axes should reach for the ¥0.01 endpoint first and escalate to Pro only when a single filter cannot express the query. It matches terms, not questions: a single controlled term for `keyword`, a two- or three-word phrase for `title` / `abstract`. A sentence answers 200 with `"msg": "no data"` and still bills — `add --aminer` reports that as `paid_calls_without_hits`.
   Short is not the same as precise. Use a term only the target literature uses: in a real run `keyword=agent memory` returned 2004–2014 multi-agent traffic simulation because that phrase predates LLM agents, while `keyword=agentic memory` returned the intended work. A drifting probe tells you about the field's vocabulary; it is not a reason to spend again.
 - Free discovery endpoints first for entities; see `references/api-reference.md`.
@@ -462,7 +462,7 @@ Then write the report per `references/report-format.md`. `render --final` is the
 | --- | --- |
 | Top-level sections | 2–4 (a `complex` tier may justify 5); capped by the tier at registration |
 | Subsections per section | 2–4, exactly one of them the disagreement subsection |
-| Round 0 scout probes | 3–4 probes × ¥0.70 `paper_qa_search_pro` (~¥2.80) |
+| Round 0 scout probes | 3–4 probes × ¥0.30 `paper_qa_search_pro` (~¥1.20) |
 | Complexity tier | `evidence.py tier` at Round 0, with a reason — simple 2 directions × 1 rerun × 3 rounds · moderate 3 × 2 × 6 (default) · complex 5 × 3 × 10; the engine refuses over-quota outline/round registrations, `--wasted` rounds are recorded but not charged |
 | Rounds | capped by the tier (3 / 6 / 10 effective rounds); stop earlier whenever the signals say sufficient |
 | Paid `paper_qa_search_pro` calls per round | 2 |
@@ -477,6 +477,6 @@ Then write the report per `references/report-format.md`. `render --final` is the
 | Cost confirmation threshold | ¥10.00 estimated |
 | Hard stop, whole task | ¥20.00 accumulated (`check` blocks) |
 
-A typical run lands near ¥4–6, and the shape of the bill matters more than the total. A measured run came to ¥6.09: **¥5.60 for eight searches, ¥0.49 for forty-nine full abstracts.** Searches are 92% of the cost, so that is the line to ration — one avoided ¥0.70 search pays for seventy abstracts. Read everything you cite, at the deepest level you can actually obtain — the open-access original first, the abstract only as a recorded downgrade; think twice before every Pro search, and check whether ¥0.01 `paper_search_pro` can express the query first.
+A typical run lands near ¥2–3, and the shape of the bill matters more than the total. A measured run came to ¥2.89: **¥2.40 for eight searches, ¥0.49 for forty-nine full abstracts.** Searches are 83% of the cost, so that is the line to ration — one avoided ¥0.30 search pays for thirty abstracts. Read everything you cite, at the deepest level you can actually obtain — the open-access original first, the abstract only as a recorded downgrade; think twice before every Pro search, and check whether ¥0.01 `paper_search_pro` can express the query first.
 
 Raise a budget only when the user asks for broader coverage or a stated requirement cannot otherwise be met, and re-estimate cost first.

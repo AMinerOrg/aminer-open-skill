@@ -46,7 +46,7 @@
      "supports": [], "type": "observed", "section": "2.1"}
   ],
   "spend": {
-    "paper_qa_search_pro": {"calls": 3, "unit_cny": 0.70, "subtotal": 2.10},
+    "paper_qa_search_pro": {"calls": 3, "unit_cny": 0.30, "subtotal": 0.90},
     "paper_detail": {"calls": 2, "unit_cny": 0.01, "subtotal": 0.02}
   }
 }

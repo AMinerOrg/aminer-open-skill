@@ -118,7 +118,7 @@ API_SPECS: dict[str, ApiSpec] = {
         any_of=("title", "keyword", "abstract", "author", "org", "venue"),
     ),
     "paper_qa_search_pro": ApiSpec(
-        "POST", "/api/v3/paper/qa/searchPro", 0.70,
+        "POST", "/api/v3/paper/qa/searchPro", 0.30,
         fields={
             "query": _s(maximum=500),
             "query_type": _s(choices=("auto", "topic", "keywords", "title", "identifier")),

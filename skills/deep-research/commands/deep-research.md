@@ -53,7 +53,7 @@ Execute the Method from `${CLAUDE_SKILL_DIR}/SKILL.md`, following `references/re
 - **Each round** — retrieve per section (AMiner via `scripts/aminer_open.py` + the host's `WebSearch` / `WebFetch`) → `add --aminer` / web sources tagged `--probe <id>`, then tag the keepers with `--section <id>` and `drop` the noise → read (free `paper_info` before paid `paper_detail`) → `evidence.py gaps` → decide whether to continue. For an industry report, capture every number you will cite as a datum (`evidence.py datum add`), web-first.
 - **Wrap-up** — `evidence.py check` must exit 0 (a ¥20 accumulated spend blocks it); `render --final` gives the ledger view (numbering, claims per section, bibliography) and `render --appendix --out auto` writes the appendix file; then **write the report as prose from the ledger's claims — do not paste `render --final` into the body**. If the report has figures, run `figure add` → `scripts/chartrender.py` → `figure mark-rendered` first.
 
-Cost control: free first; route by query shape (`paper_qa_search_pro` ¥0.70 default, `paper_search_pro` ¥0.01 for structured filters); at ¥10 show the call plan and wait for confirmation (`--confirm-high-cost`), at ¥20 `check` blocks. A typical run lands near ¥4–6.
+Cost control: free first; route by query shape (`paper_qa_search_pro` ¥0.30 default, `paper_search_pro` ¥0.01 for structured filters); at ¥10 show the call plan and wait for confirmation (`--confirm-high-cost`), at ¥20 `check` blocks. A typical run lands near ¥2–3.
 
 ### 4. Present the result
 
