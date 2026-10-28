@@ -106,7 +106,7 @@ Key `paper_qa_search_pro` rules:
 - **Use the natural-language `query` field** (`query_type="auto"`, the default) and pass the user's original question as a whole sentence. Do not pre-split it into keywords and reassemble them into `all_terms` — splitting throws away the semantic understanding you are paying for, and precision drops below just asking. Fall back to `query_type="topic"` only when literal term matching is genuinely required.
 - Page size is **fixed at 10**. Do not send `size`. Paginate with `next_cursor` → next request body is `{"cursor":"..."}` only.
 - `sort`: `relevance` / `balanced` / `recent` / `citation`. For “most cited” use `citation`; for “newest” use `recent`.
-- Response card fields only: `paper_id`, `title`, `title_zh`, `authors.name`/`name_zh`, `n_citation_bucket`, `venue_name`, `year`. Use `paper_detail` when full abstract/keywords are needed.
+- Response card fields only: `paper_id`, `title`, `title_zh`, `doi`, `authors.name`/`name_zh`, `n_citation_bucket`, `venue_name`, `year`. Use `paper_detail` when full abstract/keywords are needed.
 - Always append `https://www.aminer.cn/pub/{paper_id}`.
 
 `paper_qa_search` key rules:
@@ -114,7 +114,7 @@ Key `paper_qa_search_pro` rules:
 - **Deep paging**: `size` ≤ 100 with `offset` ≤ 10000 — 100 results for ¥0.05, which `paper_qa_search_pro`'s cursor cannot match (10 per page × ¥0.30). For plain volume `paper_search_pro` is cheaper still (¥0.01 per 100).
 - `sci_flag` restricts to SCI papers; Pro has no such filter.
 - `query` and `topic_high/topic_middle/topic_low` are **mutually exclusive**; do not pass both. `query` and `topic_*` need `use_topic: true`.
-- Response carries `first_author`, `venue_name`, `year`, `n_citation_bucket` — screen on those before paying for `paper_detail`.
+- Response carries `doi`, `first_author`, `venue_name`, `venue_id`, `year`, `n_citation_bucket` — screen on those before paying for `paper_detail`.
 
 Experiment retrieval selection:
 - Use `experiment_search` only for explicit experiment-level intent (¥0.10/call).
