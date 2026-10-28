@@ -135,7 +135,7 @@ Free-tier screening fields available:
 - `patent_search`: `inventor_name`, `app_year`, `pub_year`
 - `patent_info`: `app_year`, `pub_year`
 
-`paper_search`, `paper_search_pro` and `paper_qa_search` return the same screening set — `doi`, `first_author`, `venue_name`, `year`, `n_citation_bucket`; `paper_qa_search_pro` returns the full `authors` list, `venue_name`, `year`, `n_citation_bucket`. Filter on these before calling `paper_detail` (¥0.01 each); only fetch details for papers you will actually cite. `n_citation_bucket` is a coarse tier, never an exact count — do not compare buckets numerically or claim a precise citation figure from one.
+`paper_search`, `paper_search_pro` and `paper_qa_search` return the same screening set — `doi`, `first_author`, `venue_name`, `year`, `n_citation_bucket`; `paper_qa_search` additionally returns `venue_id` (venue entity ID, when linked — feeds the venue APIs); `paper_qa_search_pro` returns the full `authors` list plus `doi`, `venue_name`, `year`, `n_citation_bucket`. Filter on these before calling `paper_detail` (¥0.01 each); only fetch details for papers you will actually cite. `n_citation_bucket` is a coarse tier, never an exact count — do not compare buckets numerically or claim a precise citation figure from one.
 
 ---
 

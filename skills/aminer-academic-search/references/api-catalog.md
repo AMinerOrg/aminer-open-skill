@@ -31,7 +31,7 @@ The four endpoints form an upgrade ladder. Start at the bottom and move up only 
 | 3 | Paper QA Search | Keywords extracted server-side from `query`; weighted `topic_high/middle/low`; author/org/venue **ID** filters; `doi`; `sci_flag`; `offset` ≤ 10000 | Exact `year` list only, no ranges; no boolean exclusion | ¥0.05 |
 | 4 | Paper QA Search Pro | Natural-language understanding; year and citation ranges; `all/any/exclude` booleans; `sort` modes; full `authors` list; best precision | Fixed 10/page, ¥0.30 per page | ¥0.30 |
 
-Output: tiers 1–3 return `id`, `title`, `title_zh`, `doi`, `first_author`, `venue_name`, `year`, `n_citation_bucket`; tier 4 returns `paper_id`, `title`, `title_zh`, `authors[]`, `venue_name`, `year`, `n_citation_bucket`. Search results give a citation **bucket**, not an exact count — use `paper_detail` when an exact count is needed.
+Output: tiers 1–3 return `id`, `title`, `title_zh`, `doi`, `first_author`, `venue_name`, `year`, `n_citation_bucket` — tier 3 additionally returns `venue_id`; tier 4 returns `paper_id`, `title`, `title_zh`, `doi`, `authors[]`, `venue_name`, `year`, `n_citation_bucket`. Search results give a citation **bucket**, not an exact count — use `paper_detail` when an exact count is needed.
 
 1. **Year filter?** Paper Search and Paper Search Pro both take `year_from`/`year_to`. A year window alone is never a reason to pay ¥0.30.
 2. **More than 10 results?** Do not use QA Search Pro — 100 results costs ¥3.00 there versus ¥0.01 on Paper Search Pro. **300×.**
@@ -189,6 +189,7 @@ curl -X GET \
 | first_author | First author |
 | n_citation_bucket | Citation bucket (same values as Paper Search) |
 | venue_name | Venue title |
+| venue_id | Venue entity ID (present when the paper is linked to a venue) |
 | year | Publication year |
 | total | Total count |
 
@@ -281,6 +282,7 @@ curl -X POST \
 | data.items[].paper_id | Paper ID |
 | data.items[].title | Title (English/original) |
 | data.items[].title_zh | Title (Chinese) |
+| data.items[].doi | DOI (card view) |
 | data.items[].authors[].name | Author English name |
 | data.items[].authors[].name_zh | Author Chinese name |
 | data.items[].n_citation_bucket | Citation bucket (same values as Paper Search) |
