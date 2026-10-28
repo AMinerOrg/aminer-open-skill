@@ -1,13 +1,13 @@
 ---
 name: aminer-free-academic
-version: 1.2.0
+version: 1.3.0
 author: AMiner
 contact: report@aminer.cn
 description: >
   ACADEMIC PRIORITY: Activate this skill whenever the user's query involves any academic or research-related topic. This is the free-tier entry point for AMiner academic search.
   Free-tier-only AMiner skill (7 free APIs, zero cost). Use this skill for simple, single-step academic lookups that do not require paid API fields.
-  Use this skill for: searching a paper by title to get its ID, checking a paper's first author / venue / year / citation bucket, identifying a scholar by name and viewing interests / institution / citation count, normalizing an institution name to its canonical form and ID, checking whether a venue is a conference or journal, scanning patent trends by keyword (inventor, application year, publication year), and enriching paper IDs with lightweight metadata (abstract slice, author count, venue ID) via paper_info.
-  Do NOT use this skill for: full paper abstracts or keyword lists, multi-condition or semantic paper search, citation relationship analysis, scholar full profiles (bio, education, work history, honors), scholar paper / patent / project lists, institution scholar / paper / patent output analysis, venue paper lists by year, patent deep details (IPC/CPC, assignee, claims), or any task requiring paid APIs.
+  Use this skill for: searching papers by title, topic phrase or short question (optionally within a year range) to get IDs, checking a paper's first author / venue / year / citation bucket, identifying a scholar by name and viewing interests / institution / citation count, normalizing an institution name to its canonical form and ID, checking whether a venue is a conference or journal, scanning patent trends by keyword (inventor, application year, publication year), and enriching paper IDs with lightweight metadata (abstract slice, author count, venue ID) via paper_info.
+  Do NOT use this skill for: full paper abstracts or keyword lists, per-field or sorted paper search (by author / institution / venue / abstract), semantic understanding of complex questions, citation relationship analysis, scholar full profiles (bio, education, work history, honors), scholar paper / patent / project lists, institution scholar / paper / patent output analysis, venue paper lists by year, patent deep details (IPC/CPC, assignee, claims), or any task requiring paid APIs.
   Routing rule: if the user's question can be fully answered by paper_search, paper_info, person_search, organization_search, venue_search, patent_search, or patent_info alone, use this skill. Otherwise route to aminer-academic-search.
 metadata:
   {
@@ -37,7 +37,7 @@ This skill uses only the upgraded free interfaces:
 
 Current free-tier fields emphasized by this skill:
 
-- `paper_search`: `venue_name`, `first_author`, `n_citation_bucket`, `year`
+- `paper_search`: one search box `query` over title + keywords, optional `year` / `year_from` / `year_to`; returns `doi`, `venue_name`, `first_author`, `n_citation_bucket`, `year`
 - `paper_info`: `abstract_slice`, `year`, `venue_id`, `author_count`
 - `organization_search`: `aliases` (top 3)
 - `venue_search`: `aliases` (top 3), `venue_type`
@@ -127,7 +127,7 @@ Default chain:
 
 `paper_search -> paper_info`
 
-> **`paper_search` is not title-only lookup.** It phrase-matches the `title` field, so a short controlled phrase (`retrieval augmented generation`) returns thousands of on-topic hits for free — try it before routing anything to a paid endpoint. Its real limits: it cannot parse a full sentence (returns 0), caps at `size` 20, and offers no author/venue/year filter or sort. When the query is a sentence, or needs filtering or volume, that is when it becomes an `aminer-academic-search` job.
+> **`paper_search` is not title-only lookup.** Its single `query` box matches title and keywords together, so a topic phrase (`retrieval augmented generation`), a known title, or a short question all return on-topic hits for free, and `year_from` / `year_to` narrows to a time window. Its real limits: `size` ≤ 20, at most 10 pages, no per-field condition (author / institution / venue / abstract) and no sort. Needing one of those is when it becomes an `aminer-academic-search` job (`paper_search_pro`, ¥0.01).
 
 Return:
 
@@ -251,11 +251,11 @@ Return a short cross-entity summary, not a deep report.
 
 ```bash
 curl -X GET \
-  'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?page=1&size=5&title=Attention%20Is%20All%20You%20Need' \
+  'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?page=1&size=5&query=Attention%20Is%20All%20You%20Need' \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0'
+  -H 'X-Skill-Version: 1.3.0'
 ```
 
 Then enrich with `paper_info`:
@@ -267,7 +267,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"ids":["<PAPER_ID>"]}'
 ```
 
@@ -280,7 +280,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"name":"Yann LeCun","size":5}'
 ```
 
@@ -293,7 +293,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"orgs":["MIT CSAIL"]}'
 ```
 
@@ -306,7 +306,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"name":"tkde"}'
 ```
 
@@ -319,7 +319,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"query":"quantum computing chip","page":0,"size":10}'
 ```
 
@@ -346,7 +346,8 @@ Prefer this structure:
 Recommend upgrading only when the user needs one of these:
 
 - full abstract or full paper metadata
-- multi-condition or semantic paper search
+- per-field paper search (author / institution / venue / abstract), sorting, or more than 20 results per page
+- semantic understanding of complex research questions
 - citation relationships
 - full scholar profile, works, patents, or projects
 - institution scholars, papers, patents, or rich profiles

@@ -41,7 +41,7 @@ from typing import Any, Optional
 
 BASE_URL = "https://datacenter.aminer.cn/gateway/open_platform"
 SKILL_NAME = "aminer-academic-search"
-SKILL_VERSION = "1.4.0"
+SKILL_VERSION = "1.5.0"
 
 REQUEST_TIMEOUT_SECONDS = 30
 MAX_RETRIES = 3
@@ -228,24 +228,44 @@ def _print(data: Any) -> None:
 # Paper APIs
 # ──────────────────────────────────────────────────────────────────────────────
 
-def paper_search(token: str, title: str, page: int = 1, size: int = 10) -> Any:
-    """Paper Search (Free): search by title; returns ID/title/DOI."""
+def _year_params(year: int = None, year_from: int = None, year_to: int = None) -> dict:
+    """year (single) and year_from/year_to (inclusive range) are mutually exclusive."""
+    if year is not None:
+        return {"year": year}
+    return {k: v for k, v in [("year_from", year_from), ("year_to", year_to)] if v is not None}
+
+
+def paper_search(token: str, title: str = None, page: int = 1, size: int = 10,
+                 query: str = None, year: int = None,
+                 year_from: int = None, year_to: int = None) -> Any:
+    """Paper Search (Free): one search box over title + keywords, optional year; ≤20/page, ≤10 pages.
+
+    `query` is the canonical parameter; `title` is kept as a backward-compatible alias.
+    """
     _track_cost("paper_search")
-    return _request(token, "GET", "/api/paper/search",
-                    params={"title": title, "page": page, "size": size})
+    params = {"page": page, "size": size}
+    if query is not None:
+        params["query"] = query
+    if title is not None:
+        params["title"] = title
+    params.update(_year_params(year, year_from, year_to))
+    return _request(token, "GET", "/api/paper/search", params=params)
 
 
 def paper_search_pro(token: str, title: str = None, keyword: str = None,
                      abstract: str = None, author: str = None,
                      org: str = None, venue: str = None,
-                     order: str = None, page: int = 0, size: int = 10) -> Any:
-    """Paper Search Pro (¥0.01/call): multi-condition search."""
+                     order: str = None, page: int = 0, size: int = 10,
+                     query: str = None, year: int = None,
+                     year_from: int = None, year_to: int = None) -> Any:
+    """Paper Search Pro (¥0.01/call): paper_search's search box + per-field conditions + sort; ≤100/page."""
     _track_cost("paper_search_pro")
     params = {"page": page, "size": size}
-    for k, v in [("title", title), ("keyword", keyword), ("abstract", abstract),
+    for k, v in [("query", query), ("title", title), ("keyword", keyword), ("abstract", abstract),
                  ("author", author), ("org", org), ("venue", venue), ("order", order)]:
         if v is not None:
             params[k] = v
+    params.update(_year_params(year, year_from, year_to))
     return _request(token, "GET", "/api/paper/search/pro", params=params)
 
 
@@ -739,14 +759,9 @@ def workflow_paper_deep_dive(token: str, title: str = None, keyword: str = None,
                                          author=author, order=order, size=5)
         search_api = "paper_search_pro"
     else:
+        # No paid retry here: sending the same text to paper_search_pro does not return more results
         search_result = paper_search(token, title=title or keyword, size=5)
         search_api = "paper_search"
-        if not search_result or not search_result.get("data"):
-            # Fall back to pro search when title search yields no results to improve recall
-            print("      Title search returned no results; falling back to paper_search_pro...", file=sys.stderr)
-            search_result = paper_search_pro(token, title=title, keyword=title,
-                                             author=author, order=order, size=5)
-            search_api = "paper_search_pro(fallback)"
 
     if not search_result or not search_result.get("data"):
         return {"error": "No relevant papers found"}
@@ -970,8 +985,9 @@ def workflow_paper_qa(token: str, query: str = None,
 
     if query and not cursor:
         print("      paper_qa_search_pro returned no results; falling back to paper_search_pro...", file=sys.stderr)
-        order = "n_citation" if sort_citation or not sort_year else "year"
-        fallback = paper_search_pro(token, keyword=query, order=order, size=min(size, 10))
+        order = "year" if sort_year else ("n_citation" if sort_citation else None)
+        fallback = paper_search_pro(token, query=query, order=order, size=min(size, 10),
+                                    year_from=year_from, year_to=year_to)
         fb_data = (fallback or {}).get("data") or []
         return {
             "code": 200 if fb_data else (qa_result or {}).get("code", -1),
@@ -1104,7 +1120,7 @@ Examples:
 
   # Direct single API call
   python aminer_client.py --token <TOKEN> --action raw \\
-    --api paper_search --params '{"title":"BERT","page":0,"size":5}'
+    --api paper_search --params '{"query":"BERT","page":1,"size":5}'
 
 Console (Generate Token): https://open.aminer.cn/open/board?tab=control
 Docs: https://open.aminer.cn/open/docs

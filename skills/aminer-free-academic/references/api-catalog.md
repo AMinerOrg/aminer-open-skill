@@ -23,15 +23,19 @@
 
 - **URL**: `GET /api/paper/search`
 - **Price**: Free
-- **Description**: Search papers by title and return low-cost screening fields suitable for fast paper triage.
+- **Description**: One search box (`query`) matched against paper title **and** keywords together, with an optional year filter. Works for a known title, a topic phrase, or a short sentence. Results are ranked by relevance and carry low-cost screening fields for fast triage.
 
 **Request Parameters:**
 
 | Parameter | Type | Required | Description |
 |--------|------|------|------|
-| page | number | Yes | Page number. Current online definition says it starts from `1`. |
-| size | number | No | Page size, maximum `20` |
-| title | string | Yes | Paper title |
+| query | string | Yes* | Search text, matched against title + keywords |
+| title | string | Yes* | Backward-compatible alias of `query` (same behavior). *Send one of `query` / `title`. |
+| page | number | No | Page number, starts at `1`, maximum `10` |
+| size | number | No | Page size, default `10`, maximum `20` |
+| year | number | No | Exact year; cannot be combined with `year_from` / `year_to` |
+| year_from | number | No | Start year (inclusive) |
+| year_to | number | No | End year (inclusive) |
 
 **Response Fields:**
 
@@ -47,16 +51,19 @@
 | year | Publication year |
 | total | Total count |
 
-> **Citation bucket values.** The official docs describe the buckets as `0` / `1-10` / `11-50` / `51-200` / `200-1000` / `1000-5000` / `5000+`, but the live API emits the boundary-exclusive form `201-1000` and `1001-5000`. Match on both spellings; never parse a bucket into an exact citation count.
+> **Citation bucket values.** `0` / `1-10` / `11-50` / `51-200` / `201-1000` / `1001-5000` / `5000+`. Never parse a bucket into an exact citation count.
 
 **curl Example:**
 ```bash
-curl -X GET \
-  'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?page=1&size=10&title=Looking+at+CTR+Prediction+Again%3A+Is+Attention+All+You+Need' \
+curl -G 'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search' \
+  --data-urlencode 'query=retrieval augmented generation' \
+  --data-urlencode 'year_from=2023' \
+  --data-urlencode 'page=1' \
+  --data-urlencode 'size=10' \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0'
+  -H 'X-Skill-Version: 1.3.0'
 ```
 
 ---
@@ -96,7 +103,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"ids":["5ce2c5a5ced107d4c61c839b"]}'
 ```
 
@@ -142,7 +149,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"name":"王曙","offset":0,"org":"Shanghai Jiaotong","size":10}'
 ```
 
@@ -179,7 +186,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"orgs":["清华大学"]}'
 ```
 
@@ -218,7 +225,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"name":"tkde"}'
 ```
 
@@ -259,7 +266,7 @@ curl -X POST \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0' \
+  -H 'X-Skill-Version: 1.3.0' \
   -d '{"page":0,"query":"Si02","size":20}'
 ```
 
@@ -299,5 +306,5 @@ curl -X GET \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-free-academic' \
-  -H 'X-Skill-Version: 1.2.0'
+  -H 'X-Skill-Version: 1.3.0'
 ```

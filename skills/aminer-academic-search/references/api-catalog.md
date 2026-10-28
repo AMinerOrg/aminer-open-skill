@@ -22,19 +22,22 @@
 
 ### Choosing among the four search endpoints
 
-They overlap heavily on output — all four now return the same screening fields (`first_author`/`authors`, `venue_name`, `year`, `n_citation_bucket`), so **output is no longer a reason to pick one**. Decide on two observable facts instead: is the query string a phrase or a sentence, and how many results do you need.
+The four endpoints form an upgrade ladder. Start at the bottom and move up only for a parameter the current tier does not have.
 
-| | Accepts | Only it can do | Hard limit | Cost |
+| Tier | Endpoint | What it offers | Limits | Cost |
 |---|---|---|---|---|
-| Paper Search | Phrase | It is free | `title` only; ≤20/page; no filters or sort | Free |
-| Paper Search Pro | Phrase, per field | 100/page + hard sort; cheapest bulk | Sentence → 0, still billed | ¥0.01 |
-| Paper QA Search | Phrase or sentence | Weighted `topic_high/middle/low`; `sci_flag`; `offset` to 10000 | No ranges, no boolean exclusion | ¥0.05 |
-| Paper QA Search Pro | Sentence | Semantic parsing; year/citation ranges; `all/any/exclude`; best precision | Fixed 10/page, ¥0.30 per page | ¥0.30 |
+| 1 | Paper Search | One search box `query` (title + keywords); `year` or `year_from`/`year_to` | ≤20/page, ≤10 pages; no per-field conditions, no sort | Free |
+| 2 | Paper Search Pro | Everything in Paper Search, plus per-field `title` / `keyword` / `abstract` / `author` / `org` / `venue`, `order=year\|n_citation`, ≤100/page | — | ¥0.01 |
+| 3 | Paper QA Search | Keywords extracted server-side from `query`; weighted `topic_high/middle/low`; author/org/venue **ID** filters; `doi`; `sci_flag`; `offset` ≤ 10000 | Exact `year` list only, no ranges; no boolean exclusion | ¥0.05 |
+| 4 | Paper QA Search Pro | Natural-language understanding; year and citation ranges; `all/any/exclude` booleans; `sort` modes; full `authors` list; best precision | Fixed 10/page, ¥0.30 per page | ¥0.30 |
 
-1. **Sentence?** Only the two QA endpoints parse it; the other two return 0 (and Paper Search Pro bills for that 0).
+Output: tiers 1–3 return `id`, `title`, `title_zh`, `doi`, `first_author`, `venue_name`, `year`, `n_citation_bucket`; tier 4 returns `paper_id`, `title`, `title_zh`, `authors[]`, `venue_name`, `year`, `n_citation_bucket`. Search results give a citation **bucket**, not an exact count — use `paper_detail` when an exact count is needed.
+
+1. **Year filter?** Paper Search and Paper Search Pro both take `year_from`/`year_to`. A year window alone is never a reason to pay ¥0.30.
 2. **More than 10 results?** Do not use QA Search Pro — 100 results costs ¥3.00 there versus ¥0.01 on Paper Search Pro. **300×.**
+3. A short sentence also returns results on Paper Search / Paper Search Pro. Move up to tier 3/4 when the cheaper tier's results are off-topic, not by default.
 
-Spend ¥0.30 on QA Search Pro only for: a sentence query, a range filter, a boolean exclusion, or precision-first. Otherwise drop down.
+Spend ¥0.30 on QA Search Pro only for: a complex natural-language question, a citation range, a boolean exclusion, or precision-first. Otherwise drop down.
 
 ---
 
@@ -42,16 +45,20 @@ Spend ¥0.30 on QA Search Pro only for: a sentence query, a range filter, a bool
 
 - **URL**: `GET /api/paper/search`
 - **Price**: Free
-- **Description**: Phrase match against the `title` field. Free, so it is the first thing to try for any **phrase** query — it is not limited to titles you already know: a short controlled phrase (`retrieval augmented generation`) returns thousands of on-topic hits. It cannot parse a sentence (returns 0) and offers no filters or sort, so escalate when you need those.
-- **Pick it when**: the query is a phrase and you need ≤20 results with no filtering.
+- **Description**: One search box (`query`) matched against title **and** keywords together; there is no per-field targeting at this tier. A phrase (`retrieval augmented generation`), a known title, or a short sentence all return results. Optional year filter. Results are ranked by relevance.
+- **Pick it when**: you need ≤20 results per page with at most a year filter.
 
 **Request Parameters:**
 
 | Parameter | Type | Required | Description |
 |--------|------|------|------|
-| page | number | Yes | Page number (current online definition says it starts at 1) |
-| size | number | No | Items per page, maximum 20 |
-| title | string | Yes | Paper title |
+| query | string | Yes* | Search text, matched against title + keywords |
+| title | string | Yes* | Backward-compatible alias of `query` (same behavior). *Send one of `query` / `title`. |
+| page | number | No | Page number, starts at 1, maximum 10 |
+| size | number | No | Items per page, default 10, maximum 20 |
+| year | number | No | Exact year; cannot be combined with `year_from` / `year_to` |
+| year_from | number | No | Start year (inclusive) |
+| year_to | number | No | End year (inclusive); must be ≥ `year_from` |
 
 **Response Fields:**
 
@@ -67,16 +74,19 @@ Spend ¥0.30 on QA Search Pro only for: a sentence query, a range filter, a bool
 | year | Publication year |
 | total | Total count |
 
-> **Citation bucket values.** The official docs describe the buckets as `0` / `1-10` / `11-50` / `51-200` / `200-1000` / `1000-5000` / `5000+`, but the live API emits the boundary-exclusive form `201-1000` and `1001-5000`. Match on both spellings; never parse a bucket into an exact citation count.
+> **Citation bucket values.** `0` / `1-10` / `11-50` / `51-200` / `201-1000` / `1001-5000` / `5000+`. Never parse a bucket into an exact citation count.
 
 **curl Example:**
 ```bash
-curl -X GET \
-  'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?page=1&size=10&title=Looking+at+CTR+Prediction+Again%3A+Is+Attention+All+You+Need' \
-  -H 'Authorization: ${AMINER_API_KEY}' \
+curl -G 'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search' \
+  --data-urlencode 'query=graph neural network' \
+  --data-urlencode 'year_from=2023' \
+  --data-urlencode 'page=1' \
+  --data-urlencode 'size=10' \
+  -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -85,22 +95,28 @@ curl -X GET \
 
 - **URL**: `GET /api/paper/search/pro`
 - **Price**: ¥0.01/call
-- **Description**: Fielded literal matching across title / keyword / abstract / author / org / venue, with a hard sort. The **cheapest way to pull volume**: 100 results per call for ¥0.01. Matching is literal — a full sentence returns `"msg": "no data"` **and is still billed**; `keyword` wants one controlled term, `title`/`abstract` a two- or three-word phrase.
-- **Pick it when**: the query is already a structured filter, or you need more than 20 results.
+- **Description**: Everything Paper Search does (same `query` box, same year filter, same output), plus per-field conditions on title / keyword / abstract / author / org / venue, a hard sort, and up to 100 results per page. All conditions are ANDed. The **cheapest way to pull volume**: 100 results per call for ¥0.01.
+- **Pick it when**: you need a per-field condition (author, institution, venue, abstract…), a sort, or more than 20 results per page.
 
 **Request Parameters:**
 
 | Parameter | Type | Required | Description |
 |--------|------|------|------|
-| page | number | No | Page number (starts at 0) |
-| size | number | No | Items per page, maximum 100 |
-| title | string | No | Title keyword |
+| page | number | No | Page number (starts at 0); `(page + 1) × size` ≤ 10000 |
+| size | number | No | Items per page, default 10, maximum 100 |
+| query | string | No | Same search box as Paper Search (title + keywords together) |
+| title | string | No | Title only |
 | keyword | string | No | Keyword |
 | abstract | string | No | Abstract keyword |
 | author | string | No | Author name |
 | org | string | No | Institution name |
 | venue | string | No | Journal name |
-| order | string | No | Sort field: `year` (descending by year) or `n_citation` (descending by citations); omit for composite ranking |
+| order | string | No | Sort field: `year` (descending by year) or `n_citation` (descending by citations); omit for relevance |
+| year | number | No | Exact year; cannot be combined with `year_from` / `year_to` |
+| year_from | number | No | Start year (inclusive) |
+| year_to | number | No | End year (inclusive) |
+
+At least one of `query` / `title` / `keyword` / `abstract` / `author` / `org` / `venue` is required (a year alone is rejected).
 
 **Response Fields:**
 
@@ -119,11 +135,11 @@ curl -X GET \
 **curl Example:**
 ```bash
 curl -X GET \
-  'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search/pro?title=transformer&author=Vaswani&order=n_citation&page=0&size=5' \
+  'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search/pro?query=graph%20neural%20network&venue=NeurIPS&year_from=2022&order=n_citation&page=0&size=20' \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -171,7 +187,7 @@ curl -X GET \
 | title_zh | Title (Chinese) |
 | doi | DOI |
 | first_author | First author |
-| n_citation_bucket | Citation bucket (same values as Paper Search); omitted for uncited papers |
+| n_citation_bucket | Citation bucket (same values as Paper Search) |
 | venue_name | Venue title |
 | year | Publication year |
 | total | Total count |
@@ -184,7 +200,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"use_topic": true, "query": "deep learning protein structure prediction", "size": 10, "sci_flag": true}'
 ```
 
@@ -196,7 +212,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{
     "use_topic": true,
     "topic_high": "[[\\"transformer\\",\\"self-attention\\"],[\\"protein folding\\"]]",
@@ -207,18 +223,18 @@ curl -X POST \
   }'
 ```
 
-> **Narrow but not obsolete.** Reach for this when you need weighted topic tiers, `sci_flag`, or 100 results at depth for ¥0.05. For a plain sentence query use Paper QA Search Pro; for a plain phrase query use the free Paper Search or ¥0.01 Paper Search Pro.
+> **Narrow but not obsolete.** Reach for this when you need an ID filter, DOI, weighted topic tiers, `sci_flag`, or 100 results at depth for ¥0.05. For a phrase or short sentence the free Paper Search or ¥0.01 Paper Search Pro is enough; for a complex question use Paper QA Search Pro.
 
 ---
 
 ### 3b. Paper QA Search Pro
 
-> **Highest quality, highest price (¥0.30 — 30× Paper Search Pro).** Not a blanket default: spend it only when the query is a sentence, needs a range filter or boolean exclusion, or precision is the explicit requirement.
+> **Highest quality, highest price (¥0.30 — 30× Paper Search Pro).** Not a blanket default: spend it only for a complex natural-language question, a citation range, a boolean exclusion, or when precision is the explicit requirement.
 
 - **URL**: `POST /api/paper/qa/searchPro`
 - **Price**: ¥0.30/call
-- **Description**: The only endpoint that genuinely parses natural language, and the highest-precision retrieval of the four. Adds year/citation **ranges**, `all_terms`/`any_terms`/`exclude_terms` booleans, `search_in` scoping, and `sort` modes. Page size is fixed at **10** (not client-configurable) and each cursor page costs another ¥0.30, so it is the wrong tool for volume.
-- **Pick it when** you can name one of: a sentence query, a range filter, a boolean exclusion, or precision-first (the user wants accuracy, or a cheaper endpoint already came back off-topic). Otherwise drop to `paper_search_pro` — 30× cheaper.
+- **Description**: The only endpoint that genuinely parses natural language, and the highest-precision retrieval of the four. Adds citation **ranges**, `all_terms`/`any_terms`/`exclude_terms` booleans, `search_in` scoping, `sort` modes, and the full `authors` list in results. Page size is fixed at **10** (not client-configurable) and each cursor page costs another ¥0.30, so it is the wrong tool for volume.
+- **Pick it when** you can name one of: a complex question, a citation range, a boolean exclusion, or precision-first (the user wants accuracy, or a cheaper endpoint already came back off-topic). A year window alone is not a reason — Paper Search and Paper Search Pro have `year_from`/`year_to`. Otherwise drop to `paper_search_pro` — 30× cheaper.
 
 > **Path change.** The canonical path is now `/api/paper/qa/searchPro`. The old `/api/v3/paper/qa/searchPro` still resolves as a legacy alias, but new code should use the non-`v3` path.
 
@@ -288,7 +304,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{
     "query": "大模型比较新的高引论文",
     "query_type": "auto",
@@ -306,7 +322,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"cursor":"<NEXT_CURSOR_FROM_PREVIOUS_RESPONSE>"}'
 ```
 
@@ -353,7 +369,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"ids": ["53e9ab9bb7602d97023e53b2", "53e9a98eb7602d9703e42e5a"]}'
 ```
 
@@ -402,7 +418,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 **Usage Note:**
@@ -439,7 +455,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -477,7 +493,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -518,7 +534,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -563,7 +579,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"name": "Andrew Ng", "size": 5}'
 ```
 
@@ -603,7 +619,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -637,7 +653,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -669,7 +685,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -703,7 +719,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -741,7 +757,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -777,7 +793,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"orgs": ["Tsinghua University"]}'
 ```
 
@@ -817,7 +833,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"ids": ["5f71b2091c455f439fe9a7d7"]}'
 ```
 
@@ -853,7 +869,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -887,7 +903,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -920,7 +936,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -951,7 +967,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"org": "MIT CSAIL"}'
 ```
 
@@ -987,7 +1003,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"org": "Department of Computer Science, Tsinghua University"}'
 ```
 
@@ -1026,7 +1042,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"name": "tkde"}'
 ```
 
@@ -1063,7 +1079,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"id": "<VENUE_ID>"}'
 ```
 
@@ -1102,7 +1118,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"id": "<VENUE_ID>", "year": 2023, "offset": 0, "limit": 20}'
 ```
 
@@ -1143,7 +1159,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"page":0,"query":"Si02","size":20}'
 ```
 
@@ -1183,7 +1199,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -1228,7 +1244,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0'
+  -H 'X-Skill-Version: 1.5.0'
 ```
 
 ---
@@ -1308,7 +1324,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.4.0' \
+  -H 'X-Skill-Version: 1.5.0' \
   -d '{"paper_id":"<PAPER_ID>","method":"","dataset":"","search_text":"Baseline"}'
 ```
 
@@ -1345,8 +1361,9 @@ curl -X POST \
 
 | API | Constraint |
 |-----|-----------|
-| `paper_search` | `size` max 20; `page` starts at 1 |
-| `paper_search_pro` | `page` starts at 0 |
+| `paper_search` | `size` max 20; `page` starts at 1, max 10 |
+| `paper_search_pro` | `size` max 100; `page` starts at 0; `(page + 1) × size` ≤ 10000 |
+| `paper_qa_search` | `size` max 100; `offset` max 10000 |
 | `paper_qa_search_pro` | Fixed 10 results/page; use `cursor` / `next_cursor` (cursor-only body on next page) |
 | `person_search` | `size` max 10; `offset` fixed at 0 (no pagination) |
 | `org_person_relation` | Fixed 10 results per call; use `offset` to paginate |

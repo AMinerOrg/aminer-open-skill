@@ -88,6 +88,17 @@
         "Clearly states what free-tier can answer and what would require paid upgrade",
         "No paid API was called"
       ]
+    },
+    {
+      "prompt": "用免费接口帮我找几篇 2024 年以后关于大模型幻觉检测的论文。My token is <YOUR_TOKEN>",
+      "expected_output": "Stay on the free tier: call paper_search with query='大模型 幻觉 检测' (or similar) and year_from=2024, optionally enrich with paper_info. Return a lightweight list with paper URLs.",
+      "files": [],
+      "expectations": [
+        "Called paper_search with a query and year_from=2024",
+        "Did not call any paid API",
+        "Output includes title, year, venue_name, first_author and n_citation_bucket with paper URLs"
+      ],
+      "id": 8
     }
   ]
 }

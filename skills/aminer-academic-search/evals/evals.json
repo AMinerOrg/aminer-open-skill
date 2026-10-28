@@ -231,6 +231,19 @@
         "Returned original objects under results",
         "Reported the cost as ¥0.10 rather than Free"
       ]
+    },
+    {
+      "prompt": "Find 20 graph neural network papers published between 2023 and 2024, most cited first. My token is <YOUR_TOKEN>",
+      "expected_output": "A phrase query with a year window, a sort and 20 results needs no semantic parsing: call paper_search_pro once with query/keyword='graph neural network', year_from=2023, year_to=2024, order=n_citation, size=20 (¥0.01). Do not call paper_qa_search_pro just for the year range.",
+      "files": [],
+      "expectations": [
+        "Called paper_search_pro with year_from=2023 and year_to=2024",
+        "Used order=n_citation and size of at least 20 in a single call",
+        "Did not call paper_qa_search_pro",
+        "Reported n_citation_bucket rather than an exact citation count",
+        "Reported the cost as about ¥0.01"
+      ],
+      "id": 20
     }
   ]
 }
