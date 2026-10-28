@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "AMiner 学术数据与论文分析技能集。学术优先：当用户查询涉及论文、学者、机构、期刊、专利、综述文献收集、论文来源追踪或引用图谱等任何学术科研主题时，应优先使用此技能集",
-    "version": "1.13.0"
+    "version": "1.14.0"
   },
   "plugins": [
     {
@@ -73,6 +73,18 @@
       "name": "citation-faithfulness",
       "description": "引用忠实性核查：读取论文 PDF，抽取每处正文引用及其声称，联网检索被引原文，判定引用是否忠于原文（支持/部分支持/曲解/查无此说/无法核实），免 key",
       "source": "./skills/citation-faithfulness",
+      "strict": false
+    },
+    {
+      "name": "paper-reference-extraction",
+      "description": "论文参考文献结构化提取：解析论文 PDF/Word/文本，切分参考文献并统计正文被引位置，由 Agent 结构化标题/作者/出处后逐字段做原文依据校验（原文没有的字段一律丢弃），导出 JSON / BibTeX / Markdown，本地运行免 key",
+      "source": "./skills/paper-reference-extraction",
+      "strict": false
+    },
+    {
+      "name": "paper-insight-classification",
+      "description": "论文 Insight 分类（InsightEval 方法）：句子分为背景/引用/观点，观点句对照被引文献证据做 Depth/Breadth/Height 三维评分与洞察等级，章节分为描述/对比/分析，生成论文级 insight 报告（JSON/Markdown/CSV），免 key",
+      "source": "./skills/paper-insight-classification",
       "strict": false
     },
     {

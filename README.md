@@ -1,7 +1,7 @@
 # aminer-open-skill
 
-[![Version](https://img.shields.io/badge/version-1.13.0-0969da)](.claude-plugin/marketplace.json)
-[![Available Skills](https://img.shields.io/badge/available_skills-13-2da44e)](#choose-a-skill)
+[![Version](https://img.shields.io/badge/version-1.14.0-0969da)](.claude-plugin/marketplace.json)
+[![Available Skills](https://img.shields.io/badge/available_skills-15-2da44e)](#choose-a-skill)
 [![License](https://img.shields.io/badge/license-MIT-6f42c1)](LICENSE)
 
 English | [中文](README.zh.md)
@@ -42,6 +42,8 @@ A typical workflow moves from finding literature, to understanding a paper's sou
 | `paper-source-trace` | Trace a paper's key claims to its citation contexts and sources, then generate evidence reports and citation maps | Optional; only needed for AMiner enrichment | [SKILL.md](skills/paper-source-trace/SKILL.md) / [Usage guide](skills/paper-source-trace/README.md) |
 | `aminer-pdf-ocr` | Convert a paper PDF to Markdown via the AMiner PDF OCR service, then have the Agent extract experiment methods, datasets, and metrics with the built-in prompt | Required | [SKILL.md](skills/aminer-pdf-ocr/SKILL.md) |
 | `aminer-exp-extraction` | Extract structured experiment JSON (methods, datasets, metrics, key results) from paper Markdown via a deterministic two-stage GLM pipeline (sentence filter + extraction); if you only have a PDF, run `aminer-pdf-ocr` first to get the Markdown | Requires `BIGMODEL_API_KEY` (Zhipu BigModel); no AMiner token needed | [SKILL.md](skills/aminer-exp-extraction/SKILL.md) |
+| `paper-reference-extraction` | Turn a paper's reference list into structured, text-grounded records (title, authors, year, venue, DOI/arXiv/URL, kind) with in-text citation positions, and export JSON / BibTeX / Markdown | Not required; runs locally | [SKILL.md](skills/paper-reference-extraction/SKILL.md) |
+| `paper-insight-classification` | Evaluate how much a paper adds beyond its cited references (InsightEval): classify sentences as context / citation / opinion, score opinion sentences on Depth / Breadth / Height, type sections, and build a paper-level insight report | Not required; evidence lookup uses free scholarly APIs | [SKILL.md](skills/paper-insight-classification/SKILL.md) |
 
 ### ✅ Verify citations
 
@@ -122,6 +124,8 @@ The following prompts can be used directly after the corresponding Skill is inst
 | Detect fabricated references | "Check every reference in this paper PDF and flag entries that are missing, suspicious, or need manual review." | `pdf-citation-verifier` |
 | Audit parsed bibliography entries conservatively | "Parse this PDF into a reference ledger, then resolve each eligible reference through AMiner without treating an unresolved match as fabrication." | `structured-reference-audit` |
 | Check citation faithfulness | "For each in-text citation in this paper, retrieve the cited source and determine whether the surrounding claim is supported by the original text." | `citation-faithfulness` |
+| Extract a structured reference list | "Extract the references of this paper as structured records, flag uncited or duplicate entries, and export a BibTeX file." | `paper-reference-extraction` |
+| Evaluate a paper's insightfulness | "Classify the sentences of this paper, score its opinion sentences against the references they cite on depth, breadth and height, and give me an insight report." | `paper-insight-classification` |
 
 ## Notes
 
