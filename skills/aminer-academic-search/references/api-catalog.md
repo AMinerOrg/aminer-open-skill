@@ -52,8 +52,7 @@ Spend ¥0.30 on QA Search Pro only for: a complex natural-language question, a c
 
 | Parameter | Type | Required | Description |
 |--------|------|------|------|
-| query | string | Yes* | Search text, matched against title + keywords |
-| title | string | Yes* | Backward-compatible alias of `query` (same behavior). *Send one of `query` / `title`. |
+| query | string | Yes | Search text, matched against title + keywords |
 | page | number | No | Page number, starts at 1, maximum 10 |
 | size | number | No | Items per page, default 10, maximum 20 |
 | year | number | No | Exact year; cannot be combined with `year_from` / `year_to` |
