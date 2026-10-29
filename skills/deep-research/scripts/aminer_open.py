@@ -100,8 +100,12 @@ API_SPECS: dict[str, ApiSpec] = {
     # ---------------- Paper ----------------
     "paper_search": ApiSpec(
         "GET", "/api/paper/search", 0.0,
-        fields={"title": _s(), "page": _i(default=1, minimum=0), "size": _i(default=8, minimum=1, maximum=100)},
-        required=("title",),
+        fields={
+            "query": _s(),
+            "page": _i(default=1, minimum=1, maximum=10), "size": _i(default=8, minimum=1, maximum=20),
+            "year": _YEAR, "year_from": _YEAR, "year_to": _YEAR,
+        },
+        required=("query",),
     ),
     "paper_info": ApiSpec(
         "POST", "/api/paper/info", 0.0,
@@ -111,11 +115,13 @@ API_SPECS: dict[str, ApiSpec] = {
     "paper_search_pro": ApiSpec(
         "GET", "/api/paper/search/pro", 0.01,
         fields={
+            "query": _s(),
             "title": _s(), "keyword": _s(), "abstract": _s(), "author": _s(), "org": _s(), "venue": _s(),
             "order": _s(choices=("n_citation", "year")),
             "page": _i(default=0, minimum=0), "size": _i(default=8, minimum=1, maximum=100),
+            "year": _YEAR, "year_from": _YEAR, "year_to": _YEAR,
         },
-        any_of=("title", "keyword", "abstract", "author", "org", "venue"),
+        any_of=("query", "title", "keyword", "abstract", "author", "org", "venue"),
     ),
     "paper_qa_search_pro": ApiSpec(
         "POST", "/api/v3/paper/qa/searchPro", 0.30,

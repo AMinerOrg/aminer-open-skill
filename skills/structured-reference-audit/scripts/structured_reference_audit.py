@@ -218,7 +218,7 @@ def resolve_records(ledger: dict[str, Any], token: str, timeout: int) -> None:
         try:
             response = requests.get(
                 f"{AMINER_BASE_URL}/api/paper/search",
-                params={"title": title, "page": 0, "size": 5},
+                params={"query": title, "page": 1, "size": 5},
                 headers=headers,
                 timeout=timeout,
             )

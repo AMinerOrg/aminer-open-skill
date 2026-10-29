@@ -17,9 +17,9 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/aminer_open.py" --list-apis
 
 | Name | Method and path | Required / one-of | Optional | Price |
 | --- | --- | --- | --- | ---: |
-| `paper_search` | GET `/api/paper/search` | `title` | `page`, `size` | Free |
+| `paper_search` | GET `/api/paper/search` | `query` | `page`, `size`, `year`, `year_from`, `year_to` | Free |
 | `paper_info` | POST `/api/paper/info` | `ids` | — | Free |
-| `paper_search_pro` | GET `/api/paper/search/pro` | one of `title`, `keyword`, `abstract`, `author`, `org`, `venue` | `order`, `page`, `size` | ¥0.01 |
+| `paper_search_pro` | GET `/api/paper/search/pro` | one of `query`, `title`, `keyword`, `abstract`, `author`, `org`, `venue` | `order`, `page`, `size`, `year`, `year_from`, `year_to` | ¥0.01 |
 | `paper_qa_search_pro` | POST `/api/v3/paper/qa/searchPro` | one of `query`, `cursor`, `authors`, `author_ids`, `organizations`, `organization_ids`, `venues`, `venue_ids`, `all_terms`, `any_terms`, `paper_ids`, `dois` | `query_type`, `year_from`, `year_to`, `year_values`, `min_citations`, `max_citations`, `exclude_terms`, `search_in`, `languages`, `language_preference`, `has_abstract`, `has_chinese_title`, `exclude_paper_ids`, `sort` | ¥0.30 |
 | `paper_qa_search` | POST `/api/paper/qa/search` | one of `query`, `topic_high`, `title`, `doi`, `author_id`, `org_id`, `venue_ids` | `use_topic`, `topic_middle`, `topic_low`, `year`, `sci_flag`, `n_citation_flag`, `force_citation_sort`, `force_year_sort`, `author_terms`, `org_terms`, `size`, `offset` | ¥0.05 |
 | `paper_detail` | GET `/api/paper/detail` | `id` | — | ¥0.01 |
