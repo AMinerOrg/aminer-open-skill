@@ -759,7 +759,7 @@ def _spend_total(state: dict[str, Any]) -> float:
 def _paid_calls_without_hits(payload: Any, kind_override: str | None) -> list[dict[str, Any]]:
     """Paid calls that returned nothing usable.
 
-    A query the API does not understand still answers 200 and still bills. Left
+    A query the API does not understand can still answer 200 with no hits. Left
     unreported it reads as 'this angle has no literature' when it actually means
     'that query shape was wrong' — so surface it at the moment it happens.
     """

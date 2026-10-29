@@ -18,7 +18,7 @@ python3 "${CLAUDE_SKILL_DIR}/scripts/evidence.py" init --topic "LLM agent long-t
 
 3. **Scout with 3–4 topic probes.** `paper_qa_search_pro` is the search of record: ¥0.30 per call, about ¥1.20 for the whole scout. Register each probe before you run it — the ledger uses the registration to measure whether the probe earned its keep.
 
-**Send the query in `query_type: "auto"` — query mode — unless you need literal term matching.** `auto` runs a server-side LLM over your text and parses it into topic, filters, translation and sort intent. Measured: about 5 s per call against about 0.4 s for the non-LLM modes — slower, but comfortably inside the uniform 30 s timeout. You pay that latency for recall, and the recall is the point.
+**Send the query in `query_type: "auto"` — query mode — unless you need literal term matching.** `auto` parses your text server-side into topic, filters, translation and sort intent. Measured: about 5 s per call against about 0.4 s for the other `query_type` modes — slower, but comfortably inside the uniform 30 s timeout. You pay that latency for recall, and the recall is the point.
 
 `query_type: "topic"` skips the LLM and matches `title` / `title_zh` / `keywords` / `abstract` **literally** — which means a multi-concept phrase gets pulled toward whichever term dominates the index. Measured on the same subject:
 

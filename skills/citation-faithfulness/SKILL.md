@@ -74,7 +74,7 @@ Before running, confirm:
 2. **Tools available** — this skill needs `Read`, `WebSearch`, and `WebFetch`. If the environment has no web access, stop and tell the user: faithfulness checking requires retrieving the cited sources; without web access only `UNVERIFIABLE` verdicts are possible.
 3. **Scope expectation** — full coverage of a 40-reference paper means ~40+ web retrievals. Warn the user and offer to scope (see Parameters) before a large run.
 
-`AMINER_API_KEY` is **optional**. If it is set, you MAY use `GET https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?query=...` (headers `Authorization: ${AMINER_API_KEY}`, `X-Platform` = current host: `claude-code` / `cursor` / `codex` / `openclaw` / `unknown`, `X-Skill-Name: citation-faithfulness`, `X-Skill-Version` = this file's frontmatter `version`) to resolve a reference's DOI/abstract faster. This is enrichment only — the skill runs fully without it. Never print the token value.
+`AMINER_API_KEY` is **optional**. If it is set, you MAY use `GET https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?query=...` (headers `Authorization: ${AMINER_API_KEY}`, `X-Platform` = current host: `claude-code` / `cursor` / `codex` / `openclaw` / `unknown`, `X-Skill-Name: citation-faithfulness`, `X-Skill-Version` = this file's frontmatter `version`) to resolve a reference's AMiner ID and DOI faster; add the free `POST .../api/paper/info` (`{"ids": [...]}`) for a truncated abstract slice. This is enrichment only — the skill runs fully without it. Never print the token value.
 
 ## Procedure
 
@@ -110,7 +110,7 @@ For each **unique** cited work, retrieve the source, in this priority order, and
 
 1. **arXiv** — if the entry has an arXiv id or an arXiv search hits: `WebFetch https://arxiv.org/abs/<id>` for the abstract; when a `specific` claim needs body detail, also try `WebFetch https://arxiv.org/html/<id>` (or the `ar5iv.org/abs/<id>` HTML mirror) for full text → `full_text`.
 2. **Open landing page** — else `WebSearch "<title>" <first author> <year>`, then `WebFetch` the best hit (publisher abstract page, ACL Anthology, OpenReview, PMC, semantic scholar page). Publisher pages usually give `abstract_only`; open-access HTML/PDF gives `full_text`.
-3. **Optional AMiner enrichment** — if `AMINER_API_KEY` is set and web search was thin, resolve via the AMiner `paper/search` endpoint above to get title match + abstract.
+3. **Optional AMiner enrichment** — if `AMINER_API_KEY` is set and web search was thin, resolve via the AMiner `paper/search` endpoint above to get a title match and DOI, then `paper/info` for an abstract slice (truncated — treat it as `abstract_only` at most).
 4. If nothing usable is found after a reasonable attempt → `retrieval_level: not_found`.
 
 Do not follow more than a few links per source; cap effort and move on. Never fabricate the content of a page you did not fetch.

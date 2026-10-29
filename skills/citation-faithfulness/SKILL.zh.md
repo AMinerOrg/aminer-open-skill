@@ -74,7 +74,7 @@ metadata:
 2. **工具可用** — 本 skill 需要 `Read`、`WebSearch`、`WebFetch`。若环境无联网，停下并告知：忠实性核查必须取到被引原文，无联网时只能给 `UNVERIFIABLE`。
 3. **范围预期** — 全覆盖一篇 40 篇参考的论文≈40+ 次联网检索。大批量前先提醒用户并提供缩小范围选项（见参数）。
 
-`AMINER_API_KEY` 为**可选**。若已设置，可用 `GET https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?query=...`（请求头 `Authorization: ${AMINER_API_KEY}`、`X-Platform` 写成当前宿主：`claude-code` / `cursor` / `codex` / `openclaw` / `unknown`、`X-Skill-Name: citation-faithfulness`、`X-Skill-Version` 为本文件 frontmatter 的 `version`）更快解析某条参考文献的 DOI/摘要。仅作增强——不设也能完整运行。**禁止回显 token 值。**
+`AMINER_API_KEY` 为**可选**。若已设置，可用 `GET https://datacenter.aminer.cn/gateway/open_platform/api/paper/search?query=...`（请求头 `Authorization: ${AMINER_API_KEY}`、`X-Platform` 写成当前宿主：`claude-code` / `cursor` / `codex` / `openclaw` / `unknown`、`X-Skill-Name: citation-faithfulness`、`X-Skill-Version` 为本文件 frontmatter 的 `version`）更快解析某条参考文献的 AMiner ID 和 DOI；再调免费的 `POST .../api/paper/info`（`{"ids": [...]}`）可拿到截断的摘要片段。仅作增强——不设也能完整运行。**禁止回显 token 值。**
 
 ## 执行流程
 
@@ -110,7 +110,7 @@ metadata:
 
 1. **arXiv** — 若条目有 arXiv id 或 arXiv 搜得到：`WebFetch https://arxiv.org/abs/<id>` 取摘要；当 `specific` 声称需要正文细节时，再试 `WebFetch https://arxiv.org/html/<id>`（或 `ar5iv.org/abs/<id>` 的 HTML 镜像）取全文 → `full_text`。
 2. **开放落地页** — 否则 `WebSearch "<标题>" <一作> <年份>`，再 `WebFetch` 命中最好的一条（出版商摘要页、ACL Anthology、OpenReview、PMC、Semantic Scholar 页）。出版商页通常只给 `abstract_only`；开放获取 HTML/PDF 给 `full_text`。
-3. **可选 AMiner 增强** — 若设了 `AMINER_API_KEY` 且网搜结果单薄，用上面的 AMiner `paper/search` 接口解析标题匹配 + 摘要。
+3. **可选 AMiner 增强** — 若设了 `AMINER_API_KEY` 且网搜结果单薄，用上面的 AMiner `paper/search` 接口做标题匹配、拿 DOI，再用 `paper/info` 取摘要片段（是截断的，最多算 `abstract_only`）。
 4. 合理尝试后仍无可用内容 → `retrieval_level: not_found`。
 
 每篇最多跟进少数几个链接，控制成本、及时收手。**绝不编造你没有 fetch 到的页面内容。**
