@@ -29,8 +29,7 @@
 
 | Parameter | Type | Required | Description |
 |--------|------|------|------|
-| query | string | Yes* | Search text, matched against title + keywords |
-| title | string | Yes* | Backward-compatible alias of `query` (same behavior). *Send one of `query` / `title`. |
+| query | string | Yes | Search text, matched against title + keywords |
 | page | number | No | Page number, starts at `1`, maximum `10` |
 | size | number | No | Page size, default `10`, maximum `20` |
 | year | number | No | Exact year; cannot be combined with `year_from` / `year_to` |

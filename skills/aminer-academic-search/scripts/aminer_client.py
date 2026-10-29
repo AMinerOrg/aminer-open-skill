@@ -235,19 +235,11 @@ def _year_params(year: int = None, year_from: int = None, year_to: int = None) -
     return {k: v for k, v in [("year_from", year_from), ("year_to", year_to)] if v is not None}
 
 
-def paper_search(token: str, title: str = None, page: int = 1, size: int = 10,
-                 query: str = None, year: int = None,
-                 year_from: int = None, year_to: int = None) -> Any:
-    """Paper Search (Free): one search box over title + keywords, optional year; ≤20/page, ≤10 pages.
-
-    `query` is the canonical parameter; `title` is kept as a backward-compatible alias.
-    """
+def paper_search(token: str, query: str, page: int = 1, size: int = 10,
+                 year: int = None, year_from: int = None, year_to: int = None) -> Any:
+    """Paper Search (Free): one search box over title + keywords, optional year; ≤20/page, ≤10 pages."""
     _track_cost("paper_search")
-    params = {"page": page, "size": size}
-    if query is not None:
-        params["query"] = query
-    if title is not None:
-        params["title"] = title
+    params = {"query": query, "page": page, "size": size}
     params.update(_year_params(year, year_from, year_to))
     return _request(token, "GET", "/api/paper/search", params=params)
 
@@ -760,7 +752,7 @@ def workflow_paper_deep_dive(token: str, title: str = None, keyword: str = None,
         search_api = "paper_search_pro"
     else:
         # No paid retry here: sending the same text to paper_search_pro does not return more results
-        search_result = paper_search(token, title=title or keyword, size=5)
+        search_result = paper_search(token, query=title or keyword, size=5)
         search_api = "paper_search"
 
     if not search_result or not search_result.get("data"):
