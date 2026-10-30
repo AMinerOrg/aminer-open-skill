@@ -1,6 +1,8 @@
-# aminer-open-skill
-
 <div align="center">
+  <h1>AMiner Open Skills</h1>
+  <p>
+    <img src="assets/readme-banner-zh.png" alt="AMiner Open Skills：真实学术数据驱动的科研 Skill 库" width="100%">
+  </p>
   <p>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
     <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.13.0-0969da"></a>
