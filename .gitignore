@@ -22,4 +22,16 @@ skills/*/.cache/
 # Personal research notes (not part of the shared skill code)
 docs/
 CONTRIBUTING.zh.md
+# Local API smoke-test script; contains a hardcoded token.
+r_t.py
 .claude/
+feature_src/
+# Local-only skill, not published yet.
+skills/aminer-deep-research/
+# Stray local npm install; the repo has no Node.js package.
+node_modules/
+package.json
+package-lock.json
+# Internal-only docs and maintainer tooling (not published).
+INTEGRATION_GUIDE.md
+tools/check_skills.py

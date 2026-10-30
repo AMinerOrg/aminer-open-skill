@@ -1,5 +1,5 @@
 ---
-name: aminer-pdf-citation-verifier
+name: pdf-citation-verifier
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
