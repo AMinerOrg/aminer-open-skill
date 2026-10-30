@@ -1,305 +1,305 @@
 <div align="center">
   <h1>AMiner Open Skills</h1>
   <p>
-    <img src="assets/readme-banner-en.png" alt="AMiner Open Skills: research skills powered by real academic data" width="100%">
+    <img src="assets/readme-banner-zh.png" alt="AMiner Open Skills：真实学术数据驱动的科研 Skill 库" width="100%">
   </p>
   <p>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
     <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.13.0-0969da"></a>
-    <a href="#2-installation"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw-111827"></a>
-    <a href="#3-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-13-0ea5e9"></a>
-    <a href="README.zh.md"><img alt="Language" src="https://img.shields.io/badge/language-English%20%7C%20中文-1f6feb"></a>
+    <a href="#2-安装"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw-111827"></a>
+    <a href="#3-技能索引"><img alt="Skills" src="https://img.shields.io/badge/skills-13-0ea5e9"></a>
+    <a href="README.en.md"><img alt="Language" src="https://img.shields.io/badge/language-中文%20%7C%20English-1f6feb"></a>
   </p>
   <p>
-    <a href="https://www.aminer.cn/">Website</a>
-    · <a href="#2-installation">Install</a>
-    · <a href="#1-quick-start">Quick Start</a>
-    · <a href="#3-skill-index">Skill Index</a>
-    · <a href="https://open.aminer.cn/open/docs">Open Platform Docs</a>
-    · <a href="#4-design-principles-and-repository-layout">Design Principles</a>
-    · <a href="README.zh.md">中文</a>
+    <a href="https://www.aminer.cn/">在线网站</a>
+    · <a href="#2-安装">立即安装</a>
+    · <a href="#1-快速开始">快速开始</a>
+    · <a href="#3-技能索引">技能索引</a>
+    · <a href="https://open.aminer.cn/open/docs">开放平台文档</a>
+    · <a href="#4-设计原则与仓库结构">设计原则</a>
+    · <a href="README.en.md">English</a>
   </p>
   <p>
-    <b>AMiner web app: Smart Search, AI Reading, Res Labs, AI2000 and more built in — visit <a href="https://www.aminer.cn">https://www.aminer.cn</a></b>
+    <b>AMiner 网页版：内置智能搜索、AI 阅读、Res Labs、AI2000 等核心功能，访问地址 <a href="https://www.aminer.cn">https://www.aminer.cn</a></b>
   </p>
 </div>
 
 ---
 
-`aminer-open-skill` collects reusable research skills built on AMiner academic data for the full research lifecycle, emphasizing real academic data, verifiable evidence chains, and directly usable research artifacts.
+`aminer-open-skill` 面向科研全流程收录基于 AMiner 学术数据的可复用技能，强调真实学术数据、可验证证据链与可直接使用的科研产物。
 
-## Contents
+## 目录
 
-- [1. Quick Start](#1-quick-start)
-- [2. Installation](#2-installation)
-  - [2.1 `npx skills` (recommended)](#21-npx-skills-recommended)
-  - [2.2 Claude Code plugin](#22-claude-code-plugin)
-  - [2.3 Manual install (Codex / OpenClaw / other agents)](#23-manual-install-codex--openclaw--other-agents)
-  - [2.4 Python dependencies](#24-python-dependencies)
-  - [2.5 Configure the token when required](#25-configure-the-token-when-required)
-  - [2.6 Token and billing notes](#26-token-and-billing-notes)
-- [3. Skill Index](#3-skill-index)
-  - [3.1 Skills by research stage](#31-skills-by-research-stage)
-  - [3.2 Choosing between similar skills](#32-choosing-between-similar-skills)
-  - [3.3 Full skill list](#33-full-skill-list)
-- [4. Design Principles and Repository Layout](#4-design-principles-and-repository-layout)
-- [5. Feedback and Contact](#5-feedback-and-contact)
-- [6. Star History](#6-star-history)
+- [1. 快速开始](#1-快速开始)
+- [2. 安装](#2-安装)
+  - [2.1 `npx skills` 安装（推荐）](#21-npx-skills-安装推荐)
+  - [2.2 Claude Code 插件安装](#22-claude-code-插件安装)
+  - [2.3 手动安装（Codex / OpenClaw / 其他 Agent）](#23-手动安装codex--openclaw--其他-agent)
+  - [2.4 Python 依赖](#24-python-依赖)
+  - [2.5 配置 Token](#25-配置-token)
+  - [2.6 Token 与计费注意事项](#26-token-与计费注意事项)
+- [3. 技能索引](#3-技能索引)
+  - [3.1 按科研阶段选技能](#31-按科研阶段选技能)
+  - [3.2 易混技能怎么选](#32-易混技能怎么选)
+  - [3.3 完整技能列表](#33-完整技能列表)
+- [4. 设计原则与仓库结构](#4-设计原则与仓库结构)
+- [5. 反馈与联系](#5-反馈与联系)
+- [6. Star 历史](#6-star-历史)
 
-## 1. Quick Start
+## 1. 快速开始
 
-Once installed and configured with a token where needed (see [2. Installation](#2-installation)), hand your papers, topics, reviewer comments, or task descriptions straight to the agent. The prompts below can be copied as-is:
+安装并按需配置 Token 后（见 [2. 安装](#2-安装)），可以直接把论文、主题、审稿意见或任务描述交给 Agent。下面这些提示词可以直接复制使用：
 
-| What you want | Just say this |
+| 想做什么 | 直接这样说 |
 |---|---|
-| Quick paper lookup | `Find 10 recent papers on long-context language models. Return the title, year, venue, citation count, and URL.` (`aminer-free-academic`) |
-| Investigate a scholar or topic | `Build a research profile for Andrew Ng, including interests, representative papers, collaborators, and recent work.` (`aminer-academic-search`) |
-| Retrieve structured experiments | `Return the original Experiment JSON for this paper, filtered by method and dataset name.` (`aminer-academic-search`) |
-| Get a focused reading list | `Recommend 8 papers on tool-using multimodal agents, prioritizing recent and highly cited work.` (`aminer-daily-paper`) |
-| Collect literature for a survey | `Collect 200 candidate papers on retrieval-augmented generation, expand from strong seed papers, remove duplicates, and export the bibliography.` (`aminer-deep-search`) |
-| Organize a paper collection | `Group these paper titles and abstracts into a coherent hierarchical taxonomy and save it as taxonomy.md.` (`scientific-taxonomy`) |
-| Produce a sourced research report | `Research the Chinese LLM industry and write a cited report with an evidence ledger backing every claim.` (`deep-research`) |
-| Find SOTA and build a leaderboard | `Find the current DocVQA SOTA, separate incompatible evaluation scopes, and return a sourced leaderboard with the standard artifact bundle.` (`sota-finder`) |
-| Trace a paper's sources | `Analyze this PDF. Trace each key claim to its citation context and source, explain the citation intent, and generate the Markdown, JSON, SVG, and HTML outputs.` (`paper-source-trace`) |
-| Parse a PDF and extract experiments | `OCR this paper PDF, convert it to Markdown, and extract the experiment methods, datasets, and metrics as JSON.` (`aminer-pdf-ocr`) |
-| Extract experiments from Markdown | `Read this paper's Markdown file and extract the experiment methods, datasets, metrics, and key results as one JSON file.` (`aminer-exp-extraction`) |
-| Detect fabricated references | `Check every reference in this paper PDF and flag entries that are missing, suspicious, or need manual review.` (`pdf-citation-verifier`) |
-| Audit parsed bibliography entries conservatively | `Parse this PDF into a reference ledger, then resolve each eligible reference through AMiner without treating an unresolved match as fabrication.` (`structured-reference-audit`) |
-| Check citation faithfulness | `For each in-text citation in this paper, retrieve the cited source and determine whether the surrounding claim is supported by the original text.` (`citation-faithfulness`) |
+| 快速查论文 | `查找 10 篇近期关于长上下文语言模型的论文，返回标题、年份、期刊或会议、引用量和链接。`（`aminer-free-academic`） |
+| 调研学者或研究方向 | `整理 Andrew Ng 的研究画像，包括研究兴趣、代表论文、主要合作者和近期工作。`（`aminer-academic-search`） |
+| 检索结构化实验 | `返回这篇论文的原始 Experiment JSON，并按方法和数据集名称精确过滤。`（`aminer-academic-search`） |
+| 获取聚焦阅读清单 | `推荐 8 篇关于工具调用型多模态智能体的论文，优先选择近期且高引用的工作。`（`aminer-daily-paper`） |
+| 为综述收集文献 | `收集 200 篇检索增强生成方向的候选论文，从高质量种子论文继续扩展，去重后导出文献清单。`（`aminer-deep-search`） |
+| 整理论文集合 | `把这些论文的标题和摘要组织成层次清晰的 Taxonomy，并保存为 taxonomy.md。`（`scientific-taxonomy`） |
+| 产出带出处的研究报告 | `调研中国大模型行业，写一份带引用的报告，每个论断都有证据台账支撑。`（`deep-research`） |
+| 查找 SOTA 并建立榜单 | `查找当前 DocVQA SOTA，拆分不可比的评测范围，并生成带来源的榜单和标准产物。`（`sota-finder`） |
+| 追踪论文来源 | `分析这篇 PDF，将每个关键论点追踪到引用上下文和来源，解释引用意图，并生成 Markdown、JSON、SVG 和 HTML 产物。`（`paper-source-trace`） |
+| 解析 PDF 并抽取实验 | `把这篇论文 PDF 转成 Markdown，并抽取实验方法、数据集和指标的 JSON。`（`aminer-pdf-ocr`） |
+| 从 Markdown 抽取实验 | `读取这篇论文的 Markdown 文件，抽取实验方法、数据集、指标和关键结果，输出为一个 JSON 文件。`（`aminer-exp-extraction`） |
+| 识别虚假参考文献 | `核验这篇论文 PDF 中的所有参考文献，标出不存在、可疑或需要人工复核的条目。`（`pdf-citation-verifier`） |
+| 保守核验结构化参考文献 | `将这篇 PDF 拆成参考文献账本，再逐条通过 AMiner 解析；未命中不能直接当作伪造。`（`structured-reference-audit`） |
+| 核查引用忠实性 | `逐条检查这篇论文的正文引用，获取被引来源，并判断上下文中的论断是否得到原文支持。`（`citation-faithfulness`） |
 
-If you are not sure which skill fits, just describe the task; if you already know the name, state it explicitly, e.g. "use `aminer-free-academic`". When installed as a [Claude Code plugin](#22-claude-code-plugin), skills with a `commands/` directory can also be invoked as slash commands (plugin commands carry the plugin-name prefix):
+如果你不确定该用哪个技能，直接描述任务即可；如果已经知道技能名，可以在提示词中明确写“使用 `aminer-free-academic`”。以 [Claude Code 插件](#22-claude-code-插件安装)方式安装时，带 `commands/` 的技能还可以用 slash command 直接调用（插件命令带插件名前缀）：
 
 ```text
-/aminer-deep-search:aminer-deep-search topic: "multimodal agents" target-size: 200
+/aminer-deep-search:aminer-deep-search topic: "多模态智能体" target-size: 200
 ```
 
-## 2. Installation
+## 2. 安装
 
-Every directory under `skills/` is an independently installable skill. Whichever method you use, keep the full skill directory (`SKILL.md`, `scripts/`, `references/`, etc.) — do not copy `SKILL.md` alone. Then configure the token as described in [2.5](#25-configure-the-token-when-required).
+`skills/` 下每个目录都是一个独立的可安装技能。无论用哪种方式，都要保留完整技能目录（`SKILL.md`、`scripts/`、`references/` 等），不要只复制 `SKILL.md`。安装后再按 [2.5](#25-配置-token) 配置 Token。
 
-| Your environment | Recommended method |
+| 你的环境 | 推荐方式 |
 |---|---|
-| Claude Code, Codex, OpenClaw, Cursor, Trae, and other mainstream agents | [2.1 `npx skills`](#21-npx-skills-recommended) |
-| Claude Code, with slash commands | [2.2 Plugin](#22-claude-code-plugin) |
-| No network install, or a pinned version | [2.3 Manual install](#23-manual-install-codex--openclaw--other-agents) |
+| Claude Code、Codex、OpenClaw、Cursor、Trae 等主流 Agent | [2.1 `npx skills`](#21-npx-skills-安装推荐) |
+| Claude Code，且需要 slash command | [2.2 插件安装](#22-claude-code-插件安装) |
+| 无法联网安装、或需要固定版本 | [2.3 手动安装](#23-手动安装codex--openclaw--其他-agent) |
 
-### 2.1 `npx skills` (recommended)
+### 2.1 `npx skills` 安装（推荐）
 
-Requires [Node.js 18 or later](https://nodejs.org/); no global CLI install needed. List the installable skills first:
+需要 [Node.js 18 或更高版本](https://nodejs.org/)，无需全局安装 CLI。先查看可安装的技能名：
 
 ```bash
 npx skills add AMinerOrg/aminer-open-skill --list
 ```
 
-Install into the current project (omit `--global`) or for your user (add `--global`). `--agent` accepts values such as `claude-code`, `codex`, `openclaw`, `cursor`, `trae`:
+按需安装到当前项目（省略 `--global`）或用户全局（加 `--global`）。`--agent` 取值如 `claude-code`、`codex`、`openclaw`、`cursor`、`trae`：
 
 ```bash
-# Free entry point only, into the current project's Claude Code
+# 只装免费入口，装到当前项目的 Claude Code
 npx skills add AMinerOrg/aminer-open-skill --agent claude-code --skill aminer-free-academic --yes
 
-# Several skills, globally for Codex
+# 装多个技能到 Codex 全局
 npx skills add AMinerOrg/aminer-open-skill --global --agent codex \
   --skill aminer-free-academic --skill aminer-academic-search --yes
 
-# Every skill
+# 装全部技能
 npx skills add AMinerOrg/aminer-open-skill --global --agent claude-code --skill '*' --yes
 ```
 
-List and update:
+查看与更新：
 
 ```bash
 npx skills list --global
 npx skills update --global --yes
 ```
 
-`npx skills` manages skill files only — see [2.4](#24-python-dependencies) for Python dependencies; slash commands require the [2.2 plugin install](#22-claude-code-plugin).
+`npx skills` 只管理技能文件，Python 依赖见 [2.4](#24-python-依赖)；slash command 需要 [2.2 插件安装](#22-claude-code-插件安装)。
 
-### 2.2 Claude Code plugin
+### 2.2 Claude Code 插件安装
 
-The repository ships a plugin manifest, [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) (marketplace name `aminer-open-skills`), with one plugin per skill. In Claude Code, run:
+本仓库自带插件清单 [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)（市场名 `aminer-open-skills`），每个技能是一个插件。在 Claude Code 中执行：
 
 ```text
 /plugin marketplace add AMinerOrg/aminer-open-skill
 /plugin install aminer-free-academic@aminer-open-skills
 ```
 
-For other skills, replace `aminer-free-academic` with a name from the [skill list](#33-full-skill-list), or run only the first line and pick plugins in the `/plugin` UI. To pull new versions:
+其他技能把 `aminer-free-academic` 换成 [技能列表](#33-完整技能列表) 中的名字即可；也可以只执行第一行，再用 `/plugin` 打开界面勾选。拉取新版：
 
 ```text
 /plugin marketplace update aminer-open-skills
 ```
 
-The plugin install also registers each skill's slash commands (its `commands/` directory). They carry the plugin-name prefix, e.g. `/aminer-daily-paper:aminer-dp`, `/aminer-deep-search:aminer-deep-search`.
+插件方式会同时注册技能自带的 slash command（`commands/` 目录），命令带插件名前缀，例如 `/aminer-daily-paper:aminer-dp`、`/aminer-deep-search:aminer-deep-search`。
 
-### 2.3 Manual install (Codex / OpenClaw / other agents)
+### 2.3 手动安装（Codex / OpenClaw / 其他 Agent）
 
 ```bash
 git clone https://github.com/AMinerOrg/aminer-open-skill.git ~/ai-skills/aminer-open-skill
 ```
 
-Put each selected `skills/<skill-name>/` directory, whole, into your agent's skill directory:
+把需要的 `skills/<skill-name>/` 整个目录放进 Agent 的技能目录：
 
-| Agent | User-level skill directory | Project-level skill directory |
+| Agent | 用户级技能目录 | 项目级技能目录 |
 |---|---|---|
-| Claude Code | `~/.claude/skills/` | `<project>/.claude/skills/` |
+| Claude Code | `~/.claude/skills/` | `<项目>/.claude/skills/` |
 | Codex | `~/.codex/skills/` | — |
-| OpenClaw and other agents | see their docs | see their docs |
+| OpenClaw 等其他 Agent | 见各自文档 | 见各自文档 |
 
-Prefer symlinks over copies, so a `git pull` in the clone updates the skills:
+推荐用软链接代替复制，之后在 clone 目录里 `git pull` 即可更新：
 
 ```bash
 ln -s ~/ai-skills/aminer-open-skill/skills/aminer-free-academic ~/.codex/skills/aminer-free-academic
 ```
 
-Manual installs do not register slash commands (command files depend on the plugin variable `CLAUDE_PLUGIN_ROOT`); trigger skills with natural language instead.
+手动安装不会注册 slash command（命令文件依赖插件环境变量 `CLAUDE_PLUGIN_ROOT`），直接用自然语言触发技能即可。
 
-### 2.4 Python dependencies
+### 2.4 Python 依赖
 
-Skill scripts need `python3`. Most skills use only the standard library; the following need extra packages:
+技能脚本需要 `python3`。多数技能只用标准库；下列技能需要额外安装依赖：
 
-| Skill | Dependencies |
+| 技能 | 依赖 |
 |---|---|
 | `aminer-daily-paper` | PyYAML |
-| `aminer-pdf-ocr` | requests, pypdf |
+| `aminer-pdf-ocr` | requests、pypdf |
 | `aminer-exp-extraction` / `pdf-citation-verifier` / `structured-reference-audit` | requests |
-| `deep-research` | matplotlib (report figures) |
-| `sota-finder` | openpyxl (Excel export) |
+| `deep-research` | matplotlib（报告插图） |
+| `sota-finder` | openpyxl（导出 Excel） |
 
 ```bash
 python3 -m pip install -r skills/<skill-name>/requirements.txt
 ```
 
-`structured-reference-audit` also needs a reachable [GROBID](https://github.com/kermitt2/grobid) service or existing TEI files.
+`structured-reference-audit` 还需要可访问的 [GROBID](https://github.com/kermitt2/grobid) 服务，或已有的 TEI 文件。
 
-### 2.5 Configure the token when required
+### 2.5 配置 Token
 
-Generate a token in the [AMiner Console](https://open.aminer.cn/open/board?tab=control), then set `AMINER_API_KEY` in the environment used by your assistant:
+在 [AMiner 控制台](https://open.aminer.cn/open/board?tab=control)生成 Token，然后在 AI 助手使用的环境中配置 `AMINER_API_KEY`：
 
 ```bash
 export AMINER_API_KEY="<YOUR_TOKEN>"
 ```
 
-For local Claude Code, Codex, and similar conversational sessions, the repository provides quick setup tools:
+本地 Claude Code、Codex 等对话式会话可以使用仓库提供的快速配置工具：
 
 ```text
-Windows:       tools\setup-aminer-token.cmd
-PowerShell:    .\tools\setup-aminer-token.ps1
-macOS/Linux:   ./tools/setup-aminer-token.sh
+Windows：       tools\setup-aminer-token.cmd
+PowerShell：    .\tools\setup-aminer-token.ps1
+macOS/Linux：   ./tools/setup-aminer-token.sh
 ```
 
-OpenClaw uses its own environment configuration:
+OpenClaw 使用自己的环境配置：
 
 ```bash
 openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 ```
 
-Standalone CLI commands, CI jobs, and scheduled tasks must set the token where the command runs. Not every skill requires a token — check the Token column of the [skill list](#33-full-skill-list) first.
+独立 CLI、CI 和定时任务需要在各自运行环境中配置 Token。并非所有技能都需要 Token，配置前先查看 [技能列表](#33-完整技能列表) 的 Token 列。
 
-### 2.6 Token and billing notes
+### 2.6 Token 与计费注意事项
 
-- Never print, log, or commit `AMINER_API_KEY`.
-- `aminer-exp-extraction` calls the Zhipu BigModel API instead: set `BIGMODEL_API_KEY` for it (`OPENAI_API_KEY` accepted as fallback). It never uses the AMiner token.
-- Free AMiner APIs still require a token. Start with `aminer-free-academic` before using paid APIs.
-- Some tasks may incur API charges. Review the estimated cost before approving large searches or expensive calls.
-- The setup tools under `tools/` configure local chat sessions only. Set the token separately for OpenClaw, CLI, CI, and scheduled jobs.
-- For direct API integration rather than Skill usage, see the [AMiner Open Platform documentation](https://open.aminer.cn/open/docs).
+- 不要打印、记录或提交 `AMINER_API_KEY`。
+- `aminer-exp-extraction` 调用的是智谱 BigModel API：请为它配置 `BIGMODEL_API_KEY`（可回退 `OPENAI_API_KEY`），它不使用 AMiner Token。
+- AMiner 免费接口仍需 Token。建议先用 `aminer-free-academic`，仅在必要时调用计费 API。
+- 部分任务会产生 API 费用。执行大规模检索或高成本调用前，应先查看预估成本。
+- `tools/` 下的配置工具只面向本地对话式环境。OpenClaw、CLI、CI 和定时任务需要单独配置。
+- 如果需要直接集成 API 而不是使用 Skill，请参考 [AMiner 开放平台文档](https://open.aminer.cn/open/docs)。
 
-## 3. Skill Index
+## 3. 技能索引
 
-### 3.1 Skills by research stage
+### 3.1 按科研阶段选技能
 
-| Stage | Skills |
+| 阶段 | 技能 |
 |---|---|
-| Search and discovery | `aminer-free-academic` · `aminer-academic-search` · `aminer-daily-paper` · `aminer-deep-search` · `sota-finder` |
-| Reading and organizing | `aminer-pdf-ocr` · `aminer-exp-extraction` · `scientific-taxonomy` · `paper-source-trace` |
-| Research reports | `deep-research` |
-| Citation checking | `pdf-citation-verifier` · `structured-reference-audit` · `citation-faithfulness` |
+| 检索与发现 | `aminer-free-academic` · `aminer-academic-search` · `aminer-daily-paper` · `aminer-deep-search` · `sota-finder` |
+| 阅读与整理 | `aminer-pdf-ocr` · `aminer-exp-extraction` · `scientific-taxonomy` · `paper-source-trace` |
+| 调研报告 | `deep-research` |
+| 引用核查 | `pdf-citation-verifier` · `structured-reference-audit` · `citation-faithfulness` |
 
-### 3.2 Choosing between similar skills
+### 3.2 易混技能怎么选
 
-| You want | Use | Not |
+| 你要的是 | 用这个 | 而不是 |
 |---|---|---|
-| A single-step lookup of papers, scholars, institutions, venues, or patents, at zero cost | `aminer-free-academic` | `aminer-academic-search` (only for full abstracts, scholar careers, citation relations, or combined workflows) |
-| A list of hundreds of candidate papers, no report | `aminer-deep-search` | `deep-research` |
-| A cited research report backed by an evidence ledger | `deep-research` | `aminer-deep-search` |
-| A few personalized reading recommendations | `aminer-daily-paper` | `aminer-deep-search` |
-| A direct verdict on whether references exist | `pdf-citation-verifier` | `structured-reference-audit` |
-| A conservative reference audit where "unresolved" is not "fabricated" | `structured-reference-audit` | `pdf-citation-verifier` |
-| Whether a citation faithfully represents the cited source | `citation-faithfulness` | `pdf-citation-verifier` |
-| Tracing claims to sources and citation intent, with a citation map | `paper-source-trace` | `citation-faithfulness` |
-| Input is a PDF | `aminer-pdf-ocr` | `aminer-exp-extraction` (only when the input is already Markdown) |
+| 单步查论文、学者、机构、期刊、专利，零费用 | `aminer-free-academic` | `aminer-academic-search`（需要完整摘要、学者履历、引用关系、组合工作流时才用） |
+| 几百篇候选文献清单，不写报告 | `aminer-deep-search` | `deep-research` |
+| 一份带引用、有证据台账的研究报告 | `deep-research` | `aminer-deep-search` |
+| 几篇个性化推荐阅读 | `aminer-daily-paper` | `aminer-deep-search` |
+| 判断参考文献是否真实存在，直接给出判定 | `pdf-citation-verifier` | `structured-reference-audit` |
+| 保守核验参考文献，未命中不等于伪造 | `structured-reference-audit` | `pdf-citation-verifier` |
+| 判断引用内容是否忠于被引原文 | `citation-faithfulness` | `pdf-citation-verifier` |
+| 追溯论点来源、引用意图，生成引用图 | `paper-source-trace` | `citation-faithfulness` |
+| 输入是 PDF | `aminer-pdf-ocr` | `aminer-exp-extraction`（输入已是 Markdown 时才用） |
 
-### 3.3 Full skill list
+### 3.3 完整技能列表
 
-`skills/` currently contains the following 13 triggerable skills. Click a skill name for the full skill definition.
+当前 `skills/` 下包含以下 13 个可触发技能。点击技能名查看完整技能定义。
 
-| Skill | Status | Purpose | Triggers | Token |
+| 技能 | 状态 | 用途 | 触发词 | Token |
 | --- | --- | --- | --- | --- |
-| [`aminer-free-academic`](skills/aminer-free-academic/SKILL.md) | Stable | Free-tier academic lookup and discovery (7 free APIs, zero cost) | "find this paper by title", "this scholar's interests and citations", "is this venue a conference or journal", "patent trend scan" | Free APIs, token still required |
-| [`aminer-academic-search`](skills/aminer-academic-search/SKILL.md) | Stable | Full academic data queries and analysis across papers, scholars, institutions, venues, and patents, plus structured experiment retrieval (29 APIs + 6 workflows) | "build a full scholar profile", "paper deep dive", "multi-condition / semantic paper search", "return the Experiment JSON" | Required; some APIs billed; experiment retrieval ¥0.10/call |
-| [`aminer-daily-paper`](skills/aminer-daily-paper/SKILL.md) | Stable | Personalized paper recommendations by topic, scholar profile, or author, with Feishu card and Markdown output | "recommend 8 recent highly-cited papers on X", "personalized reading list" | Required |
-| [`aminer-deep-search`](skills/aminer-deep-search/SKILL.md) | Stable | Large survey bibliography collection via multi-round search, deduplication, and citation snowballing | "collect 200 candidate papers for a survey", "snowball from seed papers" | Required |
-| [`deep-research`](skills/deep-research/SKILL.md) | Stable | Deep research producing a cited, hierarchically numbered report plus a reusable Evidence Ledger | "research the X industry and write a cited report", "literature-review style investigation" | Required; free-first, billed APIs capped (¥20 hard stop) |
-| [`sota-finder`](skills/sota-finder/SKILL.md) | Stable | Find recent or historical SOTA, separate comparable scopes, and build practical leaderboards with structured artifacts | "what's the current SOTA on X", "split incomparable scopes and build a leaderboard" | Optional; only for AMiner enrichment |
-| [`scientific-taxonomy`](skills/scientific-taxonomy/SKILL.md) | Stable | Build a hierarchical Markdown taxonomy from paper titles and abstracts | "organize these papers into a coherent taxonomy" | Optional; only when AMiner fills missing metadata |
-| [`paper-source-trace`](skills/paper-source-trace/SKILL.md) | Stable | Trace a paper's key claims to citation contexts and sources, with intent analysis and SVG/HTML citation maps | "trace key claims to their sources", "explain the citation intent", "generate a citation map" | Optional; only for AMiner enrichment |
-| [`aminer-pdf-ocr`](skills/aminer-pdf-ocr/SKILL.md) | Stable | Convert a paper PDF to full-text Markdown via the AMiner OCR service, then extract structured experiment info with the built-in prompt | "convert this PDF to Markdown", "OCR it and extract methods / datasets / metrics" | Required |
-| [`aminer-exp-extraction`](skills/aminer-exp-extraction/SKILL.md) | Stable | Extract experiment JSON (methods, datasets, metrics, key results) from paper Markdown via a two-stage GLM pipeline | "extract methods / datasets / metrics / key results from this paper's Markdown" | Requires `BIGMODEL_API_KEY`; no AMiner token |
-| [`pdf-citation-verifier`](skills/pdf-citation-verifier/SKILL.md) | Stable | Upload a paper PDF and verify every listed reference actually exists; detects hallucination | "are the references in this PDF fabricated", "find fake citations" | Required |
-| [`structured-reference-audit`](skills/structured-reference-audit/SKILL.md) | Stable | Build a GROBID-backed reference ledger, then conservatively resolve each entry through AMiner, keeping resolution uncertainty separate from existence | "conservatively audit the references", "turn this PDF into a reference ledger and resolve each entry" | AMiner resolution needs a token; GROBID or TEI required |
-| [`citation-faithfulness`](skills/citation-faithfulness/SKILL.md) | Stable | Check whether each in-text citation accurately represents what the cited source says (supported / partial / distortion / not found / unverifiable) | "does the paper misrepresent its references", "does citation [12] actually support this claim" | No AMiner token; web access required |
+| [`aminer-free-academic`](skills/aminer-free-academic/SKILL.md) | Stable | 免费接口学术初筛与发现（7 个免费 API，零费用入口） | 「按标题查这篇论文」「这位学者的研究兴趣和引用量」「这个 venue 是会议还是期刊」「专利趋势扫描」 | 接口免费，仍需 Token |
+| [`aminer-academic-search`](skills/aminer-academic-search/SKILL.md) | Stable | 全套学术数据查询与分析：论文/学者/机构/期刊/专利检索、结构化实验检索（29 API + 6 工作流） | 「构建学者完整画像」「论文深度下钻」「多条件/语义论文检索」「返回 Experiment JSON」 | 必须配置；部分 API 计费；实验检索 ¥0.10/次 |
+| [`aminer-daily-paper`](skills/aminer-daily-paper/SKILL.md) | Stable | 个性化论文推荐：按主题、学者画像或作者信息推荐，支持飞书卡片与 Markdown 输出 | 「推荐 8 篇 XX 方向近期高引论文」「个性化阅读清单」 | 必须配置 |
+| [`aminer-deep-search`](skills/aminer-deep-search/SKILL.zh.md) | Stable | 深度综述文献收集：多轮检索、去重与引用滚雪球，构建数百篇候选论文池 | 「收集 200 篇综述候选论文」「从种子论文滚雪球扩展」 | 必须配置 |
+| [`deep-research`](skills/deep-research/SKILL.zh.md) | Stable | 深度研究：固定研究循环产出带引用的分层研究报告与可复用的 Evidence Ledger 证据台账 | 「调研 XX 行业，写一份带引用的报告」「文献综述型调研」 | 必须配置；免费优先，计费上限 ¥20 |
+| [`sota-finder`](skills/sota-finder/SKILL.zh.md) | Stable | 检索近期或历史 SOTA，区分可比范围，生成带来源的 Leaderboard 与结构化证据 | 「当前 XX 任务的 SOTA 是多少」「拆分可比范围做榜单」 | 可选；仅 AMiner 增强时需要 |
+| [`scientific-taxonomy`](skills/scientific-taxonomy/SKILL.md) | Stable | 根据论文标题与摘要生成层次化 Markdown Taxonomy | 「把这些论文组织成层次清晰的分类树」 | 可选；仅补全元数据时需要 |
+| [`paper-source-trace`](skills/paper-source-trace/SKILL.zh.md) | Stable | 论文来源追踪、引用意图识别、证据链分析与 SVG/HTML 引用图 | 「把关键论点追踪到引用来源」「解释引用意图」「生成引用图」 | 可选；仅 AMiner 增强时需要 |
+| [`aminer-pdf-ocr`](skills/aminer-pdf-ocr/SKILL.zh.md) | Stable | 论文 PDF 经 AMiner OCR 异步解析转为全文 Markdown，并按内置提示词提取实验结构化信息 | 「把这篇 PDF 转成 Markdown」「OCR 并提取实验方法/数据集/指标」 | 必须配置 |
+| [`aminer-exp-extraction`](skills/aminer-exp-extraction/SKILL.md) | Stable | 论文 Markdown 经两阶段 GLM 流水线（句子过滤 + 结构化抽取）产出实验 JSON | 「从论文 Markdown 抽取方法/数据集/指标/关键结果」 | 需 BIGMODEL_API_KEY，不用 AMiner Token |
+| [`pdf-citation-verifier`](skills/pdf-citation-verifier/SKILL.zh.md) | Stable | 上传论文 PDF 核验每条参考文献是否真实存在，识别 hallucination | 「检查这篇 PDF 的参考文献是不是编的」「找出虚假引用」 | 必须配置 |
+| [`structured-reference-audit`](skills/structured-reference-audit/SKILL.zh.md) | Stable | 用 GROBID 建立可追溯参考文献账本，再逐条经 AMiner 保守解析，区分「解析不确定」与「不存在」 | 「保守核验参考文献」「把 PDF 拆成参考文献账本再逐条解析」 | AMiner 解析需 Token；需 GROBID 或已有 TEI |
+| [`citation-faithfulness`](skills/citation-faithfulness/SKILL.zh.md) | Stable | 逐条核查正文引用是否忠于被引原文（支持/部分支持/曲解/查无此说/无法核实） | 「引用是否忠于原文」「有没有曲解参考文献」「这条引用支撑这个论断吗」 | 不需要 AMiner Token，需联网 |
 
-## 4. Design Principles and Repository Layout
+## 4. 设计原则与仓库结构
 
-### 4.1 Shared design principles
+### 4.1 共享设计原则
 
-Every skill in this repository follows these principles:
+所有技能都遵守以下原则：
 
-1. **Citation-integrity red line**: only write what was actually retrieved — say "not found" rather than fabricating; every result carries a three-state marker (verified / uncertain / not found).
-2. **Academic data first**: queries about papers, scholars, institutions, venues, or patents go through the AMiner Open Platform first; free endpoints first, billed calls estimated before execution.
-3. **Triage before action**: similar-looking requests are different task types; classify first, then follow the output contract for that type.
-4. **Complete first answer**: the first reply delivers the full artifact for the request type instead of relying on clarifying questions.
-5. **Fail loudly**: zero-output silent failures never happen; failures keep the submitted materials, and resending the same message resumes from the breakpoint.
-6. **Deliveries carry next steps**: every delivery ends with continuations — dimensions, todos, or the next section.
-7. **Parse and echo constraints**: word counts, item counts, year windows, and templates written into an instruction are acceptance criteria; parse and echo them before writing, and state any unfilled quota.
-8. **Cross-session state**: returning to the same manuscript, project, or list weeks later is normal; continue incrementally instead of rewriting from scratch.
-9. **Artifacts over hearsay**: guide users to paste their real materials (drafts, data, comments, templates) — judge by what was pasted, not what was said.
+1. **引文真实性红线**：检索到才写入，宁可说「未检索到」也绝不编造凑数；每条结果三态标注（已核实 / 存疑 / 查无）。
+2. **学术数据优先**：论文、学者、机构、期刊、专利等学术查询优先走 AMiner 开放平台；免费接口先行，计费调用先估算成本再执行。
+3. **先分诊再动手**：看似相同的请求实为多种任务类型，先判别类型，再按对应的输出契约执行。
+4. **首答即全部**：首答按请求类型给出完整产物，不靠反问澄清续命。
+5. **失败显式报错**：零产出的静默失败绝不发生；失败时保住已输入材料，同句重发即断点续传。
+6. **交付自带下一步**：每次交付末尾给出可继续的维度、待办或下一节提示。
+7. **约束解析并回显**：字数、条数、年份窗、模板等写进指令就是验收标准，动笔前解析回显，配额未满明说缺口。
+8. **跨会话状态**：同一稿件、课题或名单跨周回炉是常态，续作继承增量而不是从头重写。
+9. **载体优先**：引导用户贴自己的真材料（稿、数据、意见、模板）——看贴了什么，不只听说了什么。
 
-### 4.2 Repository layout
+### 4.2 仓库目录结构
 
 ```text
 aminer-open-skill/
-├── .claude-plugin/marketplace.json   # Claude plugin manifest
-├── tools/                            # quick token-setup scripts for local sessions
+├── .claude-plugin/marketplace.json   # Claude 插件清单
+├── tools/                            # 本地会话的 Token 快速配置脚本
 └── skills/
     ├── <skill-name>/
-    │   ├── SKILL.md                  # skill definition: frontmatter + rules + workflow, loaded by the agent on trigger
-    │   ├── SKILL.zh.md               # Chinese mirror (where provided)
-    │   ├── commands/                 # slash commands (where provided)
-    │   ├── scripts/                  # tool scripts calling the AMiner Open Platform
-    │   ├── references/               # prompts and reference rules
-    │   ├── evals/                    # evaluation samples
+    │   ├── SKILL.md                  # 技能定义：frontmatter + 规则 + 工作流，触发后由 agent 加载
+    │   ├── SKILL.zh.md               # 中文镜像（部分技能提供）
+    │   ├── commands/                 # slash command（部分技能提供）
+    │   ├── scripts/                  # 调用 AMiner 开放平台的工具脚本
+    │   ├── references/               # 提示词与参考规则
+    │   ├── evals/                    # 评测样例
     │   └── requirements.txt
     └── ...
 ```
 
-### 4.3 About contributions
+### 4.3 关于贡献
 
-The skills in this repository are currently maintained internally by the AMiner team, and new skills are not accepted from outside contributors for now. Feedback and feature requests are welcome via [GitHub Issues](https://github.com/AMinerOrg/aminer-open-skill/issues).
+本仓库技能目前由 AMiner 团队内部维护，暂不接受外部提交新技能。欢迎通过 [GitHub Issues](https://github.com/AMinerOrg/aminer-open-skill/issues) 反馈问题和需求。
 
-## 5. Feedback and Contact
+## 5. 反馈与联系
 
-- Usage questions and bugs: [GitHub Issues](https://github.com/AMinerOrg/aminer-open-skill/issues)
-- Email: [report@aminer.cn](mailto:report@aminer.cn)
-- API access and billing: [AMiner Open Platform](https://open.aminer.cn/open/docs)
+- 使用问题与 Bug：[GitHub Issues](https://github.com/AMinerOrg/aminer-open-skill/issues)
+- 邮件：[report@aminer.cn](mailto:report@aminer.cn)
+- API 接入与计费：[AMiner 开放平台](https://open.aminer.cn/open/docs)
 
-## 6. Star History
+## 6. Star 历史
 
 [![Star History Chart](https://api.star-history.com/svg?repos=AMinerOrg/aminer-open-skill&type=Date)](https://star-history.com/#AMinerOrg/aminer-open-skill&Date)
 
-## References
+## 参考
 
-- [AMiner Console](https://open.aminer.cn/open/board?tab=control)
-- [AMiner Open Platform Documentation](https://open.aminer.cn/open/docs)
-- [Claude plugin list](.claude-plugin/marketplace.json)
+- [AMiner 控制台](https://open.aminer.cn/open/board?tab=control)
+- [AMiner 开放平台文档](https://open.aminer.cn/open/docs)
+- [Claude 插件清单](.claude-plugin/marketplace.json)
 - [MIT License](LICENSE)
