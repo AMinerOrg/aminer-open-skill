@@ -1,9 +1,6 @@
 <div align="center">
   <h1>AMiner Open Skills</h1>
   <p>
-    <img src="assets/readme-banner-zh.png" alt="AMiner Open Skills：真实学术数据驱动的科研 Skill 库" width="100%">
-  </p>
-  <p>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
     <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.14.0-0969da"></a>
     <a href="#2-安装"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw-111827"></a>
@@ -18,6 +15,9 @@
     · <a href="https://open.aminer.cn/open/docs">开放平台文档</a>
     · <a href="#4-设计原则与仓库结构">设计原则</a>
     · <a href="README.en.md">English</a>
+  </p>
+  <p>
+    <img src="assets/readme-banner-zh.png" alt="AMiner Open Skills：真实学术数据驱动的科研 Skill 库" width="100%">
   </p>
   <p>
     <b>AMiner 网页版：内置智能搜索、AI 阅读、Res Labs、AI2000 等核心功能，访问地址 <a href="https://www.aminer.cn">https://www.aminer.cn</a></b>

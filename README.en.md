@@ -1,9 +1,6 @@
 <div align="center">
   <h1>AMiner Open Skills</h1>
   <p>
-    <img src="assets/readme-banner-en.png" alt="AMiner Open Skills: research skills powered by real academic data" width="100%">
-  </p>
-  <p>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
     <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.14.0-0969da"></a>
     <a href="#2-installation"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw-111827"></a>
@@ -18,6 +15,9 @@
     · <a href="https://open.aminer.cn/open/docs">Open Platform Docs</a>
     · <a href="#4-design-principles-and-repository-layout">Design Principles</a>
     · <a href="README.md">中文</a>
+  </p>
+  <p>
+    <img src="assets/readme-banner-en.png" alt="AMiner Open Skills: research skills powered by real academic data" width="100%">
   </p>
   <p>
     <b>AMiner web app: Smart Search, AI Reading, Res Labs, AI2000 and more built in — visit <a href="https://www.aminer.cn">https://www.aminer.cn</a></b>
