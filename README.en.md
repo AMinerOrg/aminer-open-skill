@@ -5,9 +5,9 @@
   </p>
   <p>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
-    <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.13.0-0969da"></a>
+    <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.14.0-0969da"></a>
     <a href="#2-installation"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw-111827"></a>
-    <a href="#3-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-13-0ea5e9"></a>
+    <a href="#3-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-14-0ea5e9"></a>
     <a href="README.md"><img alt="Language" src="https://img.shields.io/badge/language-English%20%7C%20中文-1f6feb"></a>
   </p>
   <p>
@@ -60,6 +60,7 @@ Once installed and configured with a token where needed (see [2. Installation](#
 | Organize a paper collection | `Group these paper titles and abstracts into a coherent hierarchical taxonomy and save it as taxonomy.md.` (`scientific-taxonomy`) |
 | Produce a sourced research report | `Research the Chinese LLM industry and write a cited report with an evidence ledger backing every claim.` (`deep-research`) |
 | Find SOTA and build a leaderboard | `Find the current DocVQA SOTA, separate incompatible evaluation scopes, and return a sourced leaderboard with the standard artifact bundle.` (`sota-finder`) |
+| Check experimental baseline coverage | `Check whether this paper may be missing direct experimental baselines, and separate evidence-backed comparisons from leads that need author verification.` (`baseline-audit`) |
 | Trace a paper's sources | `Analyze this PDF. Trace each key claim to its citation context and source, explain the citation intent, and generate the Markdown, JSON, SVG, and HTML outputs.` (`paper-source-trace`) |
 | Parse a PDF and extract experiments | `OCR this paper PDF, convert it to Markdown, and extract the experiment methods, datasets, and metrics as JSON.` (`aminer-pdf-ocr`) |
 | Extract experiments from Markdown | `Read this paper's Markdown file and extract the experiment methods, datasets, metrics, and key results as one JSON file.` (`aminer-exp-extraction`) |
@@ -164,10 +165,13 @@ Skill scripts need `python3`. Most skills use only the standard library; the fol
 | `aminer-exp-extraction` / `pdf-citation-verifier` / `structured-reference-audit` | requests |
 | `deep-research` | matplotlib (report figures) |
 | `sota-finder` | openpyxl (Excel export) |
+| `baseline-audit` | httpx, openai, pypdf |
 
 ```bash
 python3 -m pip install -r skills/<skill-name>/requirements.txt
 ```
+
+`baseline-audit` also provides a standalone CLI. Install the skill directory itself in an isolated environment as described in its [SKILL.md](skills/baseline-audit/SKILL.md); this installs dependencies and registers the `baseline-audit` command.
 
 `structured-reference-audit` also needs a reachable [GROBID](https://github.com/kermitt2/grobid) service or existing TEI files.
 
@@ -213,6 +217,7 @@ Standalone CLI commands, CI jobs, and scheduled tasks must set the token where t
 | Search and discovery | `aminer-free-academic` · `aminer-academic-search` · `aminer-daily-paper` · `aminer-deep-search` · `sota-finder` |
 | Reading and organizing | `aminer-pdf-ocr` · `aminer-exp-extraction` · `scientific-taxonomy` · `paper-source-trace` |
 | Research reports | `deep-research` |
+| Paper experiment checks | `baseline-audit` |
 | Citation checking | `pdf-citation-verifier` · `structured-reference-audit` · `citation-faithfulness` |
 
 ### 3.2 Choosing between similar skills
@@ -227,11 +232,12 @@ Standalone CLI commands, CI jobs, and scheduled tasks must set the token where t
 | A conservative reference audit where "unresolved" is not "fabricated" | `structured-reference-audit` | `pdf-citation-verifier` |
 | Whether a citation faithfully represents the cited source | `citation-faithfulness` | `pdf-citation-verifier` |
 | Tracing claims to sources and citation intent, with a citation map | `paper-source-trace` | `citation-faithfulness` |
-| Input is a PDF | `aminer-pdf-ocr` | `aminer-exp-extraction` (only when the input is already Markdown) |
+| Audit potentially missing direct experimental baselines | `baseline-audit` | `aminer-deep-search` (it gathers candidate papers; it does not assess baseline coverage) |
+| Convert a PDF to full-text Markdown | `aminer-pdf-ocr` | `aminer-exp-extraction` (only when the input is already Markdown) |
 
 ### 3.3 Full skill list
 
-`skills/` currently contains the following 13 triggerable skills. Click a skill name for the full skill definition.
+`skills/` currently contains the following 14 triggerable skills. Click a skill name for the full skill definition.
 
 | Skill | Status | Purpose | Triggers | Token |
 | --- | --- | --- | --- | --- |
@@ -240,6 +246,7 @@ Standalone CLI commands, CI jobs, and scheduled tasks must set the token where t
 | [`aminer-daily-paper`](skills/aminer-daily-paper/SKILL.md) | Stable | Personalized paper recommendations by topic, scholar profile, or author, with Feishu card and Markdown output | "recommend 8 recent highly-cited papers on X", "personalized reading list" | Required |
 | [`aminer-deep-search`](skills/aminer-deep-search/SKILL.md) | Stable | Large survey bibliography collection via multi-round search, deduplication, and citation snowballing | "collect 200 candidate papers for a survey", "snowball from seed papers" | Required |
 | [`deep-research`](skills/deep-research/SKILL.md) | Stable | Deep research producing a cited, hierarchically numbered report plus a reusable Evidence Ledger | "research the X industry and write a cited report", "literature-review style investigation" | Required; free-first, billed APIs capped (¥20 hard stop) |
+| [`baseline-audit`](skills/baseline-audit/SKILL.md) | Preview | Audit potentially missing direct experimental baselines from experiment and citation evidence; separate comparable items from leads needing verification | "what baselines may be missing", "check whether the experimental comparisons are complete" | Model API key and AMiner token required; some API calls billed; GROBID for PDF mode |
 | [`sota-finder`](skills/sota-finder/SKILL.md) | Stable | Find recent or historical SOTA, separate comparable scopes, and build practical leaderboards with structured artifacts | "what's the current SOTA on X", "split incomparable scopes and build a leaderboard" | Optional; only for AMiner enrichment |
 | [`scientific-taxonomy`](skills/scientific-taxonomy/SKILL.md) | Stable | Build a hierarchical Markdown taxonomy from paper titles and abstracts | "organize these papers into a coherent taxonomy" | Optional; only when AMiner fills missing metadata |
 | [`paper-source-trace`](skills/paper-source-trace/SKILL.md) | Stable | Trace a paper's key claims to citation contexts and sources, with intent analysis and SVG/HTML citation maps | "trace key claims to their sources", "explain the citation intent", "generate a citation map" | Optional; only for AMiner enrichment |

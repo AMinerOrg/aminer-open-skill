@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt><title>Structured Baseline Audit Fixture</title></titleStmt>
+      <publicationStmt><p>Test fixture</p></publicationStmt>
+      <sourceDesc><p>Test fixture</p></sourceDesc>
+    </fileDesc>
+    <profileDesc><abstract><p>We evaluate Rec-R1 only as motivation in this abstract; this is not experimental comparison evidence.</p></abstract></profileDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <div>
+        <head>Related Work</head>
+        <p><s coords="1,10,10,500,20">For multi-round recommendation, Rec-R1 <ref type="bibr" target="#b0" coords="1,20,20,20,10">[1]</ref> applies reinforcement learning, while ELASTIC <ref type="bibr" target="#b1" coords="1,40,20,20,10">[2]</ref> compresses long histories.</s></p>
+        <p><s coords="1,10,40,500,20">Memory and denoising methods include RaSeRec <ref type="bibr" target="#b2" coords="1,20,50,20,10">[3]</ref>, SSDRec <ref type="bibr" target="#b3" coords="1,40,50,20,10">[4]</ref>, and PDRec <ref type="bibr" target="#b4" coords="1,60,50,20,10">[5]</ref>.</s></p>
+      </div>
+      <div>
+        <head>Experiments</head>
+        <p><s coords="2,10,10,500,20">Table 1 compares CurrentNet and StrongBase on the MIND benchmark using NDCG@10.</s></p>
+        <p><s coords="2,10,40,500,20">We evaluate every method with the same candidate pool, chronological split, negative samples, fixed random seeds, and identical text encoder so the comparison isolates the history modeling mechanism.</s></p>
+        <p><s coords="2,10,70,500,20">The implementation uses a frozen preprocessing pipeline, reports Recall and NDCG at multiple cutoffs, and repeats each configuration to measure the variation across training runs.</s></p>
+        <p><s coords="2,10,100,500,20">Ablation results separately remove profile memory and latent compression while keeping optimization, evaluation data, and ranking metrics unchanged across all reported settings. The complete protocol is documented for reproducibility.</s></p>
+      </div>
+    </body>
+    <back>
+      <div type="references">
+        <listBibl>
+          <biblStruct xml:id="b0" coords="3,10,10,500,20">
+            <monogr><title level="m" type="main">Rec-R1: Reinforcement Learning for Recommendation</title><author><persName><forename>Ada</forename><surname>Author</surname></persName></author><imprint><date type="published" when="2025">2025</date></imprint></monogr>
+            <note type="raw_reference">Ada Author. 2025. Rec-R1: Reinforcement Learning for Recommendation.</note>
+          </biblStruct>
+          <biblStruct xml:id="b1" coords="3,10,40,500,20">
+            <analytic><title level="a" type="main">ELASTIC: Efficient Linear Attention for Sequential Interest Compression</title><author><persName><forename>Bo</forename><surname>Author</surname></persName></author></analytic><monogr><imprint><date type="published" when="2024">2024</date></imprint></monogr>
+            <note type="raw_reference">Bo Author. 2024. ELASTIC: Efficient Linear Attention for Sequential Interest Compression.</note>
+          </biblStruct>
+          <biblStruct xml:id="b2" coords="3,10,70,500,20">
+            <monogr><title level="m" type="main">RaSeRec: Retrieval-Augmented Sequential Recommendation</title><author><persName><forename>Chen</forename><surname>Author</surname></persName></author><imprint><date type="published" when="2024">2024</date></imprint></monogr>
+            <note type="raw_reference">Chen Author. 2024. RaSeRec: Retrieval-Augmented Sequential Recommendation.</note>
+          </biblStruct>
+          <biblStruct xml:id="b3" coords="3,10,100,500,20">
+            <analytic><title level="a" type="main">SSDRec: Self-Augmented Sequence Denoising for Sequential Recommendation</title><author><persName><forename>Dee</forename><surname>Author</surname></persName></author></analytic><monogr><imprint><date type="published" when="2024">2024</date></imprint></monogr>
+            <note type="raw_reference">Dee Author. 2024. SSDRec: Self-Augmented Sequence Denoising for Sequential Recommendation.</note>
+          </biblStruct>
+          <biblStruct xml:id="b4" coords="3,10,130,500,20">
+            <monogr><title level="m" type="main">PDRec: Personalized Diffusion for Recommendation</title><author><persName><forename>Eve</forename><surname>Author</surname></persName></author><imprint><date type="published" when="2024">2024</date></imprint></monogr>
+            <note type="raw_reference">Eve Author. 2024. PDRec: Personalized Diffusion for Recommendation.</note>
+          </biblStruct>
+        </listBibl>
+      </div>
+    </back>
+  </text>
+</TEI>
