@@ -1,0 +1,16 @@
+# Local credentials and runtime output
+.env
+.env.*
+!.env.example
+outputs/
+*.log
+
+# Python build, install, and test artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
