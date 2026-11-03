@@ -46,9 +46,9 @@
       "strict": false
     },
     {
-      "name": "baseline-audit",
+      "name": "baseline-finder",
       "description": "Audit a paper for potentially missing direct experimental baselines using experiment and citation evidence",
-      "source": "./skills/baseline-audit",
+      "source": "./skills/baseline-finder",
       "strict": false
     },
     {

@@ -1,13 +1,13 @@
 {
-  "skill_name": "baseline-audit",
+  "skill_name": "baseline-finder",
   "evals": [
     {
       "id": 1,
       "prompt": "For AMiner paper 0123456789abcdef01234567, audit whether the experiment section may be missing direct experimental baselines as of 2025-06-30. Keep directly comparable methods separate from useful candidates that still need verification.",
-      "expected_output": "Route to baseline-audit with the supplied pub_id and cutoff. Before execution, check secure AMiner/model credentials and permitted manuscript-data destinations; do not invent audit findings if execution cannot proceed.",
+      "expected_output": "Route to baseline-finder with the supplied pub_id and cutoff. Before execution, check secure AMiner/model credentials and permitted manuscript-data destinations; do not invent audit findings if execution cannot proceed.",
       "files": [],
       "expectations": [
-        "Selects baseline-audit rather than a general literature-review workflow",
+        "Selects baseline-finder rather than a general literature-review workflow",
         "Uses the supplied 24-character pub_id and review cutoff",
         "Does not claim results without running the evidence-gated audit",
         "Does not request API keys in chat"
@@ -19,7 +19,7 @@
       "expected_output": "If no PDF is actually attached, ask the user to upload or identify the local PDF and explain that the audit reports evidence-backed candidates for author review rather than prescribing additions.",
       "files": [],
       "expectations": [
-        "Recognizes the baseline-audit task",
+        "Recognizes the baseline-finder task",
         "Does not pretend an unavailable PDF was read",
         "Frames output as evidence-based review candidates, not mandatory additions"
       ]
@@ -27,37 +27,37 @@
     {
       "id": 3,
       "prompt": "Write a broad related-work section for this topic, covering the main schools of thought and seminal papers. I am not asking about experimental comparisons in a specific manuscript.",
-      "expected_output": "Do not invoke baseline-audit. Explain that it only checks possible missing direct experimental baselines in a specific paper and route to a suitable literature-search or research workflow.",
+      "expected_output": "Do not invoke baseline-finder. Explain that it only checks possible missing direct experimental baselines in a specific paper and route to a suitable literature-search or research workflow.",
       "files": [],
       "expectations": [
-        "Does not invoke baseline-audit for general related-work coverage",
+        "Does not invoke baseline-finder for general related-work coverage",
         "States the scope boundary clearly"
       ]
     },
     {
       "id": 4,
       "prompt": "Find the current SOTA on DocVQA, compare leaderboard results, and recommend which model to reproduce.",
-      "expected_output": "Use sota-finder for leaderboard research. Do not use baseline-audit, which audits experimental baseline coverage in a supplied paper.",
+      "expected_output": "Use sota-finder for leaderboard research. Do not use baseline-finder, which audits experimental baseline coverage in a supplied paper.",
       "files": [],
       "expectations": [
-        "Selects a leaderboard/SOTA workflow instead of baseline-audit",
+        "Selects a leaderboard/SOTA workflow instead of baseline-finder",
         "Does not claim that SOTA discovery is a baseline-coverage audit"
       ]
     },
     {
       "id": 5,
       "prompt": "Here is a submitted paper. Estimate its probability of acceptance and tell me the reviewers' likely decision.",
-      "expected_output": "Do not use baseline-audit or present acceptance predictions. Offer evidence-based manuscript feedback only if requested, while explaining that baseline-audit does not predict acceptance.",
+      "expected_output": "Do not use baseline-finder or present acceptance predictions. Offer evidence-based manuscript feedback only if requested, while explaining that baseline-finder does not predict acceptance.",
       "files": [],
       "expectations": [
-        "Does not invoke baseline-audit for acceptance prediction",
+        "Does not invoke baseline-finder for acceptance prediction",
         "Does not fabricate a probability or reviewer decision"
       ]
     },
     {
       "id": 6,
       "prompt": "For this paper ID 0123456789abcdef01234567, list later papers that cite it and call those missing baselines.",
-      "expected_output": "Clarify that the baseline-audit relation path returns backward references cited by the target, not later forward citations. Do not fabricate forward citation results or label a citation edge as an experimental comparison.",
+      "expected_output": "Clarify that the baseline-finder relation path returns backward references cited by the target, not later forward citations. Do not fabricate forward citation results or label a citation edge as an experimental comparison.",
       "files": [],
       "expectations": [
         "Distinguishes backward references from forward citations",
@@ -78,7 +78,7 @@
     },
     {
       "id": 8,
-      "prompt": "The PDF is unpublished. Do not send its text or experiment details to external models or services. Can you still run the full Baseline Audit?",
+      "prompt": "The PDF is unpublished. Do not send its text or experiment details to external models or services. Can you still run the full Baseline Finder?",
       "expected_output": "Do not send manuscript content. Explain the configured model and provider data flows and ask the user to confirm an allowed destination or choose an explicitly permitted workflow before any upload or external model call.",
       "files": [],
       "expectations": [

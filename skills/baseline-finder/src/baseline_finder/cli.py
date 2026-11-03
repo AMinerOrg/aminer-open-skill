@@ -1,4 +1,4 @@
-"""Command-line interface for the standalone Baseline Audit."""
+"""Command-line interface for the standalone Baseline Finder."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from .retrieval import EXTERNAL_FALLBACK_PROVIDERS, RETRIEVAL_PROVIDERS
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="baseline-audit",
+        prog="baseline-finder",
         description=(
             "Audit a local PDF or AMiner pub_id for plausible direct experimental "
             "baselines found through time-bounded scholarly search and optional "
@@ -137,7 +137,7 @@ def main(argv: list[str] | None = None) -> int:
         work_root = (
             Path(work_value).expanduser()
             if work_value
-            else Path.home() / ".local" / "share" / "baseline-audit"
+            else Path.home() / ".local" / "share" / "baseline-finder"
         )
         grobid_url = (
             args.grobid_url

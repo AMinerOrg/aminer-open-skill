@@ -8,19 +8,19 @@ import threading
 
 import pytest
 
-from baseline_audit.anchors import anchor_catalog_text, experiment_anchor_catalog
-from baseline_audit.audit import normalize_baseline_audit, select_baseline_candidates
-from baseline_audit.config import ModelRuntime
-from baseline_audit.parsing import parse_grobid_fulltext
-from baseline_audit.pipeline import AuditRequest, run_baseline_pipeline
-from baseline_audit.planning import (
+from baseline_finder.anchors import anchor_catalog_text, experiment_anchor_catalog
+from baseline_finder.audit import normalize_baseline_audit, select_baseline_candidates
+from baseline_finder.config import ModelRuntime
+from baseline_finder.parsing import parse_grobid_fulltext
+from baseline_finder.pipeline import AuditRequest, run_baseline_pipeline
+from baseline_finder.planning import (
     _comparison_purpose_utility_details,
     _comparison_purposes,
     _extended_diversity_reorder,
     build_baseline_retrieval_plan,
     select_direct_baseline_records,
 )
-from baseline_audit.retrieval import (
+from baseline_finder.retrieval import (
     baseline_feedback_keywords,
     filter_retrieval_records,
     retrieve_baseline_candidates,
@@ -305,7 +305,7 @@ def test_real_shape_tei_evidence_flows_through_pipeline(tmp_path: Path):
         return {
             "markdown": parsed.markdown,
             "pages": parsed.pages,
-            "local_title": "Structured Baseline Audit Fixture",
+            "local_title": "Structured Baseline Finder Fixture",
             "local_authors": [],
             "local_publication_year": 2026,
             "source_locations": parsed.source_locations,

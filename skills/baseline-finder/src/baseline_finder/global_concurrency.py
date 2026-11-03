@@ -57,7 +57,7 @@ def _default_gate_directory() -> Path:
     else:
         identity = re.sub(r"[^A-Za-z0-9_.-]+", "-", getpass.getuser()).strip("-")
         identity = identity or "user"
-    return Path(tempfile.gettempdir()) / f"baseline-audit-glm-gate-{identity}"
+    return Path(tempfile.gettempdir()) / f"baseline-finder-glm-gate-{identity}"
 
 
 def _integer_environment(name: str, default: int) -> int:
@@ -374,7 +374,7 @@ class GlobalModelConcurrencyGate:
             metadata: dict[str, Any] = dict(extra_metadata or {})
             metadata.update(
                 {
-                    "schema": "baseline-audit-glm-gate/v1",
+                    "schema": "baseline-finder-glm-gate/v1",
                     "slot_index": slot_index,
                     "owner_id": owner_id,
                     "pid": os.getpid(),

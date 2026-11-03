@@ -3,7 +3,7 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "baseline-audit"
+name = "baseline-finder"
 version = "0.5.1"
 description = "Standalone PDF or AMiner pub_id audit for potentially missing direct experimental baselines"
 readme = "SKILL.md"
@@ -18,11 +18,11 @@ dependencies = [
 test = ["pytest>=8.0"]
 
 [project.scripts]
-baseline-audit = "baseline_audit.cli:main"
+baseline-finder = "baseline_finder.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["baseline_audit*"]
+include = ["baseline_finder*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -1,4 +1,4 @@
-"""Self-contained application pipeline for one Baseline Audit run."""
+"""Self-contained application pipeline for one Baseline Finder run."""
 
 from __future__ import annotations
 
@@ -277,7 +277,7 @@ def run_baseline_pipeline(
             progress(phase, message, metrics)
 
     try:
-        emit("parsing", "Preparing the manuscript for the Baseline Audit.")
+        emit("parsing", "Preparing the manuscript for the Baseline Finder.")
         if local_pdf is not None:
             parsed = parser(
                 local_pdf,
@@ -806,7 +806,7 @@ def run_baseline_pipeline(
         )
         if request.output:
             write_json(request.output, report, force=request.force)
-        emit("finalizing", "Baseline Audit report is ready.", {"status": report_status})
+        emit("finalizing", "Baseline Finder report is ready.", {"status": report_status})
         result = {
             "run_id": run_id,
             "mode": "standalone-baseline",

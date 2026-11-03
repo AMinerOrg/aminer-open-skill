@@ -60,7 +60,7 @@
 | 整理论文集合 | `把这些论文的标题和摘要组织成层次清晰的 Taxonomy，并保存为 taxonomy.md。`（`scientific-taxonomy`） |
 | 产出带出处的研究报告 | `调研中国大模型行业，写一份带引用的报告，每个论断都有证据台账支撑。`（`deep-research`） |
 | 查找 SOTA 并建立榜单 | `查找当前 DocVQA SOTA，拆分不可比的评测范围，并生成带来源的榜单和标准产物。`（`sota-finder`） |
-| 检查实验基线覆盖 | `检查这篇论文的实验部分是否可能遗漏直接实验基线，并区分有证据支持的比较项与待作者核实的候选。`（`baseline-audit`） |
+| 检查实验基线覆盖 | `检查这篇论文的实验部分是否可能遗漏直接实验基线，并区分有证据支持的比较项与待作者核实的候选。`（`baseline-finder`） |
 | 追踪论文来源 | `分析这篇 PDF，将每个关键论点追踪到引用上下文和来源，解释引用意图，并生成 Markdown、JSON、SVG 和 HTML 产物。`（`paper-source-trace`） |
 | 解析 PDF 并抽取实验 | `把这篇论文 PDF 转成 Markdown，并抽取实验方法、数据集和指标的 JSON。`（`aminer-pdf-ocr`） |
 | 从 Markdown 抽取实验 | `读取这篇论文的 Markdown 文件，抽取实验方法、数据集、指标和关键结果，输出为一个 JSON 文件。`（`aminer-exp-extraction`） |
@@ -165,13 +165,13 @@ ln -s ~/ai-skills/aminer-open-skill/skills/aminer-free-academic ~/.codex/skills/
 | `aminer-exp-extraction` / `pdf-citation-verifier` / `structured-reference-audit` | requests |
 | `deep-research` | matplotlib（报告插图） |
 | `sota-finder` | openpyxl（导出 Excel） |
-| `baseline-audit` | httpx、openai、pypdf |
+| `baseline-finder` | httpx、openai、pypdf |
 
 ```bash
 python3 -m pip install -r skills/<skill-name>/requirements.txt
 ```
 
-`baseline-audit` 也提供独立 CLI；按其 [SKILL.md](skills/baseline-audit/SKILL.md) 将技能目录本身安装到隔离环境，可同时安装依赖并注册 `baseline-audit` 命令。
+`baseline-finder` 也提供独立 CLI；按其 [SKILL.md](skills/baseline-finder/SKILL.md) 将技能目录本身安装到隔离环境，可同时安装依赖并注册 `baseline-finder` 命令。
 
 `structured-reference-audit` 还需要可访问的 [GROBID](https://github.com/kermitt2/grobid) 服务，或已有的 TEI 文件。
 
@@ -217,7 +217,7 @@ openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 | 检索与发现 | `aminer-free-academic` · `aminer-academic-search` · `aminer-daily-paper` · `aminer-deep-search` · `sota-finder` |
 | 阅读与整理 | `aminer-pdf-ocr` · `aminer-exp-extraction` · `scientific-taxonomy` · `paper-source-trace` |
 | 调研报告 | `deep-research` |
-| 论文实验核查 | `baseline-audit` |
+| 论文实验核查 | `baseline-finder` |
 | 引用核查 | `pdf-citation-verifier` · `structured-reference-audit` · `citation-faithfulness` |
 
 ### 3.2 易混技能怎么选
@@ -232,7 +232,7 @@ openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 | 保守核验参考文献，未命中不等于伪造 | `structured-reference-audit` | `pdf-citation-verifier` |
 | 判断引用内容是否忠于被引原文 | `citation-faithfulness` | `pdf-citation-verifier` |
 | 追溯论点来源、引用意图，生成引用图 | `paper-source-trace` | `citation-faithfulness` |
-| 核查论文是否可能遗漏直接实验基线 | `baseline-audit` | `aminer-deep-search`（它收集候选论文，不评估基线覆盖） |
+| 核查论文是否可能遗漏直接实验基线 | `baseline-finder` | `aminer-deep-search`（它收集候选论文，不评估基线覆盖） |
 | 把 PDF 转成全文 Markdown | `aminer-pdf-ocr` | `aminer-exp-extraction`（输入已是 Markdown 时才用） |
 
 ### 3.3 完整技能列表
@@ -246,7 +246,7 @@ openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 | [`aminer-daily-paper`](skills/aminer-daily-paper/SKILL.md) | Stable | 个性化论文推荐：按主题、学者画像或作者信息推荐，支持飞书卡片与 Markdown 输出 | 「推荐 8 篇 XX 方向近期高引论文」「个性化阅读清单」 | 必须配置 |
 | [`aminer-deep-search`](skills/aminer-deep-search/SKILL.zh.md) | Stable | 深度综述文献收集：多轮检索、去重与引用滚雪球，构建数百篇候选论文池 | 「收集 200 篇综述候选论文」「从种子论文滚雪球扩展」 | 必须配置 |
 | [`deep-research`](skills/deep-research/SKILL.zh.md) | Stable | 深度研究：固定研究循环产出带引用的分层研究报告与可复用的 Evidence Ledger 证据台账 | 「调研 XX 行业，写一份带引用的报告」「文献综述型调研」 | 必须配置；免费优先，计费上限 ¥20 |
-| [`baseline-audit`](skills/baseline-audit/SKILL.md) | Preview | 根据实验与引用证据核查论文是否可能遗漏直接实验基线，区分可比较项与待核实候选 | 「还应比较哪些实验基线」「检查论文实验对比是否完整」 | 需要模型 API Key 和 AMiner Token；部分 API 计费；PDF 模式需 GROBID |
+| [`baseline-finder`](skills/baseline-finder/SKILL.md) | Preview | 根据实验与引用证据核查论文是否可能遗漏直接实验基线，区分可比较项与待核实候选 | 「还应比较哪些实验基线」「检查论文实验对比是否完整」 | 需要模型 API Key 和 AMiner Token；部分 API 计费；PDF 模式需 GROBID |
 | [`sota-finder`](skills/sota-finder/SKILL.zh.md) | Stable | 检索近期或历史 SOTA，区分可比范围，生成带来源的 Leaderboard 与结构化证据 | 「当前 XX 任务的 SOTA 是多少」「拆分可比范围做榜单」 | 可选；仅 AMiner 增强时需要 |
 | [`scientific-taxonomy`](skills/scientific-taxonomy/SKILL.md) | Stable | 根据论文标题与摘要生成层次化 Markdown Taxonomy | 「把这些论文组织成层次清晰的分类树」 | 可选；仅补全元数据时需要 |
 | [`paper-source-trace`](skills/paper-source-trace/SKILL.zh.md) | Stable | 论文来源追踪、引用意图识别、证据链分析与 SVG/HTML 引用图 | 「把关键论点追踪到引用来源」「解释引用意图」「生成引用图」 | 可选；仅 AMiner 增强时需要 |

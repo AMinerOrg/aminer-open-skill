@@ -1,0 +1,4 @@
+interface:
+  display_name: "Baseline Finder"
+  short_description: "Audit direct experimental baseline coverage"
+  default_prompt: "Use $baseline-finder to audit this paper for potentially missing direct experimental baselines."

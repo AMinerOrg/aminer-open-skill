@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from baseline_audit import __version__
-from baseline_audit.identity import aminer_headers, detect_skill_runtime
+from baseline_finder import __version__
+from baseline_finder.identity import aminer_headers, detect_skill_runtime
 
 
 RUNTIME_MARKERS = (
@@ -31,7 +31,7 @@ def test_aminer_headers_include_skill_identity_and_unknown_fallback() -> None:
 
     assert headers["Authorization"] == "test-key"
     assert headers["X-Platform"] == "unknown"
-    assert headers["X-Skill-Name"] == "baseline-audit"
+    assert headers["X-Skill-Name"] == "baseline-finder"
     assert headers["X-Skill-Version"] == __version__ == "0.5.1"
     assert headers["Content-Type"] == "application/json;charset=utf-8"
 

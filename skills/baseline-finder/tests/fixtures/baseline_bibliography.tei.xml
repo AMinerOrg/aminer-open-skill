@@ -2,7 +2,7 @@
 <TEI xmlns="http://www.tei-c.org/ns/1.0">
   <teiHeader>
     <fileDesc>
-      <titleStmt><title>Structured Baseline Audit Fixture</title></titleStmt>
+      <titleStmt><title>Structured Baseline Finder Fixture</title></titleStmt>
       <publicationStmt><p>Test fixture</p></publicationStmt>
       <sourceDesc><p>Test fixture</p></sourceDesc>
     </fileDesc>

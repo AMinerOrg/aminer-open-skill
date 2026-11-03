@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import pytest
 
-from baseline_audit.config import JsonModelClient, ModelRuntime
+from baseline_finder.config import JsonModelClient, ModelRuntime
 
 
 def _runtime() -> ModelRuntime:
@@ -51,8 +51,8 @@ def test_parallel_requests_preserve_usage_and_distinguish_sum_from_wall() -> Non
             pass
 
     with (
-        patch("baseline_audit.config.configured_proxy", return_value=None),
-        patch("baseline_audit.config.OpenAI", FakeOpenAI),
+        patch("baseline_finder.config.configured_proxy", return_value=None),
+        patch("baseline_finder.config.OpenAI", FakeOpenAI),
     ):
         with JsonModelClient(_runtime()) as client:
             with ThreadPoolExecutor(max_workers=worker_count) as executor:
@@ -110,8 +110,8 @@ def test_snapshot_includes_requests_that_are_still_in_flight() -> None:
             pass
 
     with (
-        patch("baseline_audit.config.configured_proxy", return_value=None),
-        patch("baseline_audit.config.OpenAI", FakeOpenAI),
+        patch("baseline_finder.config.configured_proxy", return_value=None),
+        patch("baseline_finder.config.OpenAI", FakeOpenAI),
     ):
         with JsonModelClient(_runtime()) as client:
             with ThreadPoolExecutor(max_workers=worker_count) as executor:
@@ -197,8 +197,8 @@ def test_glm_global_gate_serializes_two_shared_client_requests(tmp_path) -> None
             },
             clear=False,
         ),
-        patch("baseline_audit.config.configured_proxy", return_value=None),
-        patch("baseline_audit.config.OpenAI", FakeOpenAI),
+        patch("baseline_finder.config.configured_proxy", return_value=None),
+        patch("baseline_finder.config.OpenAI", FakeOpenAI),
     ):
         with JsonModelClient(runtime) as client:
             with ThreadPoolExecutor(max_workers=2) as executor:
@@ -241,8 +241,8 @@ def test_parallel_request_failure_does_not_leave_active_timing_open() -> None:
             pass
 
     with (
-        patch("baseline_audit.config.configured_proxy", return_value=None),
-        patch("baseline_audit.config.OpenAI", FakeOpenAI),
+        patch("baseline_finder.config.configured_proxy", return_value=None),
+        patch("baseline_finder.config.OpenAI", FakeOpenAI),
     ):
         with JsonModelClient(_runtime()) as client:
             with pytest.raises(RuntimeError, match="provider failed"):

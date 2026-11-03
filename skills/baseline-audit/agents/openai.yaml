@@ -1,4 +1,0 @@
-interface:
-  display_name: "Baseline Audit"
-  short_description: "Audit direct experimental baseline coverage"
-  default_prompt: "Use $baseline-audit to audit this paper for potentially missing direct experimental baselines."

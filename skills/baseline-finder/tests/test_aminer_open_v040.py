@@ -6,13 +6,13 @@ import json
 
 import httpx
 
-from baseline_audit.aminer_open import (
+from baseline_finder.aminer_open import (
     list_aminer_by_keywords,
     resolve_title_to_pub_id,
     search_aminer_query,
 )
-from baseline_audit.identity import detect_skill_runtime
-from baseline_audit.retrieval import (
+from baseline_finder.identity import detect_skill_runtime
+from baseline_finder.retrieval import (
     filter_retrieval_records,
     retrieve_baseline_candidates,
 )
@@ -33,7 +33,7 @@ def test_free_search_uses_v15_contract_and_enriches_with_paper_info() -> None:
         calls.append(request.url.path)
         assert request.headers["authorization"] == "test-key"
         assert request.headers["x-platform"] == detect_skill_runtime()
-        assert request.headers["x-skill-name"] == "baseline-audit"
+        assert request.headers["x-skill-name"] == "baseline-finder"
         assert request.headers["x-skill-version"] == "0.5.1"
         if request.method == "GET":
             assert request.url.path.endswith("/api/paper/search")

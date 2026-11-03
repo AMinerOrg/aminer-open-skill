@@ -1,4 +1,4 @@
-"""Shared AMiner request identity headers for Baseline Audit."""
+"""Shared AMiner request identity headers for Baseline Finder."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import os
 
 from . import __version__
 
-SKILL_NAME = "baseline-audit"
+SKILL_NAME = "baseline-finder"
 
 
 def detect_skill_runtime() -> str:

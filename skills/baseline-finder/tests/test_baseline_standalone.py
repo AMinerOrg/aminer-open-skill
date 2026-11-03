@@ -1,4 +1,4 @@
-"""Isolation and behavior tests for the standalone Baseline Audit."""
+"""Isolation and behavior tests for the standalone Baseline Finder."""
 
 from __future__ import annotations
 
@@ -13,28 +13,28 @@ from unittest.mock import patch
 import pytest
 import httpx
 
-from baseline_audit.aminer import fetch_aminer_source
-from baseline_audit.audit import normalize_baseline_audit
-from baseline_audit.cli import build_parser, main
-from baseline_audit.config import (
+from baseline_finder.aminer import fetch_aminer_source
+from baseline_finder.audit import normalize_baseline_audit
+from baseline_finder.cli import build_parser, main
+from baseline_finder.config import (
     JsonModelClient,
     ModelRuntime,
     load_env_file,
     resolve_model_runtime,
 )
-from baseline_audit.errors import BaselineAuditError
-from baseline_audit.identity import detect_skill_runtime
-from baseline_audit.pipeline import AuditRequest, run_baseline_pipeline
-from baseline_audit.parsing import MarkdownParseResult, prepare_pdf_source
-from baseline_audit.relation import retrieve_aminer_relation_candidates
-from baseline_audit.retrieval import retrieve_baseline_candidates
+from baseline_finder.errors import BaselineAuditError
+from baseline_finder.identity import detect_skill_runtime
+from baseline_finder.pipeline import AuditRequest, run_baseline_pipeline
+from baseline_finder.parsing import MarkdownParseResult, prepare_pdf_source
+from baseline_finder.relation import retrieve_aminer_relation_candidates
+from baseline_finder.retrieval import retrieve_baseline_candidates
 
 
 SKILL_ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_cli_uses_installed_command_name() -> None:
-    assert build_parser().prog == "baseline-audit"
+    assert build_parser().prog == "baseline-finder"
 
 
 def test_cli_requires_exactly_one_source_mode() -> None:
@@ -297,11 +297,11 @@ def test_legacy_work_dir_environment_does_not_override_default(
             },
             clear=True,
         ),
-        patch("baseline_audit.cli.run_baseline_pipeline", side_effect=fake_run),
+        patch("baseline_finder.cli.run_baseline_pipeline", side_effect=fake_run),
     ):
         assert main(["--pdf", str(pdf)]) == 0
 
-    expected = (fake_home / ".local" / "share" / "baseline-audit").resolve()
+    expected = (fake_home / ".local" / "share" / "baseline-finder").resolve()
     assert captured["request"].work_root == expected
     assert captured["request"].work_root != legacy_root.resolve()
 
@@ -357,8 +357,8 @@ def test_invalid_json_retry_uses_complete_core_instruction() -> None:
         base_url="https://example.invalid/v1",
     )
     with (
-        patch("baseline_audit.config.configured_proxy", return_value=None),
-        patch("baseline_audit.config.OpenAI", FakeOpenAI),
+        patch("baseline_finder.config.configured_proxy", return_value=None),
+        patch("baseline_finder.config.OpenAI", FakeOpenAI),
     ):
         with JsonModelClient(runtime) as client:
             assert client.json("system", "user", max_tokens=100) == {"status": "ok"}
@@ -442,8 +442,8 @@ def test_model_usage_tracks_single_response_and_derives_missing_total() -> None:
         base_url="https://example.invalid/v1",
     )
     with (
-        patch("baseline_audit.config.configured_proxy", return_value=None),
-        patch("baseline_audit.config.OpenAI", FakeOpenAI),
+        patch("baseline_finder.config.configured_proxy", return_value=None),
+        patch("baseline_finder.config.OpenAI", FakeOpenAI),
     ):
         with JsonModelClient(runtime) as client:
             assert client.json("system", "user", max_tokens=100) == {"status": "ok"}
@@ -491,8 +491,8 @@ def test_model_usage_handles_response_without_usage() -> None:
         base_url="https://example.invalid/v1",
     )
     with (
-        patch("baseline_audit.config.configured_proxy", return_value=None),
-        patch("baseline_audit.config.OpenAI", FakeOpenAI),
+        patch("baseline_finder.config.configured_proxy", return_value=None),
+        patch("baseline_finder.config.OpenAI", FakeOpenAI),
     ):
         with JsonModelClient(runtime) as client:
             assert client.json("system", "user", max_tokens=100) == {"status": "ok"}
@@ -551,8 +551,8 @@ def test_model_usage_marks_mixed_usage_as_partial() -> None:
         base_url="https://example.invalid/v1",
     )
     with (
-        patch("baseline_audit.config.configured_proxy", return_value=None),
-        patch("baseline_audit.config.OpenAI", FakeOpenAI),
+        patch("baseline_finder.config.configured_proxy", return_value=None),
+        patch("baseline_finder.config.OpenAI", FakeOpenAI),
     ):
         with JsonModelClient(runtime) as client:
             assert client.json("system", "user", max_tokens=100) == {"status": "ok"}
@@ -1200,9 +1200,9 @@ def test_pdf_mode_requires_grobid_unless_fallback_is_explicit(tmp_path: Path) ->
     )
     progress_events: list[tuple[str, str, dict[str, object] | None]] = []
     with (
-        patch("baseline_audit.parsing.parse_pdf_locally", return_value=local),
+        patch("baseline_finder.parsing.parse_pdf_locally", return_value=local),
         patch(
-            "baseline_audit.parsing.request_grobid_fulltext",
+            "baseline_finder.parsing.request_grobid_fulltext",
             side_effect=connection_error,
         ),
     ):
@@ -1214,9 +1214,9 @@ def test_pdf_mode_requires_grobid_unless_fallback_is_explicit(tmp_path: Path) ->
             )
 
     with (
-        patch("baseline_audit.parsing.parse_pdf_locally", return_value=local),
+        patch("baseline_finder.parsing.parse_pdf_locally", return_value=local),
         patch(
-            "baseline_audit.parsing.request_grobid_fulltext",
+            "baseline_finder.parsing.request_grobid_fulltext",
             side_effect=connection_error,
         ),
     ):
@@ -1270,7 +1270,7 @@ def test_aminer_interface_b_frozen_http_preserves_experiment_structure(
             assert body["pub_id"] == pub_id
             assert request.headers["authorization"] == "test-aminer-key"
             assert request.headers["x-platform"] == detect_skill_runtime()
-            assert request.headers["x-skill-name"] == "baseline-audit"
+            assert request.headers["x-skill-name"] == "baseline-finder"
             assert request.headers["x-skill-version"] == "0.5.1"
             if body.get("file_types"):
                 return httpx.Response(200, json={"data": [{"md": [markdown_url]}]})

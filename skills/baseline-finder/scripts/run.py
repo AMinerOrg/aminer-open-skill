@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Repository-independent entry point for the Baseline Audit Skill."""
+"""Repository-independent entry point for the Baseline Finder Skill."""
 
 import sys
 from pathlib import Path
@@ -9,6 +9,6 @@ source = skill_root / "src"
 if source.is_dir():
     sys.path.insert(0, str(source))
 
-from baseline_audit.cli import main  # noqa: E402
+from baseline_finder.cli import main  # noqa: E402
 
 raise SystemExit(main(sys.argv[1:]))

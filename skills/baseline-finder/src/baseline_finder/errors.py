@@ -1,4 +1,4 @@
-"""Public errors raised by the standalone Baseline Audit."""
+"""Public errors raised by the standalone Baseline Finder."""
 
 
 class BaselineAuditError(RuntimeError):

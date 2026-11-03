@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from baseline_audit.global_concurrency import (
+from baseline_finder.global_concurrency import (
     DEFAULT_GLOBAL_CONCURRENCY,
     GlobalConcurrencyConfigurationError,
     GlobalConcurrencyTimeout,

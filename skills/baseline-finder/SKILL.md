@@ -1,37 +1,37 @@
 ---
-name: baseline-audit
+name: baseline-finder
 description: Audit whether a local PDF or AMiner pub_id visibly compares plausible direct experimental baselines discovered through time-bounded AMiner search and public backward references; use for missing-baseline questions, not general related-work coverage or acceptance prediction.
 metadata:
   version: "0.5.1"
 ---
 
-# Baseline Audit
+# Baseline Finder
 
 Audit a local PDF or AMiner `pub_id` for plausible direct experimental baselines that may warrant an author check. This standalone Skill parses the manuscript, builds experiment anchors, generates task-specific searches, retrieves candidates, and checks them against visible experiment evidence. It does not run a complete review, general related-work coverage, novelty positioning, or acceptance prediction.
 
 The package is self-contained: it does not import a repository Core, Demo server, or another Skill. Install it in an isolated Python 3.10+ environment:
 
 ```bash
-python -m pip install /path/to/baseline-audit
+python -m pip install /path/to/baseline-finder
 ```
 
 Then supply exactly one input:
 
 ```bash
-baseline-audit --env-file /secure/review.env \
+baseline-finder --env-file /secure/review.env \
   --pdf /absolute/path/paper.pdf --review-as-of 2026-10-29 \
   --model-profile glm53 --output /private/reports/baseline.json
 
-baseline-audit --env-file /secure/review.env \
+baseline-finder --env-file /secure/review.env \
   --pub-id 0123456789abcdef01234567 --review-as-of 2026-10-29 \
   --model-profile glm53 --output /private/reports/baseline.json
 ```
 
-`python /path/to/baseline-audit/scripts/run.py` accepts the same arguments. A PDF must be non-empty and no larger than 20 MiB. A `pub_id` is a 24-character hexadecimal AMiner identifier.
+`python /path/to/baseline-finder/scripts/run.py` accepts the same arguments. A PDF must be non-empty and no larger than 20 MiB. A `pub_id` is a 24-character hexadecimal AMiner identifier.
 
 ## Retrieval and identity policy
 
-Every AMiner gateway request sends the `baseline-audit` skill name and package version. The platform header is detected from the host (`claude-code`, `cursor`, `codex`, or `openclaw`) and falls back to `unknown`; set `AMINER_SKILL_RUNTIME` in the environment file only when detection needs an override.
+Every AMiner gateway request sends the `baseline-finder` skill name and package version. The platform header is detected from the host (`claude-code`, `cursor`, `codex`, or `openclaw`) and falls back to `unknown`; set `AMINER_SKILL_RUNTIME` in the environment file only when detection needs an override.
 
 AMiner Open Platform is the default paper-discovery provider:
 
@@ -107,4 +107,4 @@ Before using an unpublished manuscript, confirm each destination is permitted:
 
 Always report the cutoff, providers, API costs, downgrades, and limitations. `candidate_to_check` and `candidate_to_verify` are neutral author-review prompts, not proof that a baseline is missing, required, or directly runnable. Preserve `not_assessable` when evidence is insufficient.
 
-Runs are private under `~/.local/share/baseline-audit/runs/<run_id>/` by default. PDF runs retain `source.pdf`; AMiner runs retain normalized provider artifacts. Delete a specific run directory after diagnosis when retention is unnecessary.
+Runs are private under `~/.local/share/baseline-finder/runs/<run_id>/` by default. PDF runs retain `source.pdf`; AMiner runs retain normalized provider artifacts. Delete a specific run directory after diagnosis when retention is unnecessary.
