@@ -67,6 +67,13 @@
 | 识别虚假参考文献 | `核验这篇论文 PDF 中的所有参考文献，标出不存在、可疑或需要人工复核的条目。`（`pdf-citation-verifier`） |
 | 保守核验结构化参考文献 | `将这篇 PDF 拆成参考文献账本，再逐条通过 AMiner 解析；未命中不能直接当作伪造。`（`structured-reference-audit`） |
 | 核查引用忠实性 | `逐条检查这篇论文的正文引用，获取被引来源，并判断上下文中的论断是否得到原文支持。`（`citation-faithfulness`） |
+| 深读单篇论文 | `精读《Attention Is All You Need》：总结问题、方法、实验设计与关键数字，并给可继续追问的方向。`（`aminer-paper-deep-reading`） |
+| 写期刊稿件 | `帮我写这篇稿子的 Related Work，每个论断配上真实检索到的引用，并模拟审稿人给一轮意见。`（`aminer-journal-paper-write-review-revise`） |
+| 排障与对照文献 | `我的实验跑不过论文报告的指标，帮我排查；并核实这个指标的文献依据。`（`aminer-experiment-to-paper`） |
+| 开题与学位论文 | `帮我做开题文献盘点和题目查新，再逐条处理导师对第二章的批注。`（`aminer-degree-thesis-proposal-to-defense`） |
+| 写基金本子 | `提取这份指南的申报要件，帮我凝练科学问题并按节撰写，最后以评审专家身份评审一遍。`（`aminer-grant-application`） |
+| 选题与找导师 | `评估「检索增强生成用于工业缺陷检测」这个方向的竞争密度，并帮我查这个题目有没有人做过。`（`aminer-topic-advisor-selection`） |
+| 专利与产业情报 | `做一份固态电解质产业技术调研报告，并检索该申请日之前公开的最接近现有技术。`（`aminer-patent-tech-intelligence`） |
 
 如果你不确定该用哪个技能，直接描述任务即可；如果已经知道技能名，可以在提示词中明确写“使用 `aminer-free-academic`”。以 [Claude Code 插件](#22-claude-code-插件安装)方式安装时，带 `commands/` 的技能还可以用 slash command 直接调用（插件命令带插件名前缀）：
 
@@ -167,6 +174,8 @@ ln -s ~/ai-skills/aminer-open-skill/skills/aminer-free-academic ~/.codex/skills/
 | `sota-finder` | openpyxl（导出 Excel） |
 | `baseline-finder` | httpx、openai、pypdf |
 
+7 个科研工作流技能（`aminer-topic-advisor-selection` / `aminer-paper-deep-reading` / `aminer-journal-paper-write-review-revise` / `aminer-experiment-to-paper` / `aminer-degree-thesis-proposal-to-defense` / `aminer-grant-application` / `aminer-patent-tech-intelligence`）只依赖标准库，无需额外安装。
+
 ```bash
 python3 -m pip install -r skills/<skill-name>/requirements.txt
 ```
@@ -215,10 +224,13 @@ openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 | 阶段 | 技能 |
 |---|---|
 | 检索与发现 | `aminer-free-academic` · `aminer-academic-search` · `aminer-daily-paper` · `aminer-deep-search` · `sota-finder` |
-| 阅读与整理 | `aminer-pdf-ocr` · `aminer-exp-extraction` · `scientific-taxonomy` · `paper-source-trace` |
+| 阅读与整理 | `aminer-pdf-ocr` · `aminer-exp-extraction` · `scientific-taxonomy` · `paper-source-trace` · `aminer-paper-deep-reading` |
 | 调研报告 | `deep-research` |
 | 论文实验核查 | `baseline-finder` |
 | 引用核查 | `pdf-citation-verifier` · `structured-reference-audit` · `citation-faithfulness` |
+| 写作与投稿 | `aminer-journal-paper-write-review-revise` · `aminer-experiment-to-paper` |
+| 学位与申报 | `aminer-degree-thesis-proposal-to-defense` · `aminer-grant-application` |
+| 选题与情报 | `aminer-topic-advisor-selection` · `aminer-patent-tech-intelligence` |
 
 ### 3.2 易混技能怎么选
 
@@ -237,7 +249,7 @@ openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 
 ### 3.3 完整技能列表
 
-当前 `skills/` 下包含以下 14 个可触发技能。点击技能名查看完整技能定义。
+当前 `skills/` 下包含以下 21 个可触发技能。点击技能名查看完整技能定义。
 
 | 技能 | 状态 | 用途 | 触发词 | Token |
 | --- | --- | --- | --- | --- |
@@ -255,6 +267,13 @@ openclaw config set env.vars.AMINER_API_KEY "<YOUR_TOKEN>"
 | [`pdf-citation-verifier`](skills/pdf-citation-verifier/SKILL.zh.md) | Stable | 上传论文 PDF 核验每条参考文献是否真实存在，识别 hallucination | 「检查这篇 PDF 的参考文献是不是编的」「找出虚假引用」 | 必须配置 |
 | [`structured-reference-audit`](skills/structured-reference-audit/SKILL.zh.md) | Stable | 用 GROBID 建立可追溯参考文献账本，再逐条经 AMiner 保守解析，区分「解析不确定」与「不存在」 | 「保守核验参考文献」「把 PDF 拆成参考文献账本再逐条解析」 | AMiner 解析需 Token；需 GROBID 或已有 TEI |
 | [`citation-faithfulness`](skills/citation-faithfulness/SKILL.zh.md) | Stable | 逐条核查正文引用是否忠于被引原文（支持/部分支持/曲解/查无此说/无法核实） | 「引用是否忠于原文」「有没有曲解参考文献」「这条引用支撑这个论断吗」 | 不需要 AMiner Token，需联网 |
+| [`aminer-topic-advisor-selection`](skills/aminer-topic-advisor-selection/SKILL.zh.md) | Stable | 科研选题与导师选择双轨：方向冷热/竞争密度、题目查新撞车、代表作定档；院系枚举、逐师档案、同名消歧 | 「这个方向还值不值得做」「帮我查这个题目有没有人做过」「帮我列这个院系的导师并逐个评估」 | 必须配置；逐师档案 person_detail ¥1.00/次，先免费收敛再拉详情 |
+| [`aminer-paper-deep-reading`](skills/aminer-paper-deep-reading/SKILL.zh.md) | Stable | 读论文——单篇深读：结构化精读、复现级精读（配方审计）、逐句翻译断点续读、跨文献参数面对比表、引用串/模糊记忆精确匹配定位 | 「精读这篇论文」「逐句翻译，解析」「XX参数一般是多少（跨文献对比表）」 | 必须配置；免费优先 |
+| [`aminer-journal-paper-write-review-revise`](skills/aminer-journal-paper-write-review-revise/SKILL.zh.md) | Stable | 期刊/会议稿件全流水线：从零成稿（系统性配引）、自有稿锚定修改、投稿前模拟审稿、真实审稿意见返修与回复信 | 「帮我写这篇稿子的 Related Work 并配上引用」「模拟审稿人审我的稿子」「逐条回复审稿意见并出回复信」 | 必须配置；免费优先 |
+| [`aminer-experiment-to-paper`](skills/aminer-experiment-to-paper/SKILL.zh.md) | Stable | 实验到论文：代码/实验排障、方法出处核实、结果与文献对照、先例存在性检索 | 「我的实验跑不过基线，帮我排障」「这个指标的文献依据是什么」「这个做法有没有人发表过」 | 必须配置；免费优先 |
+| [`aminer-degree-thesis-proposal-to-defense`](skills/aminer-degree-thesis-proposal-to-defense/SKILL.zh.md) | Stable | 学位论文全流程：开题（文献盘点/查新）、逐节生产线、导师/评审/盲审意见逐条销号、引文审计、格式合规、答辩材料 | 「帮我做开题报告的文献盘点」「逐条处理导师的批注」「答辩前帮我整理论文要点」 | 必须配置；免费优先 |
+| [`aminer-grant-application`](skills/aminer-grant-application/SKILL.zh.md) | Stable | 基金申报全流程：要件提取、挑方向、科学问题凝练、分节撰写、句级配证、防撞车、多角色模拟评审 | 「提取这份指南的申报要件」「帮我凝练科学问题」「以评审专家组身份评审我的本子」 | 必须配置；免费优先 |
+| [`aminer-patent-tech-intelligence`](skills/aminer-patent-tech-intelligence/SKILL.zh.md) | Stable | 产业技术情报与专利作业：指标对标、URS/SOP 合规文书、专利布局；对比文件检索（申请日硬截止）、权利要求/交底书起草、OA 答复 | 「做一份XX产业技术调研报告」「检索X之前公开的现有技术」「帮我起草交底书」 | 必须配置；免费优先，批量排查注意 person_detail 单价 |
 
 ## 4. 设计原则与仓库结构
 

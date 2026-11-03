@@ -52,6 +52,7 @@ ACTIONS: dict[str, tuple[str, str, float]] = {
     "org_search": ("POST", "/api/organization/search", 0.0),
     "org_person_relation": ("GET", "/api/organization/person/relation", 0.50),
     "org_paper_relation": ("GET", "/api/organization/paper/relation", 0.10),
+    "org_patent_relation": ("GET", "/api/organization/patent/relation", 0.10),
     # Journal / venue
     "venue_search": ("POST", "/api/venue/search", 0.0),
     "venue_detail": ("POST", "/api/venue/detail", 0.20),
