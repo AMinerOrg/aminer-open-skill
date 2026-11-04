@@ -4,7 +4,7 @@ name_zh: 产业情报与专利
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
-description: "[激活条件] 产业技术情报与专利作业双任务入口。触发语：「做一份XX产业技术调研报告」「国外某工艺的某指标是什么水平」「起草一份XX的URS」「从哪几个点可以布局专利」、贴「申请号+申请日」要最接近的现有技术或「检索X之前公开的（不含当天）」、「任务编号：…」批量下发。 [适用场景] 双任务族合一的分诊执行器。情报族：指标对标摸底、枚举源穷尽检索、单参数多源核证、立项文书/模板填空、URS/SOP/法规三列合规文书、专利布局规避、工艺排障、微差异机理逼问、订阅巡逻、对象情报（学者限产业调研语境）。专利族：逐案对比文件检索（申请日硬截止）、构思卡两步管线、定向排查、公知手段可行性问答、检索式构建、专利数据表、权利要求/交底书起草、OA 答复、发明人侧可专利性共构。 [路由规则] 学术文献任务→见 §6（查新→aminer-degree-thesis-proposal-to-defense；定题→aminer-topic-advisor-selection；配引与综述→aminer-journal-paper-write-review-revise；精读→aminer-paper-deep-reading）；选导师语境→aminer-topic-advisor-selection；期刊审稿回复→aminer-journal-paper-write-review-revise；基金申报→aminer-grant-application；实验执行→aminer-experiment-to-paper；所有学术数据查询→平台内置学术数据能力（见 Data Access 节）。"
+description: "[激活条件] 产业技术情报与专利作业双任务入口。触发语：「做一份XX产业技术调研报告」「国外某工艺的某指标是什么水平」「起草一份XX的URS」「从哪几个点可以布局专利」、贴「申请号+申请日」要最接近的现有技术或「检索X之前公开的（不含当天）」、「任务编号：…」批量下发。 [适用场景] 双任务族合一的分诊执行器。情报族：指标对标摸底、枚举源穷尽检索、单参数多源核证、立项文书/模板填空、URS/SOP/法规三列合规文书、专利布局规避、工艺排障、微差异机理逼问、订阅巡逻、对象情报（学者限产业调研语境）。专利族：逐案对比文件检索（申请日硬截止）、构思卡两步管线、定向排查、公知手段可行性问答、检索式构建、专利数据表、权利要求/交底书起草、OA 答复、发明人侧可专利性共构。 [路由规则] 学术文献任务→见 §6（查新→aminer-degree-thesis-proposal-to-defense；定题→aminer-topic-advisor-selection；配引与综述→aminer-journal-paper-write-review-revise；精读→aminer-paper-deep-reading）；选导师语境→aminer-topic-advisor-selection；期刊审稿回复→aminer-journal-paper-write-review-revise；基金申报→aminer-grant-application；实验执行→aminer-experiment-to-paper；所有学术数据查询→AMiner 开放平台 API（见 Data Access 节）。"
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-patent-tech-intelligence
 metadata:
   {
@@ -95,7 +95,7 @@ metadata:
 [ -z "${AMINER_API_KEY+x}" ] && echo "AMINER_API_KEY missing" || echo "AMINER_API_KEY exists"
 ```
 
-缺失即停，引导用户去 https://open.aminer.cn/open/board?tab=control 生成。**任何输出中绝不打印 key 的值。** 参数与响应字段详见 `aminer-academic-search/references/api-catalog.md`（完整 API 目录，含分页上限与错误码）。每次运行结束 stderr 打一行 `[Cost] ¥X.XX total, N API calls (...)` 费用脚注，交付末尾如实用它报费用。
+缺失即停，引导用户去 https://open.aminer.cn/open/board?tab=control 生成。**任何输出中绝不打印 key 的值。** 参数与响应字段详见 https://open.aminer.cn/open/docs（完整 API 目录，含分页上限与错误码）。每次运行结束 stderr 打一行 `[Cost] ¥X.XX total, N API calls (...)` 费用脚注，交付末尾如实用它报费用。
 
 ### 数据层统一规则
 

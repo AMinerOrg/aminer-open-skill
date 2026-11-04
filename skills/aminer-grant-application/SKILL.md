@@ -93,7 +93,7 @@ All academic-data queries in this skill go through the **AMiner Open Platform AP
 [ -z "${AMINER_API_KEY+x}" ] && echo "AMINER_API_KEY missing" || echo "AMINER_API_KEY exists"
 ```
 
-If missing, stop immediately and guide the user to https://open.aminer.cn/open/board?tab=control to generate one. **Never print the key's value in any output.** Parameters and response fields are documented in `aminer-academic-search/references/api-catalog.md` (the full API catalog, incl. pagination limits and error codes). Every run ends with a one-line cost footer on stderr (`[Cost] ¥X.XX total, N API calls (...)`); use it verbatim to report cost at the end of the delivery.
+If missing, stop immediately and guide the user to https://open.aminer.cn/open/board?tab=control to generate one. **Never print the key's value in any output.** Parameters and response fields are documented in https://open.aminer.cn/open/docs (the full API catalog, incl. pagination limits and error codes). Every run ends with a one-line cost footer on stderr (`[Cost] ¥X.XX total, N API calls (...)`); use it verbatim to report cost at the end of the delivery.
 
 ### 3.1 General rules
 

@@ -75,11 +75,7 @@ Do not use this skill for full scholar portraits, citation-chain analysis, full-
 Before making any API call, verify that the environment variable `AMINER_API_KEY` exists. Never output the token in plain text.
 
 ```bash
-if [ -z "${AMINER_API_KEY+x}" ]; then
-    echo "AMINER_API_KEY does not exist"
-else
-    echo "AMINER_API_KEY exists"
-fi
+[ -z "${AMINER_API_KEY+x}" ] && echo "AMINER_API_KEY missing" || echo "AMINER_API_KEY exists"
 ```
 
 - If `${AMINER_API_KEY}` exists: proceed with the query.

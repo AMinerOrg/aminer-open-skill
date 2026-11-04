@@ -115,7 +115,7 @@ metadata:
 
 ### 调用方式
 
-统一走 `scripts/aminer_client.py`，参数与响应字段见 `aminer-academic-search/references/api-catalog.md`（完整 API 目录，含分页上限与错误码）：
+统一走 `scripts/aminer_client.py`，完整 API 目录（参数/响应字段/分页上限/错误码）见开放平台文档：https://open.aminer.cn/open/docs
 
 ```bash
 # 免费检索：标题/关键词，可加年份窗（默认 size=10）

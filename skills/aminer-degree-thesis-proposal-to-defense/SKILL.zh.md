@@ -135,7 +135,7 @@ metadata:
 [ -z "${AMINER_API_KEY+x}" ] && echo "AMINER_API_KEY missing" || echo "AMINER_API_KEY exists"
 ```
 
-缺失即停，引导用户去 https://open.aminer.cn/open/board?tab=control 生成。**任何输出中绝不打印 key 的值。** 参数与响应字段详见 `aminer-academic-search/references/api-catalog.md`（完整 API 目录，含分页上限与错误码）。每次运行结束 stderr 打一行 `[Cost] ¥X.XX total, N API calls (...)` 费用脚注，交付末尾如实用它报费用。
+缺失即停，引导用户去 https://open.aminer.cn/open/board?tab=control 生成。**任何输出中绝不打印 key 的值。** 参数与响应字段详见 https://open.aminer.cn/open/docs（完整 API 目录，含分页上限与错误码）。每次运行结束 stderr 打一行 `[Cost] ¥X.XX total, N API calls (...)` 费用脚注，交付末尾如实用它报费用。
 
 ### 通用规则
 

@@ -118,7 +118,7 @@ If missing, stop immediately and guide the user to https://open.aminer.cn/open/b
 
 ### Invocation
 
-Use `scripts/aminer_client.py` throughout; parameters and response fields are documented in `aminer-academic-search/references/api-catalog.md` (the full API catalog, incl. pagination limits and error codes):
+Use `scripts/aminer_client.py` throughout; the full API catalog (parameters, response fields, pagination limits, error codes) is in the open-platform docs: https://open.aminer.cn/open/docs
 
 ```bash
 # Free search: title + keywords, optional year window (default size=10)
