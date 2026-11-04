@@ -67,13 +67,18 @@
 | 识别虚假参考文献 | `核验这篇论文 PDF 中的所有参考文献，标出不存在、可疑或需要人工复核的条目。`（`pdf-citation-verifier`） |
 | 保守核验结构化参考文献 | `将这篇 PDF 拆成参考文献账本，再逐条通过 AMiner 解析；未命中不能直接当作伪造。`（`structured-reference-audit`） |
 | 核查引用忠实性 | `逐条检查这篇论文的正文引用，获取被引来源，并判断上下文中的论断是否得到原文支持。`（`citation-faithfulness`） |
-| 深读单篇论文 | `精读《Attention Is All You Need》：总结问题、方法、实验设计与关键数字，并给可继续追问的方向。`（`aminer-paper-deep-reading`）[在线使用 ↗](https://www.aminer.cn/?skill=aminer-paper-deep-reading) |
-| 写期刊稿件 | `帮我写这篇稿子的 Related Work，每个论断配上真实检索到的引用，并模拟审稿人给一轮意见。`（`aminer-journal-paper-write-review-revise`）[在线使用 ↗](https://www.aminer.cn/?skill=aminer-journal-paper-write-review-revise) |
-| 排障与对照文献 | `我的实验跑不过论文报告的指标，帮我排查；并核实这个指标的文献依据。`（`aminer-experiment-to-paper`）[在线使用 ↗](https://www.aminer.cn/?skill=aminer-experiment-to-paper) |
-| 开题与学位论文 | `帮我做开题文献盘点和题目查新，再逐条处理导师对第二章的批注。`（`aminer-degree-thesis-proposal-to-defense`）[在线使用 ↗](https://www.aminer.cn/?skill=aminer-degree-thesis-proposal-to-defense) |
-| 写基金本子 | `提取这份指南的申报要件，帮我凝练科学问题并按节撰写，最后以评审专家身份评审一遍。`（`aminer-grant-application`）[在线使用 ↗](https://www.aminer.cn/?skill=aminer-grant-application) |
-| 选题与找导师 | `评估「检索增强生成用于工业缺陷检测」这个方向的竞争密度，并帮我查这个题目有没有人做过。`（`aminer-topic-advisor-selection`）[在线使用 ↗](https://www.aminer.cn/?skill=aminer-topic-advisor-selection) |
-| 专利与产业情报 | `做一份固态电解质产业技术调研报告，并检索该申请日之前公开的最接近现有技术。`（`aminer-patent-tech-intelligence`）[在线使用 ↗](https://www.aminer.cn/?skill=aminer-patent-tech-intelligence) |
+
+以下 7 个科研工作流技能也可以在 AMiner 网页版直接使用，无需安装：
+
+| 想做什么 | 直接这样说 | 在&#8288;线&#8288;使&#8288;用 |
+|---|---|---|
+| 深读单篇论文 | `精读《Attention Is All You Need》：总结问题、方法、实验设计与关键数字，并给可继续追问的方向。`（`aminer-paper-deep-reading`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-paper-deep-reading) |
+| 写期刊稿件 | `帮我写这篇稿子的 Related Work，每个论断配上真实检索到的引用，并模拟审稿人给一轮意见。`（`aminer-journal-paper-write-review-revise`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-journal-paper-write-review-revise) |
+| 排障与对照文献 | `我的实验跑不过论文报告的指标，帮我排查；并核实这个指标的文献依据。`（`aminer-experiment-to-paper`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-experiment-to-paper) |
+| 开题与学位论文 | `帮我做开题文献盘点和题目查新，再逐条处理导师对第二章的批注。`（`aminer-degree-thesis-proposal-to-defense`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-degree-thesis-proposal-to-defense) |
+| 写基金本子 | `提取这份指南的申报要件，帮我凝练科学问题并按节撰写，最后以评审专家身份评审一遍。`（`aminer-grant-application`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-grant-application) |
+| 选题与找导师 | `评估「检索增强生成用于工业缺陷检测」这个方向的竞争密度，并帮我查这个题目有没有人做过。`（`aminer-topic-advisor-selection`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-topic-advisor-selection) |
+| 专利与产业情报 | `做一份固态电解质产业技术调研报告，并检索该申请日之前公开的最接近现有技术。`（`aminer-patent-tech-intelligence`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-patent-tech-intelligence) |
 
 如果你不确定该用哪个技能，直接描述任务即可；如果已经知道技能名，可以在提示词中明确写“使用 `aminer-free-academic`”。以 [Claude Code 插件](#22-claude-code-插件安装)方式安装时，带 `commands/` 的技能还可以用 slash command 直接调用（插件命令带插件名前缀）：
 
