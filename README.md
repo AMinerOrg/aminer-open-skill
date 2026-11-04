@@ -17,7 +17,7 @@
     · <a href="README.en.md">English</a>
   </p>
   <p>
-    <img src="assets/readme-banner-zh.png" alt="AMiner Open Skills：真实学术数据驱动的科研 Skill 库" width="100%">
+    <img src="assets/readme-banner-zh-v2.png" alt="AMiner Open Skills：真实学术数据驱动的科研 Skill 库" width="100%">
   </p>
   <p>
     <b>AMiner 网页版：内置智能搜索、AI 阅读、Res Labs、AI2000 等核心功能，访问地址 <a href="https://www.aminer.cn">https://www.aminer.cn</a></b>
