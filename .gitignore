@@ -35,3 +35,6 @@ package-lock.json
 # Internal-only docs and maintainer tooling (not published).
 INTEGRATION_GUIDE.md
 tools/check_skills.py
+
+# Upstream release drop, not part of the repo
+skills_release.zip
