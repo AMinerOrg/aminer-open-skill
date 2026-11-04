@@ -1,5 +1,6 @@
 ---
 name: aminer-topic-advisor-selection
+name_zh: 科研选题与导师选择
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [Activation] The decision stage before research begins — two tracks. Topic-selection track: "Is direction X still worth doing", "A or B — which is easier to write", "Is the novelty enough for a master's thesis", "Give me a few candidate topics", "None of these work, start over", "Decided — going with this one", "Continue last time's topic selection". Advisor-selection track: "Which doctoral advisors does department X have", "Build a profile for each of these advisors", "Advisor A or B", "Am I a fit for this advisor", "Write an outreach email", "The advisor replied — how do I respond", "Predict what the advisor will ask".
   [Scope] Turn decision drift into a convergence mechanism. Topic-selection track: five-dimension candidate cards, same-axis ranking, anti-restart guardrails, tier card + four-piece starter pack delivered in the same round. Advisor-selection track: department enumeration → per-advisor profiles (output record, student placements, grants) → same-axis comparison → fit assessment → outreach and application materials → reply follow-up → interview rehearsal, sharing one cross-session application dossier. The decision objects are inherently entangled (topics constrain advisors; advisor opinions reopen topic selection) — one skill, two tracks, two ledgers, with explicit inter-track handoffs.
   [Routing] Full thesis-proposal production → aminer-degree-thesis-proposal-to-defense; manuscript writing/revision/review/revise-and-resubmit → aminer-journal-paper-write-review-revise; grant application → aminer-grant-application; experiment execution → aminer-experiment-to-paper; deep reading → aminer-paper-deep-reading; patents → aminer-patent-tech-intelligence.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-topic-advisor-selection
 metadata:
   {
     "openclaw":

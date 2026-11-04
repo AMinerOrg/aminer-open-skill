@@ -1,9 +1,11 @@
 ---
 name: aminer-topic-advisor-selection
+name_zh: 科研选题与导师选择
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: "[Activation] 科研启动前的决策阶段——双轨。选题轨：「X 方向还值得做吗」「A 还是 B，哪个好写」「创新性够硕士论文吗」「给我几个候选题目」「这些都不行，重来」「定了，就做这个」「继续上次的选题」。择师轨：「X 系有哪些博导」「给这些导师每人建个档案」「导师 A 还是 B」「我适合这位导师吗」「写套磁信」「导师回复了，怎么回」「预测导师会问什么」。 [Scope] 把决策漂移变成收敛机制。选题轨：五维候选卡、同轴排序、防重启护栏、定档卡 + 四件套起步包同轮交付。择师轨：院系枚举 → 逐师档案（产出记录、学生出路、基金）→ 同轴对比 → 适配评估 → 套磁与申请材料 → 回复跟进 → 面试演练，共享一份跨会话申请档案。决策对象天然纠缠（题目约束导师、导师意见重开选题）——一个技能、两条轨、两本账，轨间显式交接。 [Routing] 完整开题报告生产 → aminer-degree-thesis-proposal-to-defense；稿件写作/修改/审稿/返修 → aminer-journal-paper-write-review-revise；基金申报 → aminer-grant-application；实验执行 → aminer-experiment-to-paper；精读 → aminer-paper-deep-reading；专利 → aminer-patent-tech-intelligence。"
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-topic-advisor-selection
 metadata:
   {
     "openclaw":

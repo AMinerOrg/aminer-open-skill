@@ -1,9 +1,11 @@
 ---
 name: aminer-journal-paper-write-review-revise
+name_zh: 期刊论文写作·审稿·返修
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: "[激活条件] 期刊/会议论文全流程线：「帮我写一篇 X 的综述」（查空、大纲、逐节写作、投稿材料）；贴自己的稿子段落——「给这段配几篇文献」「把引用占位符填上」「只润色不改长度」「逐条落实导师意见」；投稿前审稿——「你是审稿人，审审我的稿」「这篇能过 {venue} 吗」；真实意见到来——「逐条回复」「写回复信」「二审意见到了，死线快到了」。 [适用场景] 一条流水线、四个工位：从零成稿生产；用户自有稿件的锚定配引迭代；投稿前模拟审稿（维度记分卡、行级问题清单、录用风险预判）；真实意见返修（拆条台账、逐条修改、point-by-point 回复信、多轮周期与死线管理）。稿件状态与引文池跨会话持续。 [路由规则] 学位论文开题/章节/盲审/答辩 → aminer-degree-thesis-proposal-to-defense；选题或择师未定 → aminer-topic-advisor-selection；实验执行 → aminer-experiment-to-paper；精读他人的论文 → aminer-paper-deep-reading；专利 OA → aminer-patent-tech-intelligence。"
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-journal-paper-write-review-revise
 metadata:
   {
     "openclaw":

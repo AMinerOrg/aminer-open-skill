@@ -1,9 +1,11 @@
 ---
 name: aminer-experiment-to-paper
+name_zh: 做实验到成稿
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: "[激活条件] 用户正在做实验时使用：贴一段 R/Python 代码或报错问「为什么报错/怎么调」；要求把统计表/F 值/回归方程写成论文里的话；问「这个统计方法可行吗」「这个实验设计合理可行吗」；找「有没有用某方法研究某对象」的先例文章；要求零基础一步一步教算某个指数；贴 HPC 跑出来的日志求判读正不正常；或说数据跑完了，要把结果写出来/写进论文。 [适用场景] 全程实验伴侣：分诊、「带回→分析→调整→再带回」循环排障、统计输出转论文表述＋数字审计、HPC 日志判读、方法可行性与实验设计评审、先例检索、零基础教学——在跑通确认时刻主动触发「结果→讨论/方法节」成稿承接，不让成果停在数据层。 [路由规则] 初稿交回后的稿件迭代转 aminer-journal-paper-write-review-revise；审稿意见拆条与回复信多轮循环转 aminer-journal-paper-write-review-revise；学位论文章节组装转 aminer-degree-thesis-proposal-to-defense；孤立概念深挖转 aminer-paper-deep-reading。讨论节的引文检索留在本技能内执行。"
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-experiment-to-paper
 metadata:
   {
     "openclaw":

@@ -1,5 +1,6 @@
 ---
 name: aminer-patent-tech-intelligence
+name_zh: 产业情报与专利
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [Activation] Dual entry point for industrial technology intelligence and patent work. Trigger phrases: "produce an XX industry technology survey report", "what level has some metric of some overseas process reached", "draft a URS for XX", "from which points could we file patents"; pasted "application number + filing date" asking for the closest prior art, or "search everything published before X (the day itself excluded)"; "Task No.: ..." bulk dispatch.
   [Scenarios] A triage executor unifying two task families. Intelligence family: metric benchmarking surveys, enumerated-source exhaustive retrieval, single-parameter multi-source verification, project-initiation documents / template fill-ins, URS/SOP/regulation three-column compliance documents, patent landscaping & circumvention, process troubleshooting, micro-difference mechanism interrogation, subscription patrols, object intelligence (scholars restricted to industrial-survey contexts). Patent family: per-case prior-art document retrieval (hard filing-date cutoff), conception-card two-step pipeline, targeted screening, common-knowledge-means feasibility Q&A, search-statement construction, patent data tables, claims / invention disclosure drafting, OA responses, inventor-side patentability co-construction.
   [Routing] Academic-literature tasks → see §6 (novelty search → aminer-degree-thesis-proposal-to-defense; topic fixing → aminer-topic-advisor-selection; citation matching and surveys → aminer-journal-paper-write-review-revise; deep reading → aminer-paper-deep-reading); advisor-selection contexts → aminer-topic-advisor-selection; journal review responses → aminer-journal-paper-write-review-revise; grant applications → aminer-grant-application; experiment execution → aminer-experiment-to-paper; all academic data queries → AMiner Open Platform APIs (see the Data Access section).
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-patent-tech-intelligence
 metadata:
   {
     "openclaw":

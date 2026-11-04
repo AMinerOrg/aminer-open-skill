@@ -1,11 +1,13 @@
 ---
 name: sota-finder
+name_zh: SOTA 检索与榜单
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: >
   Find recent or historical state-of-the-art results and build practical, source-aware leaderboards for a task or benchmark. Use for benchmark surveys, cross-paper result comparison, open-world SOTA discovery, or structured leaderboard artifacts from natural language, papers, URLs, repositories, tables, and existing result files. Keep comparable results in the main leaderboard and useful non-comparable candidates in a clearly labeled reference section.
   Do NOT use this skill for a general literature review with no result comparison, or for extracting one supplied paper's tables without broader SOTA discovery.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/sota-finder
 metadata:
   {
     "openclaw":

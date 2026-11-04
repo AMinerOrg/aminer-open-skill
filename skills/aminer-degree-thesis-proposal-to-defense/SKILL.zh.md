@@ -1,9 +1,11 @@
 ---
 name: aminer-degree-thesis-proposal-to-defense
+name_zh: 学位论文开题到答辩
 version: 2.0.0
 author: AMiner
 contact: report@aminer.cn
 description: "[激活条件] 学位论文生产线，从开题关到答辩：「开题报告怎么写」「我的课题能过开题吗」「这是学校模板，帮我填」「15 号开题截止」「做一套开题答辩 PPT」「现在写 3.2 节」+ 贴目录、「逐条落实导师意见」「找两篇近两年文献支撑这句话」「你是盲审专家」「答辩每页 PPT 讲什么」「按学校格式查全篇」，或贴带批注的稿子/编号意见清单。 [适用场景] 一条线、两个纪元。开题纪元：选题体检（查新/创新点对学位层级/可行性）、学校模板逐字段起草、死线冲刺、开题答辩演练、开题阶段意见销号。通过后纪元：逐节生产、逐条意见销号、引文审计、格式合规、盲审自检、中期与答辩材料。跨会话课题档案全程承载。 [路由规则] 选题或择师未定 → aminer-topic-advisor-selection；期刊/会议稿件 → aminer-journal-paper-write-review-revise；实验排障 → aminer-experiment-to-paper；精读 → aminer-paper-deep-reading；专利 → aminer-patent-tech-intelligence。"
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-degree-thesis-proposal-to-defense
 metadata:
   {
     "openclaw":

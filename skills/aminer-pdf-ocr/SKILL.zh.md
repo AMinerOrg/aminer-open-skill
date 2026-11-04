@@ -1,5 +1,6 @@
 ---
 name: aminer-pdf-ocr
+name_zh: PDF OCR 与实验提取
 version: 3.0.1
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [激活条件] 用户提供 PDF 并要求 OCR、转 Markdown 或抽取论文实验信息时使用。
   [功能] 调用 AMiner 开放平台 PDF OCR 异步接口（`/api/v3/paper/pdfocr/*`），上传、轮询、下载 ZIP 并安全落盘；随后由 Agent 按 references/experiment_prompt.md 从 result.md 抽取实验 JSON。
   [路由规则] 引文真实性核验使用 pdf-citation-verifier；论文检索使用 aminer-academic-search / aminer-free-academic。
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-pdf-ocr
 metadata:
   {"openclaw": {"emoji": "📄", "requires": {"bins": ["python3"], "env": ["AMINER_API_KEY"]}, "primaryEnv": "AMINER_API_KEY"}}
 ---

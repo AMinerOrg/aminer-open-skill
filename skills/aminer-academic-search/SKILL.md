@@ -1,5 +1,6 @@
 ---
 name: aminer-academic-search
+name_zh: 学术数据全量查询
 version: 1.5.0
 author: AMiner
 contact: report@aminer.cn
@@ -9,6 +10,7 @@ description: >
   Use this skill for: scholar full profile (bio, education, honors, papers, patents, projects), paper deep dive (full abstract, keywords, authors, citation chains), multi-condition or semantic paper search (filter by author + institution + venue + keywords, or natural language Q&A via paper_qa_search_pro), explicit structured experiment retrieval (Experiment JSON, methods, datasets, or experiment names), institution research capability analysis (scholars, papers, patents), venue paper monitoring by year, patent deep details (IPC/CPC, assignee, claims), and any query needing paid API fields such as full abstracts, structured citation relationships, or scholar work history.
   Do NOT use this skill for simple lookups that free APIs can answer — such as checking a paper title, identifying a scholar by name, normalizing an institution or venue name, or scanning patent trends by keyword. For those, use aminer-free-academic instead.
   Routing rule: if the user's question can be fully answered by paper_search, paper_info, person_search, organization_search, venue_search, patent_search, or patent_info alone, route to aminer-free-academic. Otherwise use this skill.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-academic-search
 metadata:
   {
     "openclaw":

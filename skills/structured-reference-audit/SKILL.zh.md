@@ -1,10 +1,12 @@
 ---
 name: structured-reference-audit
+name_zh: 结构化参考文献核验
 version: 0.1.0
 author: Community contribution
 description: >
   使用 GROBID 将论文 PDF 拆为可追溯参考文献账本，再逐条通过 AMiner 解析。
   适用于需要保守核验参考文献存在性、且不希望把 PDF 解析失败直接当作虚假引用的场景。
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/structured-reference-audit
 ---
 
 # 结构化参考文献核验

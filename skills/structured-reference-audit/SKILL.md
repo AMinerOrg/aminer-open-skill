@@ -1,11 +1,13 @@
 ---
 name: structured-reference-audit
+name_zh: 结构化参考文献核验
 version: 0.1.0
 author: Community contribution
 description: >
   Build an auditable reference ledger from a paper PDF with GROBID, then resolve
   structurally parsed entries through AMiner. Use when a user needs conservative
   reference-existence checking rather than a direct PDF-level FAKE verdict.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/structured-reference-audit
 ---
 
 # Structured Reference Audit

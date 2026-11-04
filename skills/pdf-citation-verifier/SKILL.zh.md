@@ -1,5 +1,6 @@
 ---
 name: pdf-citation-verifier
+name_zh: PDF 引用核验
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [激活条件] 当用户提供论文 PDF（文件路径或上传），并要求核验、审计、检查参考文献是否为真实存在的文献时使用——例如"检查这篇论文的参考文献有没有伪造"、"找出虚假引用"、"验证 bibliography"。
   [适用场景] 把 PDF 上传到 AMiner pdf-citation-verifier 服务，轮询异步作业并返回每条参考文献的判定（REAL / LIKELY_REAL / NEEDS_REVIEW / LIKELY_FAKE / FAKE）以及整体是否存在 hallucination 的结论。
   [路由规则] 不要用于普通论文检索、学者查询、引用意图分析或引用图谱构建——这些场景应改用 aminer-academic-search、aminer-free-academic 或 paper-source-trace。本 Skill 只判断"引用是否真实存在"。
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/pdf-citation-verifier
 metadata:
   {
     "openclaw":

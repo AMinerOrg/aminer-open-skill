@@ -1,5 +1,6 @@
 ---
 name: aminer-journal-paper-write-review-revise
+name_zh: 期刊论文写作·审稿·返修
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [Activation] The full journal/conference paper pipeline: "help me write a survey on X" (empty-result check, outline, section-by-section writing, submission materials); pasting one's own manuscript paragraphs — "find a few papers to cite for this passage", "fill in the citation placeholders", "polish only, keep the length", "implement my advisor's comments item by item"; pre-submission review — "you be the reviewer, review my manuscript", "can this pass {venue}"; real comments arriving — "respond item by item", "write the response letter", "the second-round comments just arrived, the deadline is close".
   [Scenarios] One pipeline, four stations: from-zero manuscript production; anchored citation-matched iteration on the user's own manuscript; pre-submission simulated review (dimension scorecard, line-level issue list, acceptance-risk forecast); revision on real comments (itemized ledger, item-by-item revision, point-by-point response letter, multi-round cycle and deadline management). Manuscript state and the citation pool persist across sessions.
   [Routing] Degree-thesis proposal/chapters/blind review/defense → aminer-degree-thesis-proposal-to-defense; topic or advisor selection still unsettled → aminer-topic-advisor-selection; experiment execution → aminer-experiment-to-paper; deep-reading someone else's paper → aminer-paper-deep-reading; patent OA → aminer-patent-tech-intelligence.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-journal-paper-write-review-revise
 metadata:
   {
     "openclaw":

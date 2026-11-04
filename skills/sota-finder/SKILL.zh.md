@@ -1,11 +1,13 @@
 ---
 name: sota-finder
+name_zh: SOTA 检索与榜单
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: >
   面向研究任务或 benchmark 查找近期或历史 SOTA，并建立有来源、可比较、可直接使用的 Leaderboard。适用于 benchmark 调研、跨论文结果比较、开放网络 SOTA 检索，以及从自然语言、论文、URL、仓库、表格或已有结果文件生成结构化榜单产物。可比结果进入主榜，有用但不可比的候选放入清楚标注的参考区。
   不适用于不需要结果比较的一般文献综述，也不适用于仅抽取单篇给定论文表格而不进行更广泛 SOTA 检索的任务。
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/sota-finder
 metadata:
   {
     "openclaw":

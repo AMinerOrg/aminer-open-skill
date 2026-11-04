@@ -1,5 +1,6 @@
 ---
 name: aminer-pdf-ocr
+name_zh: PDF OCR 与实验提取
 version: 3.0.1
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [Activation] Use when the user provides a PDF and requests OCR, Markdown conversion, or structured experiment extraction.
   [Scope] Submit the PDF to the AMiner PDF OCR open platform (`/api/v3/paper/pdfocr/*`), poll the asynchronous job, download and unpack its ZIP, then let the Agent extract experiments from result.md using references/experiment_prompt.md.
   [Routing] Use pdf-citation-verifier for citation verification and aminer-academic-search / aminer-free-academic for literature search.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-pdf-ocr
 metadata:
   {"openclaw": {"emoji": "📄", "requires": {"bins": ["python3"], "env": ["AMINER_API_KEY"]}, "primaryEnv": "AMINER_API_KEY"}}
 ---

@@ -1,5 +1,6 @@
 ---
 name: aminer-exp-extraction
+name_zh: 实验数据提取
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [Activation] Use when the user provides paper markdown file(s) and requests experiment data extraction (methods, datasets, metrics, results).
   [Scope] For each paper md: preprocess -> GLM sentence filter (glm-5.3-flash, SciBERT replacement) -> LLM extraction (glm-5.3-flash) -> one JSON per paper. Both model stages call the same Zhipu BigModel chat-completions API. Extraction semantic params (prompt, temperature 0.05, cap 60) are frozen, identical to the production prod-wf4 workflow.
   [Routing] Input is local md files (--md/--md-dir) or paper_id+md_url CSV rows (--csv). Use aminer-pdf-ocr first when the source is a PDF (it produces the md). Use aminer-academic-search for searching papers by topic.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-exp-extraction
 metadata:
   {"openclaw": {"emoji": "🧪", "requires": {"bins": ["python3"], "env": ["BIGMODEL_API_KEY"]}, "primaryEnv": "BIGMODEL_API_KEY"}}
 ---

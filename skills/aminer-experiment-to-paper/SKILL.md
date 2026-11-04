@@ -1,5 +1,6 @@
 ---
 name: aminer-experiment-to-paper
+name_zh: 做实验到成稿
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [Activation] Use while the user is running experiments: pastes a chunk of R/Python code or an error asking "why does this error / how to fix"; asks to turn statistical tables / F values / regression equations into paper-ready sentences; asks "is this statistical method feasible" / "is this experimental design sound and feasible"; looks for prior-art papers on "has anyone used method X to study object Y"; asks to be taught step by step from zero how to compute an index; pastes logs from HPC runs asking for a reading of whether they look normal; or says the data has finished running and the results need to be written up / written into the paper.
   [Scenarios] Full-cycle experiment companion: triage, "bring back → analyze → adjust → bring back again" loop troubleshooting, statistical output → paper phrasing + number audit, HPC log reading, method-feasibility and experimental-design review, prior-art search, zero-background teaching — proactively triggering the "results → discussion/methods section" write-up takeover at the moment of confirmed successful run, never letting results stall at the data layer.
   [Routing] Manuscript iteration after the first draft is handed back goes to aminer-journal-paper-write-review-revise; reviewer-comment itemization and multi-round response-letter loops go to aminer-journal-paper-write-review-revise; degree-thesis chapter assembly goes to aminer-degree-thesis-proposal-to-defense; isolated concept deep-dives go to aminer-paper-deep-reading. Citation retrieval for the discussion section stays inside this skill and executes here.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-experiment-to-paper
 metadata:
   {
     "openclaw":

@@ -1,5 +1,6 @@
 ---
 name: aminer-paper-deep-reading
+name_zh: 读论文
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -8,6 +9,7 @@ description: >
   [Activation] Paper reading — the single-paper deep-reading executor. Use when the user says "deep-read this paper: {title}", "read this paper and summarize background, introduction, methods, results, discussion", "translate sentence by sentence and explain", "compress to 2 pages of markdown", "I want to follow {title}", or pastes a bare title / raw reference string / accession number / single academic concept, uploads a figure saying "answer after checking the original text", or sends "continue" to resume a stalled reading.
   [Scenarios] Single-paper loop: structured deep reading, reproduction-grade reading (protocol audit), one-shot title skim, custom-template reading, resumable sentence-by-sentence translation, compression/distillation, from-zero concept digs, figure-plus-text bound interpretation, exact-match full-text location from reference strings or vague memory, empirical research-design audit, post-reading follow-up chains.
   [Routing] Survey/journal-manuscript feeding, systematic citation-matched revision, and real reviewer-comment response loops go to aminer-journal-paper-write-review-revise; hands-on code/experiment work goes to aminer-experiment-to-paper; topic finding goes to aminer-topic-advisor-selection; thesis proposal and defense feeding goes to aminer-degree-thesis-proposal-to-defense.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-paper-deep-reading
 metadata:
   {
     "openclaw":

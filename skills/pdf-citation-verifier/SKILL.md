@@ -1,5 +1,6 @@
 ---
 name: pdf-citation-verifier
+name_zh: PDF 引用核验
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [Activation] Use this skill when the user provides a paper PDF (file path or upload) and asks to verify, audit, or fact-check its references / citations / bibliography — e.g. "check whether the references in this PDF are hallucinated", "find fake citations", "verify the bibliography".
   [Capability] Uploads the PDF to the AMiner pdf-citation-verifier service, polls the asynchronous job, and returns a per-reference classification (REAL / LIKELY_REAL / NEEDS_REVIEW / LIKELY_FAKE / FAKE) plus an overall hallucination summary.
   [Routing] Do NOT use for general paper search, scholar lookup, citation-intent analysis, or building a citation graph — use aminer-academic-search, aminer-free-academic, or paper-source-trace instead. This skill only verifies whether references actually exist.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/pdf-citation-verifier
 metadata:
   {
     "openclaw":

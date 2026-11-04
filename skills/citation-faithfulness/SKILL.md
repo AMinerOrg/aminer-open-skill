@@ -1,5 +1,6 @@
 ---
 name: citation-faithfulness
+name_zh: 引用忠实性核查
 version: 1.1.0
 author: AMiner
 contact: report@aminer.cn
@@ -7,6 +8,7 @@ description: >
   [Activation] Use this skill when the user gives a paper PDF and asks whether its in-text citations are FAITHFUL to what the cited sources actually say — e.g. "check if this paper misrepresents its references", "does citation [12] actually support this claim", "verify the citations are not distorting the sources", "核查引用是否忠于原文", "有没有曲解参考文献".
   [Capability] Reads the PDF locally (Read tool), extracts every in-text citation together with the specific claim it supports, retrieves each cited source from the open web (WebSearch/WebFetch; arXiv full text or abstract), and has the agent judge each claim–source pair as SUPPORTED / PARTIALLY_SUPPORTED / NOT_SUPPORTED / NOT_IN_SOURCE / UNVERIFIABLE, with an evidence quote and confidence. No API key required.
   [Routing] Do NOT use this skill to check whether a reference EXISTS / is hallucinated (a real paper vs a fabricated one) — that is `pdf-citation-verifier`. Do NOT use it for general paper search (`aminer-free-academic` / `aminer-academic-search`) or citation-intent graphing (`paper-source-trace`). This skill answers one question only: does the cited source actually back up the claim the paper attaches to it.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/citation-faithfulness
 metadata:
   {
     "openclaw":
