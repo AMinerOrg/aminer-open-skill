@@ -6,14 +6,14 @@ Each skill ships its own copy; only SKILL_NAME differs between copies.
 
 Usage:
     python3 scripts/aminer_client.py --action <ACTION> --params '<JSON>'
-    python3 scripts/aminer_client.py --cost-report   # not needed; cost footer prints after every run
+    (a [Cost] footer is printed to stderr after every call)
 
 Token: read from env AMINER_API_KEY (preferred) or --token <TOKEN>.
 Never printed anywhere.
 
 Console (Generate Token): https://open.aminer.cn/open/board?tab=control
 Docs: https://open.aminer.cn/open/docs
-Full API reference: aminer-academic-search/references/api-catalog.md
+--params is sent to the API verbatim: use the API's native parameter names.
 """
 
 import argparse
@@ -193,7 +193,7 @@ def _cost_footer(actions: list[tuple[str, float]]) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description="AMiner Open Platform thin client")
     parser.add_argument("--action", required=True, choices=sorted(ACTIONS),
-                        help="API action name (see api-catalog.md for parameters)")
+                        help="API action name (parameters: https://open.aminer.cn/open/docs)")
     parser.add_argument("--params", default="{}",
                         help="JSON object of API parameters, e.g. '{\"query\":\"...\",\"size\":10}'")
     parser.add_argument("--token", default=None,
