@@ -2,9 +2,9 @@
   <h1>AMiner Open Skills</h1>
   <p>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
-    <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.14.0-0969da"></a>
+    <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.15.0-0969da"></a>
     <a href="#2-installation"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw-111827"></a>
-    <a href="#3-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-14-0ea5e9"></a>
+    <a href="#3-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-21-0ea5e9"></a>
     <a href="README.md"><img alt="Language" src="https://img.shields.io/badge/language-English%20%7C%20中文-1f6feb"></a>
   </p>
   <p>
