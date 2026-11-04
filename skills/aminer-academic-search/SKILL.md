@@ -203,7 +203,7 @@ Parallel calls:
   ├── Org details (description/type)             ¥0.01
   ├── Org scholars (scholar list, 10/call)       ¥0.50
   ├── Org papers (paper list, 10/call)           ¥0.10
-  └── Org patents (patent IDs, up to 10,000)     ¥0.10
+  └── Org patents (patent IDs, 100 per page)     ¥0.10
 ```
 
 > If disambiguation pro returns no ID, fall back to `org_search` (free).

@@ -207,8 +207,9 @@ API_SPECS: dict[str, ApiSpec] = {
     ),
     "org_patent_relation": ApiSpec(
         "GET", "/api/organization/patent/relation", 0.10,
-        fields={"id": _s(), "page": _PAGE, "page_size": _i(default=100, minimum=1, maximum=10_000)},
-        required=("id",),
+        fields={"org_id": _s(), "page": _PAGE, "page_size": _i(default=100, minimum=1, maximum=100),
+                "source": _s(default="app", choices=("app", "ass"))},
+        required=("org_id",),
     ),
     # ---------------- Venue ----------------
     "venue_search": ApiSpec("POST", "/api/venue/search", 0.0, fields={"name": _s()}, required=("name",)),

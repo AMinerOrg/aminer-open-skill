@@ -919,9 +919,10 @@ curl -X GET \
 
 | Parameter | Type | Required | Description |
 |--------|------|------|------|
-| id | string | Yes | Institution ID |
+| org_id | string | Yes | Institution ID |
 | page | number | No | Page number (starts at 1) |
-| page_size | number | No | Items per page; maximum 10,000 |
+| page_size | number | No | Items per page; documented maximum 10,000, but responses are capped at 100 — page beyond that |
+| source | string | No | `app` (applicant: every filing, including pending applications — use for R&D activity / patent landscaping) or `ass` (assignee: current rights holder — granted and transferred patents; use for ownership, licensing, infringement risk). Always send it: without it the query times out (504). |
 
 **Response Fields:**
 
@@ -933,7 +934,7 @@ curl -X GET \
 **curl Example:**
 ```bash
 curl -X GET \
-  'https://datacenter.aminer.cn/gateway/open_platform/api/organization/patent/relation?id=6233173d0a6eb145604733e2&page=1&page_size=100' \
+  'https://datacenter.aminer.cn/gateway/open_platform/api/organization/patent/relation?org_id=6233173d0a6eb145604733e2&page=1&page_size=100&source=app' \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
@@ -1369,6 +1370,6 @@ curl -X POST \
 | `person_search` | `size` max 10; `offset` fixed at 0 (no pagination) |
 | `org_person_relation` | Fixed 10 results per call; use `offset` to paginate |
 | `org_paper_relation` | Fixed 10 results per call; use `offset` to paginate |
-| `org_patent_relation` | `page_size` max 10,000; `page` starts at 1 |
+| `org_patent_relation` | `page_size` effectively ≤100 (documented 10,000); `page` starts at 1; always send `source` |
 | `venue_paper_relation` | Use `offset` + `limit` to paginate |
 | `paper_info` | `ids` array max 100 items |

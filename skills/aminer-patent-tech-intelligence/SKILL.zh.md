@@ -103,7 +103,7 @@ metadata:
 python3 scripts/aminer_client.py --action patent_search --params '{"query":"solid-state electrolyte sulfide","page":0,"size":20}'
 python3 scripts/aminer_client.py --action patent_detail --params '{"id":"<patent_id>"}'
 python3 scripts/aminer_client.py --action paper_search_pro --params '{"author":"Zhang San","keyword":"sulfide electrolyte","page":0,"size":50}'
-python3 scripts/aminer_client.py --action org_patent_relation --params '{"id":"<org_id>","page":1,"page_size":100}'
+python3 scripts/aminer_client.py --action org_patent_relation --params '{"org_id":"<org_id>","page":1,"page_size":100,"source":"app"}'
 ```
 
 ### 数据层统一规则
@@ -122,7 +122,7 @@ python3 scripts/aminer_client.py --action org_patent_relation --params '{"id":"<
 | 定向排查（名单×主题） | `paper_search_pro`（¥0.01；`author`（+ `org`）+ `query`/`keyword`，`page` 从 0 起，`size` ≤100）× `patent_search`（免费；只能按主题关键词——无发明人过滤）→ `patent_info`/`patent_detail`（用 `inventor` 字段比对名单） |
 | 论文侧对标/文献证据 | `paper_search`（免费；标题短语检索）→ `paper_detail`（¥0.01） |
 | 对象情报·学者查询（限产业语境） | `person_search`（免费；姓名/机构检索，含 interests/n_citation）→ `person_detail`（¥1.00；完整档案，慎用） |
-| 对象情报·企业查询（竞品专利/论文全历程） | `org_search`（免费；机构解析归一）→ `org_patent_relation`（¥0.10；`id`＝机构 ID，`page` 从 1 起，`page_size`；只返回专利 ID → 逐个 `patent_info`；返回 `no data`（code 40001）时改用 `patent_search` 以「公司名 + 主题」检索，再按 `patent_detail` 的 `assignee` 字段过滤）/ `org_paper_relation`（¥0.10；`org_id` + `offset`，每次 10 条） |
+| 对象情报·企业查询（竞品专利/论文全历程） | `org_search`（免费；机构解析归一）→ `org_patent_relation`（¥0.10；`org_id`，`source` 实际必传（不传会超时）：查企业研发产出与专利布局用 `app`（申请人）——覆盖全部申请含未授权公开件，受让人口径常漏掉未授权或未关联机构的申请；查授权状态、权利归属与转让后的现持有人用 `ass`（受让人）；`page` 从 1 起，`page_size` ≤100（超过需翻页）；只返回专利 ID → 逐个 `patent_info`）/ `org_paper_relation`（¥0.10；`org_id` + `offset`，每次 10 条） |
 
 - **申请日硬截止由检索词与日期字段判定实现**：`patent_search` 响应自带 `app_year`/`pub_year`，先按年份粗筛——公开年早于截止年的命中仅凭年份即可放行，晚于截止年的仅凭年份即可剔除；公开年等于截止年的每件命中必须拉 `patent_detail` 读取完整公开日期后再执行截止线（如「{申请日}之前公开、不含当天」）。非专利文献只有年份：截止年内的命中标注「日期未核实」。
 - **平台不支持布尔串**：`patent_search`/`paper_search` 只有一个普通 `query`，不支持布尔运算符与分类号语法——把布尔/分类号检索式拆成关键词组合，每个组合单独查一次，由智能体合并去重；原检索式以文本交付供支持布尔的外部数据库使用。

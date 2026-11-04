@@ -103,7 +103,7 @@ Disambiguate with free `person_search` first: organization, interests, and name 
 | `org_detail` | POST `/api/organization/detail` | `ids` | ¥0.01 |
 | `org_person_relation` | GET `/api/organization/person/relation` | `org_id` | ¥0.50 |
 | `org_paper_relation` | GET `/api/organization/paper/relation` | `org_id` | ¥0.10 |
-| `org_patent_relation` | GET `/api/organization/patent/relation` | `id` | ¥0.10 |
+| `org_patent_relation` | GET `/api/organization/patent/relation` | `org_id` (+ `source`: `app` applicant / `ass` assignee, defaults to `app`; `page_size` ≤ 100) | ¥0.10 |
 
 Free `org_search` first; escalate to `org_disambiguate_pro` only when aliases or nested affiliations stay ambiguous.
 

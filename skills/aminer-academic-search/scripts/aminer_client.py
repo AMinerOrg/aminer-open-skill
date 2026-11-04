@@ -597,11 +597,16 @@ def org_paper_relation(token: str, org_id: str, offset: int = 0) -> Any:
 
 
 def org_patent_relation(token: str, org_id: str,
-                        page: int = 1, page_size: int = 100) -> Any:
-    """Org Patents (¥0.10/call): retrieve institution patent list with pagination (max page_size 10,000)."""
+                        page: int = 1, page_size: int = 100, source: str = "app") -> Any:
+    """Org Patents (¥0.10/call): retrieve institution patent IDs; page from 1, page_size effectively ≤100.
+
+    source: "app" (applicant, default — every filing incl. pending applications) or "ass"
+    (assignee — current rights holder; granted / transferred patents). Without it the
+    upstream query times out.
+    """
     _track_cost("org_patent_relation")
     return _request(token, "GET", "/api/organization/patent/relation",
-                    params={"id": org_id, "page": page, "page_size": page_size})
+                    params={"org_id": org_id, "page": page, "page_size": page_size, "source": source})
 
 
 def org_disambiguate(token: str, org: str) -> Any:
@@ -1144,7 +1149,7 @@ Docs: https://open.aminer.cn/open/docs
     p.add_argument("--size", type=int, default=10, help="Number of results to return")
     p.add_argument("--page", type=int, default=0, help="Page number")
     p.add_argument("--page_size", type=int, default=100,
-                   help="Org patent pagination size (max 10,000)")
+                   help="Org patent pagination size (effectively max 100)")
     p.add_argument("--order", default="n_citation",
                    choices=["n_citation", "year"], help="Sort order")
 
