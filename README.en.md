@@ -2,9 +2,9 @@
   <h1>AMiner Open Skills</h1>
   <p>
     <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-2ea44f"></a>
-    <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.14.0-0969da"></a>
+    <a href=".claude-plugin/marketplace.json"><img alt="Version" src="https://img.shields.io/badge/version-1.15.0-0969da"></a>
     <a href="#2-installation"><img alt="Install" src="https://img.shields.io/badge/install-Claude%20Code%20%7C%20Codex%20%7C%20OpenClaw-111827"></a>
-    <a href="#3-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-14-0ea5e9"></a>
+    <a href="#3-skill-index"><img alt="Skills" src="https://img.shields.io/badge/skills-21-0ea5e9"></a>
     <a href="README.md"><img alt="Language" src="https://img.shields.io/badge/language-English%20%7C%20中文-1f6feb"></a>
   </p>
   <p>
@@ -67,6 +67,13 @@ Once installed and configured with a token where needed (see [2. Installation](#
 | Detect fabricated references | `Check every reference in this paper PDF and flag entries that are missing, suspicious, or need manual review.` (`pdf-citation-verifier`) |
 | Audit parsed bibliography entries conservatively | `Parse this PDF into a reference ledger, then resolve each eligible reference through AMiner without treating an unresolved match as fabrication.` (`structured-reference-audit`) |
 | Check citation faithfulness | `For each in-text citation in this paper, retrieve the cited source and determine whether the surrounding claim is supported by the original text.` (`citation-faithfulness`) |
+| Deep-read a single paper | `Deep-read "Attention Is All You Need": summarize the problem, method, experimental design, and key numbers, and suggest concrete directions I could follow up on.` (`aminer-paper-deep-reading`) |
+| Write a journal manuscript | `Write the Related Work section for this manuscript with real retrieved citations behind every claim, then simulate a reviewer pass.` (`aminer-journal-paper-write-review-revise`) |
+| Debug experiments against the literature | `My experiment cannot reproduce the numbers reported in this paper — help me debug it, and verify the literature basis for this metric.` (`aminer-experiment-to-paper`) |
+| Thesis proposal and defense | `Do the literature scan and novelty check for my thesis proposal, then work through my advisor's comments on Chapter 2 one by one.` (`aminer-degree-thesis-proposal-to-defense`) |
+| Write a grant proposal | `Extract the application requirements from this guideline, help me distill the scientific question and draft section by section, then review the proposal as an expert panel.` (`aminer-grant-application`) |
+| Pick a topic or an advisor | `Assess the competition density of "retrieval-augmented generation for industrial defect detection" and check whether this exact topic has been done before.` (`aminer-topic-advisor-selection`) |
+| Patent and industry intelligence | `Produce a technology survey of solid-state electrolytes, and retrieve the closest prior art published before this filing date.` (`aminer-patent-tech-intelligence`) |
 
 If you are not sure which skill fits, just describe the task; if you already know the name, state it explicitly, e.g. "use `aminer-free-academic`". When installed as a [Claude Code plugin](#22-claude-code-plugin), skills with a `commands/` directory can also be invoked as slash commands (plugin commands carry the plugin-name prefix):
 
@@ -167,6 +174,8 @@ Skill scripts need `python3`. Most skills use only the standard library; the fol
 | `sota-finder` | openpyxl (Excel export) |
 | `baseline-finder` | httpx, openai, pypdf |
 
+The seven research-workflow skills (`aminer-topic-advisor-selection` / `aminer-paper-deep-reading` / `aminer-journal-paper-write-review-revise` / `aminer-experiment-to-paper` / `aminer-degree-thesis-proposal-to-defense` / `aminer-grant-application` / `aminer-patent-tech-intelligence`) depend on the standard library only — no extra installation needed.
+
 ```bash
 python3 -m pip install -r skills/<skill-name>/requirements.txt
 ```
@@ -215,10 +224,13 @@ Standalone CLI commands, CI jobs, and scheduled tasks must set the token where t
 | Stage | Skills |
 |---|---|
 | Search and discovery | `aminer-free-academic` · `aminer-academic-search` · `aminer-daily-paper` · `aminer-deep-search` · `sota-finder` |
-| Reading and organizing | `aminer-pdf-ocr` · `aminer-exp-extraction` · `scientific-taxonomy` · `paper-source-trace` |
+| Reading and organizing | `aminer-pdf-ocr` · `aminer-exp-extraction` · `scientific-taxonomy` · `paper-source-trace` · `aminer-paper-deep-reading` |
 | Research reports | `deep-research` |
 | Paper experiment checks | `baseline-finder` |
 | Citation checking | `pdf-citation-verifier` · `structured-reference-audit` · `citation-faithfulness` |
+| Writing and submitting | `aminer-journal-paper-write-review-revise` · `aminer-experiment-to-paper` |
+| Thesis and grants | `aminer-degree-thesis-proposal-to-defense` · `aminer-grant-application` |
+| Topic finding and intelligence | `aminer-topic-advisor-selection` · `aminer-patent-tech-intelligence` |
 
 ### 3.2 Choosing between similar skills
 
@@ -237,7 +249,7 @@ Standalone CLI commands, CI jobs, and scheduled tasks must set the token where t
 
 ### 3.3 Full skill list
 
-`skills/` currently contains the following 14 triggerable skills. Click a skill name for the full skill definition.
+`skills/` currently contains the following 21 triggerable skills. Click a skill name for the full skill definition.
 
 | Skill | Status | Purpose | Triggers | Token |
 | --- | --- | --- | --- | --- |
@@ -255,6 +267,13 @@ Standalone CLI commands, CI jobs, and scheduled tasks must set the token where t
 | [`pdf-citation-verifier`](skills/pdf-citation-verifier/SKILL.md) | Stable | Upload a paper PDF and verify every listed reference actually exists; detects hallucination | "are the references in this PDF fabricated", "find fake citations" | Required |
 | [`structured-reference-audit`](skills/structured-reference-audit/SKILL.md) | Stable | Build a GROBID-backed reference ledger, then conservatively resolve each entry through AMiner, keeping resolution uncertainty separate from existence | "conservatively audit the references", "turn this PDF into a reference ledger and resolve each entry" | AMiner resolution needs a token; GROBID or TEI required |
 | [`citation-faithfulness`](skills/citation-faithfulness/SKILL.md) | Stable | Check whether each in-text citation accurately represents what the cited source says (supported / partial / distortion / not found / unverifiable) | "does the paper misrepresent its references", "does citation [12] actually support this claim" | No AMiner token; web access required |
+| [`aminer-topic-advisor-selection`](skills/aminer-topic-advisor-selection/SKILL.md) | Stable | Research topic finding and advisor selection: field temperature and competition density, novelty/collision checks, representative-work tiering; department enumeration, per-advisor profiles, same-name disambiguation | "is this direction still worth doing", "check whether this exact topic has been done", "list this department's advisors and assess each one" | Required; per-advisor `person_detail` ¥1.00/call — converge on free APIs before pulling details |
+| [`aminer-paper-deep-reading`](skills/aminer-paper-deep-reading/SKILL.md) | Stable | Single-paper deep reading: structured close reading, reproduction-grade protocol audits, resumable sentence-by-sentence translation, cross-literature parameter comparison tables, exact-match full-text location from reference strings or vague memory | "deep-read this paper", "translate sentence by sentence and explain", "what's the typical value of X (cross-literature table)" | Required; free-first |
+| [`aminer-journal-paper-write-review-revise`](skills/aminer-journal-paper-write-review-revise/SKILL.md) | Stable | Full journal/conference manuscript pipeline: from-zero drafting with systematic citation matching, anchored revision of your own draft, pre-submission simulated review, and revision plus response letters for real reviewer comments | "write the Related Work with real citations", "simulate a reviewer pass on my manuscript", "respond to each reviewer comment" | Required; free-first |
+| [`aminer-experiment-to-paper`](skills/aminer-experiment-to-paper/SKILL.md) | Stable | From experiments to paper: code/experiment debugging, method-provenance verification, results-vs-literature comparison, prior-art existence search | "my experiment can't beat the baseline, help me debug", "what's the literature basis for this metric", "has this approach been published" | Required; free-first |
+| [`aminer-degree-thesis-proposal-to-defense`](skills/aminer-degree-thesis-proposal-to-defense/SKILL.md) | Stable | Full thesis lifecycle: proposal (literature scan, novelty check), section-by-section production, working through advisor/committee/blind-review comments item by item, citation audits, format compliance, defense materials | "do the literature scan for my proposal", "work through my advisor's comments", "prepare defense materials" | Required; free-first |
+| [`aminer-grant-application`](skills/aminer-grant-application/SKILL.md) | Stable | Full grant application workflow: requirement extraction, direction picking, distilling the scientific question, section-by-section drafting, sentence-level evidence, overlap checks, multi-role simulated review | "extract the application requirements from this guideline", "help me distill the scientific question", "review my proposal as an expert panel" | Required; free-first |
+| [`aminer-patent-tech-intelligence`](skills/aminer-patent-tech-intelligence/SKILL.md) | Stable | Industrial tech intelligence and patent work: benchmark studies, URS/SOP compliance documents, patent landscaping; prior-art document retrieval with a hard filing-date cutoff, claims/disclosure drafting, OA responses | "produce a technology survey of X", "retrieve prior art published before this date", "draft an invention disclosure" | Required; free-first; watch `person_detail` unit price in bulk screening |
 
 ## 4. Design Principles and Repository Layout
 

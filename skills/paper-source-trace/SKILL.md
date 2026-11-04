@@ -1,11 +1,13 @@
 ---
 name: paper-source-trace
+name_zh: 论文来源追踪
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: >
   Use when a user provides an academic paper PDF, extracted paper text, citation contexts, or references and asks for paper source tracing, claim-centered source tracing, citation intent extraction, entity/relation extraction, contribution mapping, citation graph JSON, SVG/HTML citation maps, or optional AMiner metadata/citation enrichment.
   Do NOT use this skill for simple paper lookup by title, scholar search, or lightweight academic queries — use aminer-free-academic or aminer-academic-search for those instead.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/paper-source-trace
 metadata:
   {
     "openclaw":

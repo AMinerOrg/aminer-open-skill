@@ -1,5 +1,6 @@
 ---
 name: deep-research
+name_zh: 深度研究
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -9,6 +10,7 @@ description: >
   You (the host model) drive a fixed research loop — scout the question, induce the outline from what came back, retrieve per section, record every source in an evidence ledger, find the gap, iterate — no claim reaches the report without a ledger source.
   AMiner routing and prices live in scripts/aminer_open.py; web evidence comes from the host's own WebSearch and WebFetch. Free-first; estimated AMiner cost of CNY 10+ needs explicit confirmation, CNY 20 hard stop. No extra LLM service is called.
   Route elsewhere for: a single lookup (use aminer-free-academic), a survey bibliography of hundreds of papers without a report (use aminer-deep-search), or personalized recommendations (use aminer-daily-paper).
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/deep-research
 metadata:
   {
     "openclaw":

@@ -1,5 +1,6 @@
 ---
 name: aminer-deep-search
+name_zh: 深度文献收集
 version: 2.2.0
 author: AMiner
 contact: report@aminer.cn
@@ -17,6 +18,7 @@ description: >
   only — no extra LLM configuration is needed.
   Supports structured constraints (year range, author, institution, venue, language, exclusion
   terms, citation range) and multiple ranking goals (latest, relevance, impact, classic+latest).
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-deep-search
 metadata:
   {
     "openclaw":

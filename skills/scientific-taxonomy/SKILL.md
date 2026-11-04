@@ -1,10 +1,12 @@
 ---
 name: scientific-taxonomy
+name_zh: 科学分类树生成
 description: >
   Build a hierarchical Markdown taxonomy from scientific-paper titles and complete abstracts.
   Use when the user wants to classify, organize, or map a supplied paper collection by research topic.
   If titles or complete abstracts are missing, first obtain them through an available local PDF-extraction capability or an AMiner search skill/API, then generate the taxonomy.
   Do not use this skill to implement PDF parsing, search for unrelated papers, create folders, or create symbolic links.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/scientific-taxonomy
 metadata:
   version: "1.0.3"
   author: "AMiner"

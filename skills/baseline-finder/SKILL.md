@@ -1,6 +1,8 @@
 ---
 name: baseline-finder
+name_zh: 实验基线核查
 description: Audit whether a local PDF or AMiner pub_id visibly compares plausible direct experimental baselines discovered through time-bounded AMiner search and public backward references; use for missing-baseline questions, not general related-work coverage or acceptance prediction.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/baseline-finder
 metadata:
   version: "0.5.1"
 ---

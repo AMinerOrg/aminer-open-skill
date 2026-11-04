@@ -1,5 +1,6 @@
 ---
 name: deep-research
+name_zh: 深度研究
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -9,6 +10,7 @@ description: >
   由宿主模型（正在运行本 skill 的模型）驱动一个固定的研究循环——先侦察问题、从检索返回的内容归纳大纲、按小节检索、把每个来源记入证据台账、发现缺口、迭代——没有台账来源支撑的结论不得进入报告。
   AMiner 的路由与定价位于 scripts/aminer_open.py；web 证据来自宿主自身的 WebSearch 与 WebFetch。免费优先；预估 AMiner 花费达 CNY 10+ 需显式确认，CNY 20 为硬上限。不调用任何额外 LLM 服务。
   路由到其他 skill：单点查询（用 aminer-free-academic）、只要数百篇论文清单而不要报告的综述收集（用 aminer-deep-search）、个性化推荐（用 aminer-daily-paper）。
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/deep-research
 metadata:
   {
     "openclaw":
