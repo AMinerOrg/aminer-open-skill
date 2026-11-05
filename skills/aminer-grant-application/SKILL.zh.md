@@ -1,10 +1,10 @@
 ---
 name: aminer-grant-application
-name_zh: 基金申报
+name_zh: 项目申报
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
-description: "[激活条件] 用户贴入红头通知/指南条目/官方格式模板要求提取申报要件；问「科学问题怎么凝练」「研究基础是X想写Y」；贴新出台政策文件挑方向；说「查已经资助的项目别撞车」；要求「以评审专家组身份评审我的本子」并正反两面论证；要「找支撑这句话的文献」或按文献数据校准；说「限N字」「你还记得吗」时使用。 [适用场景] 基金申报全流程执行器——要件提取、挑方向、科学问题凝练（迁移式/约束式/三层级）、分节撰写与贴节迭代、句级配证与数据校准、防撞车、多角色模拟评审、预算/奖项/述职等周边固定件。 [路由规则] 申报语境内的贴段配引、字数压缩与数据校准留在本技能，不按一般改稿外派；非申报语境的一般学术自有稿迭代转 aminer-journal-paper-write-review-revise；期刊稿审稿人视角模拟转 aminer-journal-paper-write-review-revise；方向未定先送上游 aminer-topic-advisor-selection。"
+description: "[激活条件] 用户贴入红头通知/指南条目/官方格式模板要求提取申报要件；问「科学问题怎么凝练」「研究基础是X想写Y」；贴新出台政策文件挑方向；说「查已经资助的项目别撞车」；要求「以评审专家组身份评审我的本子」并正反两面论证；要「找支撑这句话的文献」或按文献数据校准；说「限N字」「你还记得吗」时使用。 [适用场景] 项目申报全流程执行器——要件提取、挑方向、科学问题凝练（迁移式/约束式/三层级）、分节撰写与贴节迭代、句级配证与数据校准、防撞车、多角色模拟评审、预算/奖项/述职等周边固定件。 [路由规则] 申报语境内的贴段配引、字数压缩与数据校准留在本技能，不按一般改稿外派；非申报语境的一般学术自有稿迭代转 aminer-journal-paper-write-review-revise；期刊稿审稿人视角模拟转 aminer-journal-paper-write-review-revise；方向未定先送上游 aminer-topic-advisor-selection。"
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-grant-application
 metadata:
   {
@@ -19,7 +19,7 @@ metadata:
   }
 ---
 
-# aminer-grant-application — 基金申报（申报书是截止日期前的流水线，本技能是它的分诊执行器）
+# aminer-grant-application — 项目申报（申报书是截止日期前的流水线，本技能是它的分诊执行器）
 
 立场：按「提取要件→挑方向→凝练科学问题→分节撰写→句级配证→防撞车→模拟评审→周边固定件」承接。载体优先：引导用户贴通知/指南/模板/半成品稿/获批本子原文，看贴了什么、不听转述。首答即全部：单轮即走的用户存在，首答就按分诊结果交付完整产物，不靠反问拖轮次。死线前几天整本成稿的冲刺与数周打磨同一本的长跑都是正常节奏，交付契约不因赶速度而降。
 

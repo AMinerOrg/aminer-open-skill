@@ -4,7 +4,7 @@ name_zh: 产业情报与专利
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
-description: "[激活条件] 产业技术情报与专利作业双任务入口。触发语：「做一份XX产业技术调研报告」「国外某工艺的某指标是什么水平」「起草一份XX的URS」「从哪几个点可以布局专利」、贴「申请号+申请日」要最接近的现有技术或「检索X之前公开的（不含当天）」、「任务编号：…」批量下发。 [适用场景] 双任务族合一的分诊执行器。情报族：指标对标摸底、枚举源穷尽检索、单参数多源核证、立项文书/模板填空、URS/SOP/法规三列合规文书、专利布局规避、工艺排障、微差异机理逼问、订阅巡逻、对象情报（学者限产业调研语境）。专利族：逐案对比文件检索（申请日硬截止）、构思卡两步管线、定向排查、公知手段可行性问答、检索式构建、专利数据表、权利要求/交底书起草、OA 答复、发明人侧可专利性共构。 [路由规则] 学术文献任务→见 §6（查新→aminer-degree-thesis-proposal-to-defense；定题→aminer-topic-advisor-selection；配引与综述→aminer-journal-paper-write-review-revise；精读→aminer-paper-deep-reading）；选导师语境→aminer-topic-advisor-selection；期刊审稿回复→aminer-journal-paper-write-review-revise；基金申报→aminer-grant-application；实验执行→aminer-experiment-to-paper；所有学术数据查询→AMiner 开放平台 API（见 Data Access 节）。"
+description: "[激活条件] 产业技术情报与专利作业双任务入口。触发语：「做一份XX产业技术调研报告」「国外某工艺的某指标是什么水平」「起草一份XX的URS」「从哪几个点可以布局专利」、贴「申请号+申请日」要最接近的现有技术或「检索X之前公开的（不含当天）」、「任务编号：…」批量下发。 [适用场景] 双任务族合一的分诊执行器。情报族：指标对标摸底、枚举源穷尽检索、单参数多源核证、立项文书/模板填空、URS/SOP/法规三列合规文书、专利布局规避、工艺排障、微差异机理逼问、订阅巡逻、对象情报（学者限产业调研语境）。专利族：逐案对比文件检索（申请日硬截止）、构思卡两步管线、定向排查、公知手段可行性问答、检索式构建、专利数据表、权利要求/交底书起草、OA 答复、发明人侧可专利性共构。 [路由规则] 学术文献任务→见 §6（查新→aminer-degree-thesis-proposal-to-defense；定题→aminer-topic-advisor-selection；配引与综述→aminer-journal-paper-write-review-revise；精读→aminer-paper-deep-reading）；选导师语境→aminer-topic-advisor-selection；期刊审稿回复→aminer-journal-paper-write-review-revise；项目申报→aminer-grant-application；实验执行→aminer-experiment-to-paper；所有学术数据查询→AMiner 开放平台 API（见 Data Access 节）。"
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-patent-tech-intelligence
 metadata:
   {
@@ -154,7 +154,7 @@ python3 scripts/aminer_client.py --action org_patent_relation --params '{"org_id
 - **学术论文的文献型任务→对应学术技能**：定题/开题查新走 aminer-degree-thesis-proposal-to-defense 的查新契约（查新三态标注；其查新含专利规避视角，与本技能检索口径对齐、结论由其出具）；选题漂移收敛与定题承接走 aminer-topic-advisor-selection（其首轮文献清单是定题产物，不是查新）；用户自有稿配引走 aminer-journal-paper-write-review-revise；论文精读/翻译走 aminer-paper-deep-reading；学术综述成稿走 aminer-journal-paper-write-review-revise。本技能只管专利文献与产业情报源（标准/手册/供应商数据/专利数据库）。
 - **学者情报分语境路由**：产业/竞对/技术合作调研语境（竞对研发团队摸底、技术交流切入角度）归本技能；选导师语境（院系导师枚举、逐人建档、契合度、套磁信与回复跟进）→aminer-topic-advisor-selection——「老师有哪些/这几位老师情况」类问句按语境判，不按字面判。
 - **专利行政件归本技能**：审查员工单、发明人侧起草与可专利性、OA 答复都是本技能；论文返修（真实审稿意见拆条改稿+逐点回复信）→aminer-journal-paper-write-review-revise。
-- **申报书分流**：基金/课题申报书→aminer-grant-application；企业 URS/SOP 类合规文书→本技能情报族。
+- **申报书分流**：项目/课题申报书→aminer-grant-application；企业 URS/SOP 类合规文书→本技能情报族。
 - 布局三件套里的实验设计定稿后，贴数据排障/实验执行承接→aminer-experiment-to-paper。
 - 法律结论（无效宣告胜负、诉讼前景、专利法律效力判断）不出：给技术对比与风险等级，结论标注「技术分析，非法律意见」；官方审查系统/登记簿的实时法律状态拿不到就明说，不拿推断冒充。
 - 黑话、牌号、TDS、标准号、市场产能数据超出文献库覆盖：路由 web/标准库/行业源并标注来源类型，拿文献冒充是灾难。

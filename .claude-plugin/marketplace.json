@@ -125,7 +125,7 @@
     },
     {
       "name": "aminer-grant-application",
-      "description": "基金申报全流程：申报要件提取、挑方向、科学问题凝练、分节撰写与贴节迭代、句级配证与数据校准、防撞车文献层重叠检查、多角色模拟评审",
+      "description": "项目申报全流程：申报要件提取、凝练科学问题、分节撰写申报书、查新防撞车、多角色模拟评审",
       "source": "./skills/aminer-grant-application",
       "strict": false
     },
