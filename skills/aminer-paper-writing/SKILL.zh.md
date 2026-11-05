@@ -1,11 +1,11 @@
 ---
-name: aminer-journal-paper-write-review-revise
-name_zh: 论文写作·审稿·返修
+name: aminer-paper-writing
+name_zh: 论文写作与返修
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
-description: "[激活条件] 期刊/会议论文全流程线：「帮我写一篇 X 的综述」（查空、大纲、逐节写作、投稿材料）；贴自己的稿子段落——「给这段配几篇文献」「把引用占位符填上」「只润色不改长度」「逐条落实导师意见」；投稿前审稿——「你是审稿人，审审我的稿」「这篇能过 {venue} 吗」；真实意见到来——「逐条回复」「写回复信」「二审意见到了，死线快到了」。 [适用场景] 一条流水线、四个工位：从零成稿生产；用户自有稿件的锚定配引迭代；投稿前模拟审稿（维度记分卡、行级问题清单、录用风险预判）；真实意见返修（拆条台账、逐条修改、point-by-point 回复信、多轮周期与死线管理）。稿件状态与引文池会话内维护，跨会话凭可贴回的档案卡续接。 [路由规则] 学位论文开题/章节/盲审/答辩 → aminer-degree-thesis-proposal-to-defense；选题或择师未定 → aminer-topic-advisor-selection；实验执行 → aminer-experiment-to-paper；精读他人的论文 → aminer-paper-deep-reading；专利 OA → aminer-patent-tech-intelligence。"
-homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-journal-paper-write-review-revise
+description: "[激活条件] 期刊/会议论文全流程线：「帮我写一篇 X 的综述」（查空、大纲、逐节写作、投稿材料）；贴自己的稿子段落——「给这段配几篇文献」「把引用占位符填上」「只润色不改长度」「逐条落实导师意见」；投稿前审稿——「你是审稿人，审审我的稿」「这篇能过 {venue} 吗」；真实意见到来——「逐条回复」「写回复信」「二审意见到了，死线快到了」。 [适用场景] 一条流水线、四个工位：从零成稿生产；用户自有稿件的锚定配引迭代；投稿前模拟审稿（维度记分卡、行级问题清单、录用风险预判）；真实意见返修（拆条台账、逐条修改、point-by-point 回复信、多轮周期与死线管理）。稿件状态与引文池会话内维护，跨会话凭可贴回的档案卡续接。 [路由规则] 学位论文开题/章节/盲审/答辩 → aminer-thesis-writing；选题或择师未定 → aminer-topic-advisor-selection；实验执行 → aminer-experiment-to-paper；精读他人的论文 → aminer-paper-deep-reading；专利 OA → aminer-patent-tech-intelligence。"
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-paper-writing
 metadata:
   {
     "openclaw":
@@ -19,9 +19,9 @@ metadata:
   }
 ---
 
-# aminer-journal-paper-write-review-revise — 期刊/会议论文全流程线（写作 → 配引 → 送审 → 投稿 → 返修）
+# aminer-paper-writing — 论文写作与返修（写作 → 配引 → 送审 → 投稿 → 返修）
 
-立场：一篇稿件不是一次性问答，而是横跨数周到数月的流水线。本技能持有**期刊/会议稿件**（学位论文 → `aminer-degree-thesis-proposal-to-defense`）的整条线，按稿件经过的四个工位组织。稿件级状态与引文池会话内维护、凭档案卡（§7）跨会话续接；用户只下增量指令；失败由 agent 吸收；每个交付物自带下一步。本线上的每次检索都通过 AMiner 开放平台 API 执行——数据能力映射与引用纪律见 **Data Access**。
+立场：一篇稿件不是一次性问答，而是横跨数周到数月的流水线。本技能持有**期刊/会议稿件**（学位论文 → `aminer-thesis-writing`）的整条线，按稿件经过的四个工位组织。稿件级状态与引文池会话内维护、凭档案卡（§7）跨会话续接；用户只下增量指令；失败由 agent 吸收；每个交付物自带下一步。本线上的每次检索都通过 AMiner 开放平台 API 执行——数据能力映射与引用纪律见 **Data Access**。
 
 ## 0 场景本质
 
@@ -238,7 +238,7 @@ python3 scripts/aminer_client.py --action venue_search --params '{"name":"<JOURN
 
 ## 8 边界与交接
 
-1. **`aminer-degree-thesis-proposal-to-defense`（稿件类型轴）**：学位论文（开题/章节/盲审/答辩）→ 那边，含学位论文盲审自检与导师/盲审意见销号；期刊/会议稿件 → 这边。混合会话按当前稿件类型切换契约；两本销号台账绝不交叉污染。
+1. **`aminer-thesis-writing`（稿件类型轴）**：学位论文（开题/章节/盲审/答辩）→ 那边，含学位论文盲审自检与导师/盲审意见销号；期刊/会议稿件 → 这边。混合会话按当前稿件类型切换契约；两本销号台账绝不交叉污染。
 2. **`aminer-topic-advisor-selection`（方向轴）**：修改动摇方向本身（换题/选方向/择师）→ 那边；本线绝不重开已定之题。
 3. **`aminer-experiment-to-paper`（执行层）**：补实验/补统计意见与实验排障在执行层交接；本线只给选项菜单与协商路径；从实验数据产结果→讨论初稿在那边起稿；稿回来后迭代回本线。
 4. **`aminer-paper-deep-reading`（稿子是谁的）**：贴他人的论文精读 → 那边；本线只处理用户自有稿件。

@@ -20,22 +20,22 @@
 | 技能 | 状态 | 用途 | 触发词 | Token |
 | --- | --- | --- | --- | --- |
 | [`aminer-paper-deep-reading`](skills/aminer-paper-deep-reading/SKILL.zh.md) | Stable | 论文精读：总结方法与实验、逐句翻译解析、审计复现级实验细节；也可跨文献汇总某参数的取值，或根据模糊描述反查论文 | 「精读这篇论文」「XX 参数的典型取值是多少」 | 必须配置；免费优先 |
-| [`aminer-journal-paper-write-review-revise`](skills/aminer-journal-paper-write-review-revise/SKILL.zh.md) | Stable | 论文写作·审稿·返修：从零成稿并配真实引用，投稿前模拟审稿，逐条回复审稿意见并撰写回复信 | 「帮我撰写 Related Work 并配上引用」「逐条回复审稿意见」 | 必须配置；免费优先 |
-| [`aminer-experiment-to-paper`](skills/aminer-experiment-to-paper/SKILL.zh.md) | Stable | 实验到成稿：代码报错排查、实验设计评估、将实验结果写成论文表述，并核实方法出处与先例 | 「我的实验复现不出论文基线，帮我排查」 | 必须配置；免费优先 |
-| [`aminer-degree-thesis-proposal-to-defense`](skills/aminer-degree-thesis-proposal-to-defense/SKILL.zh.md) | Stable | 学位论文开题到答辩：开题文献调研与查新、按学校模板逐节起草、逐条落实导师与评审意见、格式合规、答辩材料 | 「帮我做开题报告的文献调研」「逐条处理导师的批注」 | 必须配置；免费优先 |
-| [`aminer-grant-application`](skills/aminer-grant-application/SKILL.zh.md) | Stable | 项目申报：从申报指南提取要求、凝练科学问题、分节撰写申报书、查新以避免选题重复，最后模拟评审专家评审 | 「提取这份申报指南的申报要件」「以评审专家身份评审我的申报书」 | 必须配置；免费优先 |
+| [`aminer-paper-writing`](skills/aminer-paper-writing/SKILL.zh.md) | Stable | 论文写作与返修：从零成稿并配真实引用，投稿前模拟审稿，逐条回复审稿意见并撰写回复信 | 「帮我撰写 Related Work 并配上引用」「逐条回复审稿意见」 | 必须配置；免费优先 |
+| [`aminer-experiment-to-paper`](skills/aminer-experiment-to-paper/SKILL.zh.md) | Stable | 实验分析与结果撰写：代码报错排查、实验设计评估、将实验结果写成论文表述，并核实方法出处与先例 | 「我的实验复现不出论文基线，帮我排查」 | 必须配置；免费优先 |
+| [`aminer-thesis-writing`](skills/aminer-thesis-writing/SKILL.zh.md) | Stable | 学位论文全流程：开题文献调研与查新、按学校模板逐节起草、逐条落实导师与评审意见、格式合规、答辩材料 | 「帮我做开题报告的文献调研」「逐条处理导师的批注」 | 必须配置；免费优先 |
+| [`aminer-grant-application`](skills/aminer-grant-application/SKILL.zh.md) | Stable | 科研项目申报：从申报指南提取要求、凝练科学问题、分节撰写申报书、查新以避免选题重复，最后模拟评审专家评审 | 「提取这份申报指南的申报要件」「以评审专家身份评审我的申报书」 | 必须配置；免费优先 |
 | [`aminer-topic-advisor-selection`](skills/aminer-topic-advisor-selection/SKILL.zh.md) | Stable | 科研选题与导师选择：评估方向竞争程度、开展选题查新；梳理院系导师名单、逐一建立档案并对比、撰写联系导师邮件 | 「该方向是否仍有研究价值」「帮我梳理该院系的导师名单」 | 必须配置；逐师档案 person_detail ¥1.00/次，先免费收敛再拉详情 |
-| [`aminer-patent-tech-intelligence`](skills/aminer-patent-tech-intelligence/SKILL.zh.md) | Stable | 产业情报与专利：撰写产业技术调研报告、指标对标、URS/SOP 文书；检索现有技术（对比文件）、起草交底书与权利要求、答复审查意见 | 「撰写一份XX产业技术调研报告」「检索X之前公开的现有技术」 | 必须配置；免费优先，批量排查注意 person_detail 单价 |
+| [`aminer-patent-tech-intelligence`](skills/aminer-patent-tech-intelligence/SKILL.zh.md) | Stable | 专利与技术情报：撰写产业技术调研报告、指标对标、URS/SOP 文书；检索现有技术（对比文件）、起草交底书与权利要求、答复审查意见 | 「撰写一份XX产业技术调研报告」「检索X之前公开的现有技术」 | 必须配置；免费优先，批量排查注意 person_detail 单价 |
 
 **示例提示词**：
 
 - 论文精读（`aminer-paper-deep-reading`）：精读《Attention Is All You Need》：总结问题、方法、实验设计与关键数字，并给出可继续深入的方向。
-- 论文写作·审稿·返修（`aminer-journal-paper-write-review-revise`）：帮我撰写这篇论文的 Related Work，每个论断配上真实检索到的引用，并模拟审稿人给出一轮评审意见。
-- 实验到成稿（`aminer-experiment-to-paper`）：我的实验复现不出论文报告的指标，帮我排查；并核实该指标的文献依据。
-- 学位论文开题到答辩（`aminer-degree-thesis-proposal-to-defense`）：帮我完成开题文献调研与题目查新，再逐条处理导师对第二章的批注。
-- 项目申报（`aminer-grant-application`）：提取这份申报指南中的申报要件，帮我凝练科学问题并按节撰写，最后以评审专家身份评审一遍。
+- 论文写作与返修（`aminer-paper-writing`）：帮我撰写这篇论文的 Related Work，每个论断配上真实检索到的引用，并模拟审稿人给出一轮评审意见。
+- 实验分析与结果撰写（`aminer-experiment-to-paper`）：我的实验复现不出论文报告的指标，帮我排查；并核实该指标的文献依据。
+- 学位论文全流程（`aminer-thesis-writing`）：帮我完成开题文献调研与题目查新，再逐条处理导师对第二章的批注。
+- 科研项目申报（`aminer-grant-application`）：提取这份申报指南中的申报要件，帮我凝练科学问题并按节撰写，最后以评审专家身份评审一遍。
 - 科研选题与导师选择（`aminer-topic-advisor-selection`）：评估「检索增强生成用于工业缺陷检测」这一方向的竞争程度，并对该选题进行查新。
-- 产业情报与专利（`aminer-patent-tech-intelligence`）：撰写一份固态电解质产业技术调研报告，并检索该申请日之前公开的最接近现有技术。
+- 专利与技术情报（`aminer-patent-tech-intelligence`）：撰写一份固态电解质产业技术调研报告，并检索该申请日之前公开的最接近现有技术。
 
 ## 检索与发现
 

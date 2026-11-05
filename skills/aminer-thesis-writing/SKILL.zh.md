@@ -1,11 +1,11 @@
 ---
-name: aminer-degree-thesis-proposal-to-defense
-name_zh: 学位论文开题到答辩
+name: aminer-thesis-writing
+name_zh: 学位论文全流程
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
-description: "[激活条件] 学位论文生产线，从开题关到答辩：「开题报告怎么写」「我的课题能过开题吗」「这是学校模板，帮我填」「15 号开题截止」「做一套开题答辩 PPT」「现在写 3.2 节」+ 贴目录、「逐条落实导师意见」「找两篇近两年文献支撑这句话」「你是盲审专家」「答辩每页 PPT 讲什么」「按学校格式查全篇」，或贴带批注的稿子/编号意见清单。 [适用场景] 一条线、两个纪元。开题纪元：选题体检（查新/创新点对学位层级/可行性）、学校模板逐字段起草、死线冲刺、开题答辩演练、开题阶段意见销号。通过后纪元：逐节生产、逐条意见销号、引文审计、格式合规、盲审自检、中期与答辩材料。课题档案全程承载——会话内维护，跨会话凭可贴回的档案卡续接。 [路由规则] 选题或择师未定 → aminer-topic-advisor-selection；期刊/会议稿件 → aminer-journal-paper-write-review-revise；实验排障 → aminer-experiment-to-paper；精读 → aminer-paper-deep-reading；专利 → aminer-patent-tech-intelligence。"
-homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-degree-thesis-proposal-to-defense
+description: "[激活条件] 学位论文生产线，从开题关到答辩：「开题报告怎么写」「我的课题能过开题吗」「这是学校模板，帮我填」「15 号开题截止」「做一套开题答辩 PPT」「现在写 3.2 节」+ 贴目录、「逐条落实导师意见」「找两篇近两年文献支撑这句话」「你是盲审专家」「答辩每页 PPT 讲什么」「按学校格式查全篇」，或贴带批注的稿子/编号意见清单。 [适用场景] 一条线、两个纪元。开题纪元：选题体检（查新/创新点对学位层级/可行性）、学校模板逐字段起草、死线冲刺、开题答辩演练、开题阶段意见销号。通过后纪元：逐节生产、逐条意见销号、引文审计、格式合规、盲审自检、中期与答辩材料。课题档案全程承载——会话内维护，跨会话凭可贴回的档案卡续接。 [路由规则] 选题或择师未定 → aminer-topic-advisor-selection；期刊/会议稿件 → aminer-paper-writing；实验排障 → aminer-experiment-to-paper；精读 → aminer-paper-deep-reading；专利 → aminer-patent-tech-intelligence。"
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-thesis-writing
 metadata:
   {
     "openclaw":
@@ -19,7 +19,7 @@ metadata:
   }
 ---
 
-# aminer-degree-thesis-proposal-to-defense — 学位论文线（开题关 → 答辩）
+# aminer-thesis-writing — 学位论文全流程（开题 → 答辩）
 
 **立场**：学位论文不是单次写作请求，而是横跨数周到数月的生产线。本技能持有开题关起的整条线：开题体检 → 学校模板起草 → 开题答辩 → 逐节生产 → 导师意见销号 → 中期检查 → 格式合规 → 盲审自检 → 答辩包装。开题用户的真问题是「能不能过」而非「怎么写」——先答前者。每个阶段首答即给可直接使用的交付物；整条线的状态凭档案卡（§10）跨会话承载；**学校模板就是验收标准**——绝不用通用想象套一份通用文档。
 
@@ -116,7 +116,7 @@ metadata:
 - 盲审模式：学术质量/严谨性/新颖性/完整性——逐维打分 + 扣分点清单、每条定位到节/页；全稿分块评审；「学校+学位层级」记入档案作配置档，换校换层级自动切换口径。
 - 人设（「你是硕士论文的资深盲审专家」）吸收为角色参数；打分维度按人设声明走。
 - 「能绕过查重吗/AI 检测会标吗」→ 翻译成合规路径（基于实际工作重写 + 规范引用 + 复述/结构重组式改写）；明确绝不承诺规避检测、绝不协助「去痕」。本技能无法接入任何查重或 AI 检测系统（知网/万方/Turnitin 等），不能计算重复率或 AI 检测率——绝不报出或估算任何比例。
-- 盲审扣分点变成「位置/问题/改法」问题表并逐段改写。学位论文的盲审自检永远在此处理——判别轴是稿件类型，绝不按输出形式外包（期刊稿件 → `aminer-journal-paper-write-review-revise`）。
+- 盲审扣分点变成「位置/问题/改法」问题表并逐段改写。学位论文的盲审自检永远在此处理——判别轴是稿件类型，绝不按输出形式外包（期刊稿件 → `aminer-paper-writing`）。
 
 ## 8 阶段 D — 答辩与中期材料
 
@@ -192,7 +192,7 @@ python3 scripts/aminer_client.py --action patent_search --params '{"query":"know
 ## 11 边界与交接
 
 1. **`aminer-topic-advisor-selection` ↔ 本技能**：首触题目未定（只有方向、漂移）→ 那边；题目定档后，定档卡与起步包流入本技能阶段 P。导师回复重开选题流回那边。
-2. **`aminer-journal-paper-write-review-revise`（稿件类型轴）**：学位论文全程留在这边；独立期刊/会议稿件（写作、自有稿修改、投稿前审、返修循环）→ 那边。混合流按当前稿件类型切换；两本销号台账绝不交叉污染。
+2. **`aminer-paper-writing`（稿件类型轴）**：学位论文全程留在这边；独立期刊/会议稿件（写作、自有稿修改、投稿前审、返修循环）→ 那边。混合流按当前稿件类型切换；两本销号台账绝不交叉污染。
 3. **`aminer-experiment-to-paper`**：实验数据/报错排障与统计输出 → 那边；分析结果转结果/讨论/方法节成稿在那边起稿；稿回来后在阶段 S 装配续作——本技能不做实验排障。
 4. **`aminer-paper-deep-reading`**：支撑文献的复现级精读 → 那边。**`aminer-patent-tech-intelligence`**：专利检索与撰写 → 那边（本技能体检只取专利规避视角）。
 5. **非文献事实与纯检索任务**：政策纲要、标准、设备参数 → 路由对应来源并标注来源类型；查新/精确清单等纯检索任务型 → 平台检索分诊，粒度 = 原句/数值级。

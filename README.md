@@ -34,12 +34,12 @@
 | 技能 | 能做什么 | 在&#8288;线&#8288;使&#8288;用 |
 |---|---|:---:|
 | **论文精读** | 结构化精读、逐句翻译、复现细节审计，按模糊描述定位论文 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-paper-deep-reading) |
-| **论文写作·审稿·返修** | 从零成稿并配真实引用，投稿前模拟审稿，逐条回复审稿意见 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-journal-paper-write-review-revise) |
-| **实验到成稿** | 排查代码与实验问题，把实验结果写成论文，核实方法出处 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-experiment-to-paper) |
-| **学位论文开题到答辩** | 开题调研与查新，逐节起草，落实导师与盲审意见，答辩材料 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-degree-thesis-proposal-to-defense) |
-| **项目申报** | 提取申报要件，凝练科学问题，分节撰写，模拟专家评审 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-grant-application) |
+| **论文写作与返修** | 从零成稿并配真实引用，投稿前模拟审稿，逐条回复审稿意见 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-paper-writing) |
+| **实验分析与结果撰写** | 排查代码与实验问题，把实验结果写成论文，核实方法出处 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-experiment-to-paper) |
+| **学位论文全流程** | 开题调研与查新，逐节起草，落实导师与盲审意见，答辩材料 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-thesis-writing) |
+| **科研项目申报** | 提取申报要件，凝练科学问题，分节撰写，模拟专家评审 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-grant-application) |
 | **科研选题与导师选择** | 评估方向竞争程度与选题查新，梳理院系导师并逐一对比 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-topic-advisor-selection) |
-| **产业情报与专利** | 产业技术调研，现有技术检索，交底书与权利要求起草，审查意见答复 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-patent-tech-intelligence) |
+| **专利与技术情报** | 产业技术调研，现有技术检索，交底书与权利要求起草，审查意见答复 | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb?style=for-the-badge)](https://www.aminer.cn/?skill=aminer-patent-tech-intelligence) |
 
 ## 本地技能
 

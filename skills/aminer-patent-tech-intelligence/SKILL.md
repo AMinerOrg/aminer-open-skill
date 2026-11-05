@@ -1,13 +1,13 @@
 ---
 name: aminer-patent-tech-intelligence
-name_zh: 产业情报与专利
+name_zh: 专利与技术情报
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: >
   [Activation] Dual entry point for industrial technology intelligence and patent work. Trigger phrases: "produce an XX industry technology survey report", "what level has some metric of some overseas process reached", "draft a URS for XX", "from which points could we file patents"; pasted "application number + filing date" asking for the closest prior art, or "search everything published before X (the day itself excluded)"; "Task No.: ..." bulk dispatch.
   [Scenarios] A triage executor unifying two task families. Intelligence family: metric benchmarking surveys, enumerated-source exhaustive retrieval, single-parameter multi-source verification, project-initiation documents / template fill-ins, URS/SOP/regulation three-column compliance documents, patent landscaping & circumvention, process troubleshooting, micro-difference mechanism interrogation, subscription patrols, object intelligence (scholars restricted to industrial-survey contexts). Patent family: per-case prior-art document retrieval (hard filing-date cutoff), conception-card two-step pipeline, targeted screening, common-knowledge-means feasibility Q&A, search-statement construction, patent data tables, claims / invention disclosure drafting, OA responses, inventor-side patentability co-construction.
-  [Routing] Academic-literature tasks → see §6 (novelty search → aminer-degree-thesis-proposal-to-defense; topic fixing → aminer-topic-advisor-selection; citation matching and surveys → aminer-journal-paper-write-review-revise; deep reading → aminer-paper-deep-reading); advisor-selection contexts → aminer-topic-advisor-selection; journal review responses → aminer-journal-paper-write-review-revise; grant applications → aminer-grant-application; experiment execution → aminer-experiment-to-paper; all academic data queries → AMiner Open Platform APIs (see the Data Access section).
+  [Routing] Academic-literature tasks → see §6 (novelty search → aminer-thesis-writing; topic fixing → aminer-topic-advisor-selection; citation matching and surveys → aminer-paper-writing; deep reading → aminer-paper-deep-reading); advisor-selection contexts → aminer-topic-advisor-selection; journal review responses → aminer-paper-writing; grant applications → aminer-grant-application; experiment execution → aminer-experiment-to-paper; all academic data queries → AMiner Open Platform APIs (see the Data Access section).
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-patent-tech-intelligence
 metadata:
   {
@@ -22,7 +22,7 @@ metadata:
   }
 ---
 
-# aminer-patent-tech-intelligence — Patents & Industrial Tech Intelligence (a triage executor unifying two task families)
+# aminer-patent-tech-intelligence — Patents & Technology Intelligence (a triage executor unifying two task families)
 
 **Stance**: The users here are not casual-chat consumers — they are corporate intelligence staff and patent practitioners arriving with concrete deliverables in hand; the human acts as the scheduler and the service as the invoked primitive. Seemingly identical requests actually span two task families and many task types, each with its own output contract: triage before acting — a wrong artifact shape makes the user resend the same sentence or fire interrogation chains. The first answer is everything: single-round users never follow up, so every delivery must carry built-in next steps and continuable dimensions.
 
@@ -154,9 +154,9 @@ There is no built-in storage: state lives within the session. At the end of each
 
 ## 6 Boundaries and Handoffs
 
-- **Literature tasks on academic papers → the corresponding academic skills**: topic-fixing / proposal novelty searches follow aminer-degree-thesis-proposal-to-defense's novelty-search contract (novelty three-state labeling; its novelty search includes a patent-circumvention perspective, aligned with this skill's retrieval caliber, with conclusions issued by that skill); topic-drift convergence and topic-fixing intake go to aminer-topic-advisor-selection (its first-round literature list is a topic-fixing artifact, not a novelty search); citation matching for the user's own manuscripts goes to aminer-journal-paper-write-review-revise; paper deep reading / translation goes to aminer-paper-deep-reading; academic survey manuscripts go to aminer-journal-paper-write-review-revise. This skill handles only patent literature and industrial intelligence sources (standards / manuals / vendor data / patent databases).
+- **Literature tasks on academic papers → the corresponding academic skills**: topic-fixing / proposal novelty searches follow aminer-thesis-writing's novelty-search contract (novelty three-state labeling; its novelty search includes a patent-circumvention perspective, aligned with this skill's retrieval caliber, with conclusions issued by that skill); topic-drift convergence and topic-fixing intake go to aminer-topic-advisor-selection (its first-round literature list is a topic-fixing artifact, not a novelty search); citation matching for the user's own manuscripts goes to aminer-paper-writing; paper deep reading / translation goes to aminer-paper-deep-reading; academic survey manuscripts go to aminer-paper-writing. This skill handles only patent literature and industrial intelligence sources (standards / manuals / vendor data / patent databases).
 - **Scholar intelligence routes by context**: industrial / competitor / technical-cooperation survey contexts (sounding out a competitor's R&D team, angles for opening a technical exchange) belong to this skill; advisor-selection contexts (enumerating a department's advisors, per-person profiling, fit assessment, cold-email drafting and reply follow-up) → aminer-topic-advisor-selection — questions like "which advisors are there / what about these several" are judged by context, not literally.
-- **Patent administrative work belongs to this skill**: examiner work orders, inventor-side drafting and patentability, OA responses are all this skill; manuscript revision (splitting real reviewer comments into items for revision + point-by-point response letters) → aminer-journal-paper-write-review-revise.
+- **Patent administrative work belongs to this skill**: examiner work orders, inventor-side drafting and patentability, OA responses are all this skill; manuscript revision (splitting real reviewer comments into items for revision + point-by-point response letters) → aminer-paper-writing.
 - **Application-document routing**: fund / research-project applications → aminer-grant-application; corporate URS/SOP-type compliance documents → this skill's intelligence family.
 - Once the experiment design in the landscaping three-piece set is finalized, pasted-data troubleshooting / experiment execution is taken over by → aminer-experiment-to-paper.
 - Legal conclusions (invalidation outcomes, litigation prospects, judgments of patent legal validity) are never issued: give technical comparisons and risk grades, labeling conclusions "technical analysis, not legal advice"; if real-time legal status from official examination systems / registers is unobtainable, say so — never pass inference off as fact.

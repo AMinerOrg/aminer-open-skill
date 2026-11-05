@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 BASE_URL = "https://datacenter.aminer.cn/gateway/open_platform"
-SKILL_NAME = "aminer-degree-thesis-proposal-to-defense"  # per-skill copy; only this line differs
+SKILL_NAME = "aminer-thesis-writing"  # per-skill copy; only this line differs
 SKILL_VERSION = "1.0.0"
 
 REQUEST_TIMEOUT_SECONDS = 30

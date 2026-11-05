@@ -93,7 +93,7 @@ ln -s ~/ai-skills/aminer-open-skill/skills/aminer-free-academic ~/.codex/skills/
 | `sota-finder` | openpyxl（导出 Excel） |
 | `baseline-finder` | httpx、openai、pypdf |
 
-7 个科研工作流技能（`aminer-topic-advisor-selection` / `aminer-paper-deep-reading` / `aminer-journal-paper-write-review-revise` / `aminer-experiment-to-paper` / `aminer-degree-thesis-proposal-to-defense` / `aminer-grant-application` / `aminer-patent-tech-intelligence`）只依赖标准库，无需额外安装。
+7 个科研工作流技能（`aminer-topic-advisor-selection` / `aminer-paper-deep-reading` / `aminer-paper-writing` / `aminer-experiment-to-paper` / `aminer-thesis-writing` / `aminer-grant-application` / `aminer-patent-tech-intelligence`）只依赖标准库，无需额外安装。
 
 ```bash
 python3 -m pip install -r skills/<skill-name>/requirements.txt

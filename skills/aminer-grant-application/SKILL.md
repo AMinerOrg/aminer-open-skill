@@ -1,13 +1,13 @@
 ---
 name: aminer-grant-application
-name_zh: 项目申报
+name_zh: 科研项目申报
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: >
   [Activation] Use when the user pastes a red-header notice / guideline entry / official format template and asks to extract application requirements; asks "how do I distill the scientific question" or "my research base is X but I want to write Y"; pastes a newly issued policy document to pick a direction; says "check the already-funded projects so I don't collide"; demands "review my proposal as the review expert panel" with both-sides argumentation; asks to "find literature supporting this sentence" or to calibrate text against literature data; says "limit to N words" or "do you still remember".
   [Scenarios] Full-pipeline executor for grant/funding applications — requirements extraction, direction picking, distilling the scientific question (transfer mode / constraint mode / three-tier), section-by-section drafting with pasted-section iteration, sentence-level evidence pairing and data calibration, overlap check, multi-role simulated review, and peripheral fixed-form deliverables such as budgets / awards / duty reports.
-  [Routing] Pasted-paragraph citation pairing, word-count compression, and data calibration inside the application context stay in this skill — never dispatched out as generic revision; generic iterations of the user's own academic manuscripts outside the application context go to aminer-journal-paper-write-review-revise; reviewer-perspective simulation for journal manuscripts goes to aminer-journal-paper-write-review-revise; when the direction is not yet set, route upstream to aminer-topic-advisor-selection first.
+  [Routing] Pasted-paragraph citation pairing, word-count compression, and data calibration inside the application context stay in this skill — never dispatched out as generic revision; generic iterations of the user's own academic manuscripts outside the application context go to aminer-paper-writing; reviewer-perspective simulation for journal manuscripts goes to aminer-paper-writing; when the direction is not yet set, route upstream to aminer-topic-advisor-selection first.
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-grant-application
 metadata:
   {
@@ -22,7 +22,7 @@ metadata:
   }
 ---
 
-# aminer-grant-application — Grant Application (the proposal is a pipeline with a deadline; this skill is its triage executor)
+# aminer-grant-application — Grant Proposal Writing (the proposal is a pipeline with a deadline; this skill is its triage executor)
 
 Stance: work is taken on along the chain "extract requirements → pick a direction → distill the scientific question → draft section by section → sentence-level evidence pairing → overlap check → simulated review → peripheral fixed-form deliverables". Payload first: guide the user to paste the notice / guidelines / template / half-finished draft / full text of a funded proposal — look at what was pasted, not at secondhand accounts. The first answer is everything: single-round-then-leave users exist; the first answer delivers the complete artifact per the triage result, never stretching out rounds with counter-questions. A days-before-deadline sprint that produces the entire proposal and a weeks-long marathon polishing the same proposal are both normal cadences; the delivery contract never degrades for speed.
 
@@ -145,10 +145,10 @@ Failures are digested by the agent (the client itself only retries transient err
 
 ## 6. Boundaries and Handoffs
 
-1. **↔ aminer-journal-paper-write-review-revise (manuscript axis)**: this skill's expert-panel simulated review is a role built into the application context; reviewing the user's own manuscript from a reviewer's perspective before journal submission → aminer-journal-paper-write-review-revise. Both sides share the same rule: "re-review comments only on new changes".
+1. **↔ aminer-paper-writing (manuscript axis)**: this skill's expert-panel simulated review is a role built into the application context; reviewing the user's own manuscript from a reviewer's perspective before journal submission → aminer-paper-writing. Both sides share the same rule: "re-review comments only on new changes".
 2. **↔ aminer-topic-advisor-selection (topic-setting axis)**: when the scientific question comes from direction exploration that has not yet settled on a topic → upstream to aminer-topic-advisor-selection; this skill starts from "guidelines fixed / direction fixed" — if a distillation request has not even fixed a direction, send it upstream first.
-3. **↔ aminer-degree-thesis-proposal-to-defense / aminer-journal-paper-write-review-revise (pipeline axis)**: thesis chapter production and blind-review check-off → aminer-degree-thesis-proposal-to-defense; surveys from gap search to submission package → aminer-journal-paper-write-review-revise. The contract for sentence-level literature support and data calibration inside a proposal is self-contained in this skill and never outsourced.
-4. **↔ aminer-journal-paper-write-review-revise (carrier-context axis)**: pasted-paragraph citation pairing, word-count compression, and data calibration in the proposal / application-materials context follow this skill's contract — sentence-by-sentence literature pairing where "not found" means a [No support] downgrade rewrite, data calibration returning an "original value – literature value – source" triple, wording consistent with the established application caliber — never outsourced; anchored iteration and citation pairing of generic academic manuscripts outside the application context → aminer-journal-paper-write-review-revise.
+3. **↔ aminer-thesis-writing / aminer-paper-writing (pipeline axis)**: thesis chapter production and blind-review check-off → aminer-thesis-writing; surveys from gap search to submission package → aminer-paper-writing. The contract for sentence-level literature support and data calibration inside a proposal is self-contained in this skill and never outsourced.
+4. **↔ aminer-paper-writing (carrier-context axis)**: pasted-paragraph citation pairing, word-count compression, and data calibration in the proposal / application-materials context follow this skill's contract — sentence-by-sentence literature pairing where "not found" means a [No support] downgrade rewrite, data calibration returning an "original value – literature value – source" triple, wording consistent with the established application caliber — never outsourced; anchored iteration and citation pairing of generic academic manuscripts outside the application context → aminer-paper-writing.
 5. **Data capability boundary**: funded projects / approved-project lists exceed the reach of general literature retrieval → route to official announcement channels (funding-agency announcements / competent-authority official websites); passing off a paper list as an approved-project list is a disaster; macro assertions get only partially-verifiable conclusions + proxy indicators + caliber statements; regional / fiscal data come from statistical yearbooks and official-report sources with up-front availability statements. Literature-layer overlap-check retrieval follows the mapping in §3 Data Access.
 6. **Long-horizon file management**: version trees, file-level collaboration, and attachment annotations exceed a conversational session's capacity → transfer to a version-controlled document tool, with the handoff card traveling along.
 
