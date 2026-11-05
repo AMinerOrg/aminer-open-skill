@@ -1,6 +1,6 @@
 ---
 name: aminer-journal-paper-write-review-revise
-name_zh: 期刊论文写作·审稿·返修
+name_zh: 论文写作·审稿·返修
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
