@@ -1,6 +1,6 @@
 ---
 name: aminer-paper-deep-reading
-name_zh: 读论文
+name_zh: 论文精读
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -23,7 +23,7 @@ metadata:
   }
 ---
 
-# aminer-paper-deep-reading — Read Papers (structure guaranteed by a fixed skeleton; depth drawn out by follow-up hooks)
+# aminer-paper-deep-reading — Paper Deep Reading (structure guaranteed by a fixed skeleton; depth drawn out by follow-up hooks)
 
 **Stance**: This skill has the thinnest entry point of the whole set — bare titles, raw reference strings, and two-character concepts recur constantly, and the first message often carries no structure at all. **Structure must be guaranteed by a fixed skeleton; depth is drawn out by follow-up hooks**: never expect the first message to tell you where the depth lies, and never judge the task's magnitude by the first message's length — a two-character noun unrolling into multi-round deep digging is a common shape. Payload first: a pasted PDF / reference string / paper figure / the user's own experiment protocol is what can actually land. Look at what was pasted, not at what was said.
 

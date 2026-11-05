@@ -1,6 +1,6 @@
 ---
 name: aminer-experiment-to-paper
-name_zh: 做实验到成稿
+name_zh: 实验到成稿
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
@@ -22,7 +22,7 @@ metadata:
   }
 ---
 
-# aminer-experiment-to-paper — Run Experiments (a successful run is not the endpoint; the write-up is)
+# aminer-experiment-to-paper — From Experiments to Manuscript (a successful run is not the endpoint; the write-up is)
 
 **Stance**: The user's real workload is the "bring back → analyze → adjust → bring back again" loop — code, errors, and data tables come in; troubleshooting, code edits, and parameter tuning go out; new results come back again. The real computation runs in the user's own local environment / HPC / servers; the chat window is a resident workbench and log dashboard. This skill accompanies the whole troubleshooting-and-interpretation ride and proactively takes over at the two most breakage-prone moments: **the moment of confirmed successful run** — the moment closest to the write-up, never wrapping up at "it runs now"; **the moment data analysis completes** — stalling at the data layer is a high-frequency drop-off point. Payload first: guide the user to paste their own real material (code / raw error text / statistical output / data tables) — only with a payload can anything land; look at what was pasted, not at what was said.
 

@@ -65,19 +65,19 @@
     },
     {
       "name": "pdf-citation-verifier",
-      "description": "PDF 引用核验：上传论文 PDF，自动调用 AMiner pdf-citation-verifier 服务核验每条参考文献是否真实存在，识别 hallucination",
+      "description": "PDF 引用核验：上传论文 PDF，自动调用 AMiner pdf-citation-verifier 服务核验每条参考文献是否真实存在，识别编造引用",
       "source": "./skills/pdf-citation-verifier",
       "strict": false
     },
     {
       "name": "structured-reference-audit",
-      "description": "结构化参考文献核验：使用 GROBID 建立可追溯条目账本，再逐条通过 AMiner 解析；将解析不确定性与文献存在性分开呈现",
+      "description": "结构化参考文献核验：使用 GROBID 建立可追溯条目台账，再逐条通过 AMiner 解析；将解析不确定性与文献存在性分开呈现",
       "source": "./skills/structured-reference-audit",
       "strict": false
     },
     {
       "name": "citation-faithfulness",
-      "description": "引用忠实性核查：读取论文 PDF，抽取每处正文引用及其声称，联网检索被引原文，判定引用是否忠于原文（支持/部分支持/曲解/查无此说/无法核实），免 key",
+      "description": "引用忠实性核查：读取论文 PDF，抽取每处正文引用及其声称，联网检索被引原文，判定引用是否忠于原文（支持/部分支持/曲解/查无此说/无法核实），无需 API Key",
       "source": "./skills/citation-faithfulness",
       "strict": false
     },
@@ -95,43 +95,43 @@
     },
     {
       "name": "aminer-topic-advisor-selection",
-      "description": "科研选题与导师选择双轨执行器：方向冷热与竞争密度评估、题目查新撞车检查、代表作溯源定档；院系枚举、逐师档案与同名消歧（内含 person_detail ¥1.00/次的费用纪律）",
+      "description": "科研选题与导师选择：评估方向的竞争程度、对选题进行查新、按代表作分层；院系枚举、逐位导师建档对比与同名消歧（person_detail ¥1.00/次，先用免费接口收敛）",
       "source": "./skills/aminer-topic-advisor-selection",
       "strict": false
     },
     {
       "name": "aminer-paper-deep-reading",
-      "description": "读论文——单篇深读执行器：结构化精读、复现级精读（配方审计）、逐句翻译断点续读、压缩蒸馏、概念深挖、引用串/模糊记忆精确匹配定位全文、跨文献参数面对比表、实证研究设计审计",
+      "description": "论文精读：结构化精读、复现级方案审计、逐句翻译与断点续读、长文压缩、概念深入讲解、按引用串或模糊描述定位原文、跨文献参数对比、实证研究设计审计",
       "source": "./skills/aminer-paper-deep-reading",
       "strict": false
     },
     {
       "name": "aminer-journal-paper-write-review-revise",
-      "description": "期刊/会议稿件全流水线：从零成稿（含系统性配引）、用户自有稿锚定修改、投稿前模拟审稿、真实审稿意见的逐条返修与回复信循环；查空、引用槽位填充与期刊适配",
+      "description": "期刊/会议论文全流程：从零撰写并系统配引、自有稿件定点修改、投稿前模拟审稿、审稿意见逐条返修与回复信；选题空白核查、引用占位符填充与期刊适配",
       "source": "./skills/aminer-journal-paper-write-review-revise",
       "strict": false
     },
     {
       "name": "aminer-experiment-to-paper",
-      "description": "实验到论文：代码/实验排障（纯 bash/文本层）、方法出处核实、结果与文献对照、先例存在性检索——支撑 A/D/E 型实验写作任务与复现执行",
+      "description": "实验到成稿：代码与实验排障、方法出处核实、结果与文献对照、先例检索，支撑实验结果的论文写作与复现",
       "source": "./skills/aminer-experiment-to-paper",
       "strict": false
     },
     {
       "name": "aminer-degree-thesis-proposal-to-defense",
-      "description": "学位论文全流程：开题纪元（文献盘点/创新点对标/查新）、逐节生产线、导师/评审/盲审意见逐条销号、引文审计（批量核验）、格式合规、答辩与中期材料",
+      "description": "学位论文全流程：开题（文献调研/创新点对标/查新）、逐节撰写、导师/评审/盲审意见逐条落实、引文核验、格式合规、答辩与中期材料",
       "source": "./skills/aminer-degree-thesis-proposal-to-defense",
       "strict": false
     },
     {
       "name": "aminer-grant-application",
-      "description": "项目申报全流程：申报要件提取、凝练科学问题、分节撰写申报书、查新防撞车、多角色模拟评审",
+      "description": "项目申报全流程：申报要件提取、凝练科学问题、分节撰写申报书、查新以避免选题重复、模拟评审专家评审",
       "source": "./skills/aminer-grant-application",
       "strict": false
     },
     {
       "name": "aminer-patent-tech-intelligence",
-      "description": "产业技术情报与专利作业双任务族：指标对标、URS/SOP 合规文书、专利布局规避；专利族对比文件检索（申请日硬截止）、权利要求/交底书起草、OA 答复、构思卡管线",
+      "description": "产业技术情报与专利：指标对标、URS/SOP 合规文书、专利布局规避；对比文件检索（以申请日为截止）、权利要求与交底书起草、审查意见答复、发明构思梳理",
       "source": "./skills/aminer-patent-tech-intelligence",
       "strict": false
     }
