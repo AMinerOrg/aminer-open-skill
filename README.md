@@ -49,7 +49,7 @@
 
 可将论文、主题、审稿意见或任务描述直接交给 Agent，下列提示词可直接复制使用。表中技能与 [2.2 完整技能列表](#22-完整技能列表) 一一对应。前 7 个科研工作流技能无需安装，点击「在线使用」即可在 AMiner 网页版打开；其余技能面向本地 Agent，安装方式见 [3. 安装](#3-安装)：
 
-| 需求 | 示例提示词 | 在线使用 |
+| 需求 | 示例提示词 | 在&#8288;线&#8288;使&#8288;用 |
 |---|---|---|
 | 论文精读 | `精读《Attention Is All You Need》：总结问题、方法、实验设计与关键数字，并给出可继续深入的方向。`（`aminer-paper-deep-reading`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-paper-deep-reading) |
 | 期刊论文写作·审稿·返修 | `帮我撰写这篇论文的 Related Work，每个论断配上真实检索到的引用，并模拟审稿人给出一轮评审意见。`（`aminer-journal-paper-write-review-revise`） | [![在线使用](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E4%BD%BF%E7%94%A8_%E2%86%97-1f6feb)](https://www.aminer.cn/?skill=aminer-journal-paper-write-review-revise) |
