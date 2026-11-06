@@ -10,7 +10,7 @@
 ## Table of Contents
 
 - [Paper APIs (9)](#paper-apis)
-- [Scholar APIs (6)](#scholar-apis)
+- [Scholar APIs (7)](#scholar-apis)
 - [Institution APIs (7)](#institution-apis)
 - [Journal APIs (3)](#journal-apis)
 - [Patent APIs (3)](#patent-apis)
@@ -85,7 +85,7 @@ curl -G 'https://datacenter.aminer.cn/gateway/open_platform/api/paper/search' \
   -H "Authorization: ${AMINER_API_KEY}" \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -138,7 +138,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -200,7 +200,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"use_topic": true, "query": "deep learning protein structure prediction", "size": 10, "sci_flag": true}'
 ```
 
@@ -212,7 +212,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{
     "use_topic": true,
     "topic_high": "[[\\"transformer\\",\\"self-attention\\"],[\\"protein folding\\"]]",
@@ -305,7 +305,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{
     "query": "大模型比较新的高引论文",
     "query_type": "auto",
@@ -323,7 +323,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"cursor":"<NEXT_CURSOR_FROM_PREVIOUS_RESPONSE>"}'
 ```
 
@@ -370,7 +370,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"ids": ["53e9ab9bb7602d97023e53b2", "53e9a98eb7602d9703e42e5a"]}'
 ```
 
@@ -420,7 +420,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 **Usage Note:**
@@ -457,7 +457,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -495,7 +495,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -536,7 +536,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -581,7 +581,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"name": "Andrew Ng", "size": 5}'
 ```
 
@@ -621,7 +621,47 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
+```
+
+---
+
+### 10b. Scholar Statistics
+
+- **URL**: `POST /api/person/stat`
+- **Price**: ¥0.50/call
+- **Description**: Retrieve a scholar's academic metrics by scholar ID: paper count, citation count, H-index, G-index, activity, diversity, and sociability. This is the endpoint for H-index / G-index; Scholar Search returns only the citation count, and Scholar Details returns no metrics.
+- **Pick it when**: comparing or ranking scholars by impact, or the user asks for an H-index / G-index.
+
+**Request Parameters:**
+
+| Parameter | Type | Required | Description |
+|--------|------|------|------|
+| id | string | Yes | Scholar ID (obtain via Scholar Search) |
+
+**Response Fields** (`data` is a single object):
+
+| Field | Description |
+|--------|------|
+| id | Scholar ID |
+| pub_num | Paper count |
+| citation_num | Citation count |
+| h_index | H-index |
+| g_index | G-index |
+| activity | Activity score |
+| diversity | Diversity score |
+| sociability | Sociability score |
+
+**curl Example:**
+```bash
+curl -X POST \
+  'https://datacenter.aminer.cn/gateway/open_platform/api/person/stat' \
+  -H 'Content-Type: application/json;charset=utf-8' \
+  -H 'Authorization: ${AMINER_API_KEY}' \
+  -H 'X-Platform: claude-code' \
+  -H 'X-Skill-Name: aminer-academic-search' \
+  -H 'X-Skill-Version: 1.6.0' \
+  -d '{"id": "53f46a3edabfaee43ed05f08"}'
 ```
 
 ---
@@ -655,7 +695,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -687,7 +727,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -721,7 +761,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -759,7 +799,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -795,7 +835,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"orgs": ["Tsinghua University"]}'
 ```
 
@@ -835,7 +875,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"ids": ["5f71b2091c455f439fe9a7d7"]}'
 ```
 
@@ -871,7 +911,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -905,7 +945,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -939,7 +979,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -970,7 +1010,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"org": "MIT CSAIL"}'
 ```
 
@@ -1006,7 +1046,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"org": "Department of Computer Science, Tsinghua University"}'
 ```
 
@@ -1045,7 +1085,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"name": "tkde"}'
 ```
 
@@ -1082,7 +1122,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"id": "<VENUE_ID>"}'
 ```
 
@@ -1121,7 +1161,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"id": "<VENUE_ID>", "year": 2023, "offset": 0, "limit": 20}'
 ```
 
@@ -1162,7 +1202,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"page":0,"query":"Si02","size":20}'
 ```
 
@@ -1202,7 +1242,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -1247,7 +1287,7 @@ curl -X GET \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0'
+  -H 'X-Skill-Version: 1.6.0'
 ```
 
 ---
@@ -1327,7 +1367,7 @@ curl -X POST \
   -H 'Authorization: ${AMINER_API_KEY}' \
   -H 'X-Platform: claude-code' \
   -H 'X-Skill-Name: aminer-academic-search' \
-  -H 'X-Skill-Version: 1.5.0' \
+  -H 'X-Skill-Version: 1.6.0' \
   -d '{"paper_id":"<PAPER_ID>","method":"","dataset":"","search_text":"Baseline"}'
 ```
 

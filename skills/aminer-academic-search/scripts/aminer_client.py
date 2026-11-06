@@ -41,7 +41,7 @@ from typing import Any, Optional
 
 BASE_URL = "https://datacenter.aminer.cn/gateway/open_platform"
 SKILL_NAME = "aminer-academic-search"
-SKILL_VERSION = "1.5.0"
+SKILL_VERSION = "1.6.0"
 
 REQUEST_TIMEOUT_SECONDS = 30
 MAX_RETRIES = 3
@@ -57,7 +57,7 @@ API_PRICE: dict[str, Optional[float]] = {
     "org_patent_relation": 0.10, "venue_paper_relation": 0.10,
     "paper_list_by_keywords": 0.10,
     "venue_detail": 0.20, "paper_detail_by_condition": 0.20,
-    "person_figure": 0.50, "org_person_relation": 0.50,
+    "person_figure": 0.50, "person_stat": 0.50, "org_person_relation": 0.50,
     "person_detail": 1.00,
     "person_paper_relation": 1.50, "person_patent_relation": 1.50,
     "person_project": 1.50,
@@ -542,6 +542,12 @@ def person_detail(token: str, person_id: str) -> Any:
     return _request(token, "GET", "/api/person/detail", params={"id": person_id})
 
 
+def person_stat(token: str, person_id: str) -> Any:
+    """Scholar Statistics (¥0.50/call): paper count, citations, h-index, g-index, activity, diversity, sociability."""
+    _track_cost("person_stat")
+    return _request(token, "POST", "/api/person/stat", body={"id": person_id})
+
+
 def person_figure(token: str, person_id: str) -> Any:
     """Scholar Portrait (¥0.50/call): retrieve research interests, domains, and structured history."""
     _track_cost("person_figure")
@@ -677,7 +683,7 @@ def patent_detail(token: str, patent_id: str) -> Any:
 def workflow_scholar_profile(token: str, name: str) -> dict:
     """
     Workflow 1: Scholar Profile
-    Search scholar → details + portrait + papers + patents + projects
+    Search scholar → details + statistics + portrait + papers + patents + projects
     """
     print(f"[1/6] Searching scholar: {name}", file=sys.stderr)
     search_result = person_search(token, name=name, size=5)
@@ -693,6 +699,7 @@ def workflow_scholar_profile(token: str, name: str) -> dict:
         "source_api_chain": [
             "person_search",
             "person_detail",
+            "person_stat",
             "person_figure",
             "person_paper_relation",
             "person_patent_relation",
@@ -712,12 +719,13 @@ def workflow_scholar_profile(token: str, name: str) -> dict:
     print("[2/6] Fetching scholar details (parallel)...", file=sys.stderr)
     tasks = {
         "detail": lambda: person_detail(token, person_id),
+        "stat": lambda: person_stat(token, person_id),
         "figure": lambda: person_figure(token, person_id),
         "papers": lambda: person_paper_relation(token, person_id),
         "patents": lambda: person_patent_relation(token, person_id),
         "projects": lambda: person_project(token, person_id),
     }
-    with ThreadPoolExecutor(max_workers=5) as pool:
+    with ThreadPoolExecutor(max_workers=len(tasks)) as pool:
         futures = {pool.submit(fn): key for key, fn in tasks.items()}
         for future in as_completed(futures):
             key = futures[future]
@@ -731,6 +739,8 @@ def workflow_scholar_profile(token: str, name: str) -> dict:
                 continue
             if key == "detail":
                 result["detail"] = data
+            elif key == "stat":
+                result["stat"] = data
             elif key == "figure":
                 result["figure"] = data
             elif key == "papers":
@@ -1193,7 +1203,7 @@ Docs: https://open.aminer.cn/open/docs
 
 WORKFLOW_DRY_RUN_INFO = {
     "scholar_profile": [
-        ("person_search", 0), ("person_detail", 1.00), ("person_figure", 0.50),
+        ("person_search", 0), ("person_detail", 1.00), ("person_stat", 0.50), ("person_figure", 0.50),
         ("person_paper_relation", 1.50), ("person_patent_relation", 1.50), ("person_project", 1.50),
     ],
     "paper_deep_dive": [
@@ -1353,6 +1363,7 @@ def main():
             "experiment_search": experiment_search,
             "person_search": person_search,
             "person_detail": person_detail,
+            "person_stat": person_stat,
             "person_figure": person_figure,
             "person_paper_relation": person_paper_relation,
             "person_patent_relation": person_patent_relation,

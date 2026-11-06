@@ -4,12 +4,12 @@
     {
       "id": 1,
       "prompt": "I'd like to understand Andrew Ng's complete academic profile, including his research interests, important papers he has published, any patents, and research projects he has participated in. Please use the AMiner API to look this up for me. My token is <YOUR_TOKEN>",
-      "expected_output": "The estimated cost (~¥6.00) exceeds the ¥5 threshold. Before executing, display the planned call chain and cost breakdown, and ask the user for confirmation. After the user confirms, run the scholar_profile workflow. After completion, output a cost summary.",
+      "expected_output": "The estimated cost (~¥6.50) exceeds the ¥5 threshold. Before executing, display the planned call chain and cost breakdown, and ask the user for confirmation. After the user confirms, run the scholar_profile workflow. After completion, output a cost summary.",
       "files": [],
       "expectations": [
         "Displayed the planned call chain with estimated cost BEFORE making paid API calls",
         "Estimated total cost exceeds ¥5, so asked the user for confirmation before proceeding",
-        "After user confirmation, called Scholar Search, Scholar Details, Scholar Portrait, Scholar Papers, etc.",
+        "After user confirmation, called Scholar Search, Scholar Details, Scholar Statistics, Scholar Portrait, Scholar Papers, etc.",
         "Output contains the selected.name field with value Andrew Ng",
         "Output contains a cost summary showing each API called and total cost"
       ]
