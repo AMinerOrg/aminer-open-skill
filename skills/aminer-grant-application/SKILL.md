@@ -1,7 +1,7 @@
 ---
 name: aminer-grant-application
 name_zh: 科研项目申报
-version: 1.0.0
+version: 1.0.1
 author: AMiner
 contact: report@aminer.cn
 description: >
@@ -100,15 +100,15 @@ If missing, stop immediately and guide the user to https://open.aminer.cn/open/b
 ```bash
 python3 scripts/aminer_client.py --action paper_search --params '{"query":"soil heavy metal remediation","year_from":2020,"page":1,"size":20}'
 python3 scripts/aminer_client.py --action paper_search_pro --params '{"author":"Zhang San","org":"Nanjing University","keyword":"remediation","page":0,"size":50}'
-python3 scripts/aminer_client.py --action paper_detail --params '{"id":"<paper_id>"}'
+python3 scripts/aminer_client.py --action paper_detail_batch --params '{"ids":["<paper_id>","<paper_id2>"]}'  # ¥0.01 per returned paper, ids ≤ 100, not-found free
 ```
 
 ### 3.1 General rules
 
-1. **Citation authenticity**: only content actually returned by retrieval may be written into the proposal; every result three-state labeled (verified / questionable / not found). Search returns only card fields (no evidence sentences); supporting text comes from the abstract returned by `paper_detail`, labeled as an abstract excerpt with its source. When nothing is found, say "not found" explicitly, then offer to downgrade or relax the claim — never fabricate literature or numbers.
+1. **Citation authenticity**: only content actually returned by retrieval may be written into the proposal; every result three-state labeled (verified / questionable / not found). Search returns only card fields (no evidence sentences); supporting text comes from the abstract returned by `paper_detail_batch`, labeled as an abstract excerpt with its source. When nothing is found, say "not found" explicitly, then offer to downgrade or relax the claim — never fabricate literature or numbers.
 2. **Coverage statement folded into hit counts**: literature-layer overlap checks must carry a coverage statement (API / keyword combinations / year window / data as-of date), and **record hit counts per keyword combination** — the persuasiveness of an overlap-check conclusion "no overlap found" = the hit records of each combination; writing only "dedup done" without numbers counts as not written. **Cross-query dedup**: when merging results from multi-keyword screening, dedupe on two levels — identifier first (DOI / paper ID), then "title + year"; entries judged inconsistent become conflict records, listed side by side and never silently merged — collision false positives (treating the same paper recorded twice as two) are as dangerous as misses.
 3. **Entity links**: papers `https://www.aminer.cn/pub/{paper_id}`, DOIs `https://doi.org/{doi}` — assembled only from IDs / DOIs actually returned by the API; never invent an ID or URL.
-4. **Cost discipline**: free first (`paper_search` leads; ¥0.01 `paper_search_pro` only when an `author` / `org` / `venue` condition is needed; the ¥0.01 `paper_detail` is pulled only for papers definitely to be cited); when the estimated total cost is ≥¥5, stop, show the call plan, and proceed only after the user confirms.
+4. **Cost discipline**: free first (`paper_search` leads; ¥0.01 `paper_search_pro` only when an `author` / `org` / `venue` condition is needed; the ¥0.01 `paper_detail_batch` is pulled only for papers definitely to be cited); when the estimated total cost is ≥¥5, stop, show the call plan, and proceed only after the user confirms.
 
 ### 3.2 This skill's data capability mapping
 
@@ -118,8 +118,8 @@ python3 scripts/aminer_client.py --action paper_detail --params '{"id":"<paper_i
 | Literature-layer overlap: batch screening of the keyword space | `paper_search` (free; pagination `page` ≤10 × `size` ≤20) |
 | Scholar-dimension overlap / publication inventory (§2.3, §1 supporting materials) | `paper_search_pro` (¥0.01; `author` + `org` (+ `query`/`keyword`), `page` from 0, `size` ≤100) |
 | Named peers' funded projects (§2.3) — beyond the platform's data capability | None — ask the user to provide the official public announcements; never pass off a paper list as funding records |
-| Sentence-level supporting literature (§1 task type 7) | `paper_search` (free; keyword search + pagination; supporting sentences taken from the `paper_detail` abstract and labeled) |
-| Abstract excerpts and bibliographic fields for citations (§1 task type 7) | `paper_detail` (¥0.01; abstract / DOI / volume-issue / citation count `n_citation` — page numbers are not provided by the platform, mark "to be supplemented") |
+| Sentence-level supporting literature (§1 task type 7) | `paper_search` (free; keyword search + pagination; supporting sentences taken from the `paper_detail_batch` abstract and labeled) |
+| Abstract excerpts and bibliographic fields for citations (§1 task type 7) | `paper_detail_batch` (¥0.01/paper; abstract / DOI / volume-issue / citation count `n_citation` — page numbers are not provided by the platform, mark "to be supplemented") |
 
 ## 4. Failure Protocol
 

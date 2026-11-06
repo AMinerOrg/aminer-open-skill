@@ -1,7 +1,7 @@
 ---
 name: aminer-paper-deep-reading
 name_zh: 论文精读
-version: 1.0.0
+version: 1.0.1
 author: AMiner
 contact: report@aminer.cn
 description: >
@@ -125,7 +125,7 @@ Use `scripts/aminer_client.py` throughout; the full API catalog (parameters, res
 python3 scripts/aminer_client.py --action paper_search --params '{"query":"attention is all you need","size":10}'
 
 # Paper detail (¥0.01/call): full abstract (not full text) — the abstract-level base for the reading skeleton
-python3 scripts/aminer_client.py --action paper_detail --params '{"id":"<paper_id>"}'
+python3 scripts/aminer_client.py --action paper_detail_batch --params '{"ids":["<paper_id>","<paper_id2>"]}'  # ¥0.01 per returned paper, ids ≤ 100, not-found free
 
 # References direction (¥0.10/call): papers cited by this paper — for landscape consolidation
 python3 scripts/aminer_client.py --action paper_relation --params '{"id":"<paper_id>"}'
@@ -139,7 +139,7 @@ Every run ends with a one-line cost footer on stderr (`[Cost] ¥X.XX total, N AP
 2. **Entity links (mandatory in output)**: papers `https://www.aminer.cn/pub/{paper_id}`, scholars `https://www.aminer.cn/profile/{person_id}`, DOIs `https://doi.org/{doi}` — assembled only from IDs/DOIs actually returned by the API; never invent publisher / preprint URLs or IDs.
 3. **Exact match first**: bare titles / reference strings go through exact match first (normalize journal abbreviations / misspellings, then query `paper_search`; for a title-targeted match use `paper_search_pro` with `{"title":"..."}`, ¥0.01); never idle in semantic search.
 4. **Cost discipline**: free first (`paper_search` leads; upgrade only on insufficient hits); when the estimated total cost is ≥¥5, stop, show the call plan, and proceed only after the user confirms.
-5. **Full-text boundary**: the platform returns metadata + abstract only (`paper_info` gives a partial `abstract_slice`, `paper_detail` the full abstract and exact citation count `n_citation`) — no full text, PDF, or figures. Full-text-grade output (key numbers, method parameters, protocol audits, figure reading, sentence-level binding, sentence-by-sentence translation) needs the PDF/text the user provides (scanned PDFs can go through aminer-pdf-ocr first). With a title only, deliver an abstract-based skeleton labeled "based on the abstract" and mark every field that needs the full text "full text not provided" — never fill it from memory.
+5. **Full-text boundary**: the platform returns metadata + abstract only (`paper_info` gives a partial `abstract_slice`, `paper_detail_batch` the full abstract and exact citation count `n_citation`) — no full text, PDF, or figures. Full-text-grade output (key numbers, method parameters, protocol audits, figure reading, sentence-level binding, sentence-by-sentence translation) needs the PDF/text the user provides (scanned PDFs can go through aminer-pdf-ocr first). With a title only, deliver an abstract-based skeleton labeled "based on the abstract" and mark every field that needs the full text "full text not provided" — never fill it from memory.
 
 ### This skill's data capability mapping
 
@@ -147,7 +147,7 @@ Every run ends with a one-line cost footer on stderr (`[Cost] ¥X.XX total, N AP
 |---|---|
 | Exact-match location (§2.8): resolve a bare title / reference string after normalization | `paper_search` (free; single query box over title + keywords); title-targeted: `paper_search_pro` (¥0.01; `title` field) |
 | Exact location by DOI (§2.8); abstract-database accession numbers (PMID/WoS etc.) are not supported — say so and ask the user for a title or DOI | `paper_qa_search` (¥0.05; `use_topic:false` reads only `title`/`doi`) |
-| Full abstract for the abstract-based §2.1 skeleton and §2.2 audits (when the abstract is truncated; protocol-level parameters need the user's full text — General rule 5) | `paper_detail` (¥0.01; full abstract, not full text) |
+| Full abstract for the abstract-based §2.1 skeleton and §2.2 audits (when the abstract is truncated; protocol-level parameters need the user's full text — General rule 5) | `paper_detail_batch` (¥0.01/paper; full abstract, not full text) |
 | References / upstream landscape needed by §2.10.3 (papers cited by this paper — never papers citing it) | `paper_relation` (¥0.10; references direction) |
 | Citation status for the §2.8 fixed follow-up chain | `n_citation_bucket` returned with `paper_search` (coarse bucket, free — never treat as an exact count) |
 | Follow-up work for the §2.8 fixed follow-up chain — the platform provides no citing-direction paper list; must be labeled "topically related follow-ups — citation relation unverified" | `paper_search` (free; topic + year search) |

@@ -30,11 +30,14 @@ from typing import Any, Optional
 
 BASE_URL = "https://datacenter.aminer.cn/gateway/open_platform"
 SKILL_NAME = "aminer-grant-application"  # per-skill copy; only this line differs
-SKILL_VERSION = "1.0.0"
+SKILL_VERSION = "1.0.1"
 
 REQUEST_TIMEOUT_SECONDS = 30
 MAX_RETRIES = 3
 RETRYABLE_HTTP_STATUS = {408, 429, 500, 502, 503, 504}
+
+# Actions billed per returned item (unit price × len(data)); IDs not found are free
+PER_ITEM_ACTIONS = {"paper_detail_batch"}
 
 # action -> (HTTP method, path, unit price in CNY; 0 = free)
 ACTIONS: dict[str, tuple[str, str, float]] = {
@@ -44,6 +47,7 @@ ACTIONS: dict[str, tuple[str, str, float]] = {
     "paper_qa_search": ("POST", "/api/paper/qa/search", 0.05),
     "paper_info": ("POST", "/api/paper/info", 0.0),
     "paper_detail": ("GET", "/api/paper/detail", 0.01),
+    "paper_detail_batch": ("POST", "/api/paper/detail/batch", 0.01),  # ¥0.01 per returned paper, ids ≤ 100
     "paper_relation": ("GET", "/api/paper/relation", 0.10),
     # Scholar
     "person_search": ("POST", "/api/person/search", 0.0),
@@ -221,6 +225,9 @@ def main() -> int:
         result = _request(token, method, path, body=params)
 
     print(json.dumps(result, ensure_ascii=False, indent=2))
+    if args.action in PER_ITEM_ACTIONS:
+        data = result.get("data") if isinstance(result, dict) else None
+        price = round(price * (len(data) if isinstance(data, list) else 0), 6)
     print(_cost_footer([(args.action, price)]), file=sys.stderr)
     # Exit codes: 0 = got a response (404 "entity not found" is a valid empty
     # result the skill must read, not a failure); 1 = transport/request failure;

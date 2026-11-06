@@ -1,7 +1,7 @@
 ---
 name: aminer-thesis-writing
 name_zh: 学位论文全流程
-version: 1.0.0
+version: 1.0.1
 author: AMiner
 contact: report@aminer.cn
 description: >
@@ -104,8 +104,8 @@ Stage rules: **topic not yet decided at first contact** (only a direction, or a 
 
 - Sentence-level literature support: one sentence → 1-3 candidates + each candidate's match points + suggested insertion position + citation format; year is a hard filter (`year_from`/`year_to`); literature type and tier have no platform filter — enforce them only against a user-provided journal list, otherwise declare them unenforced.
 - Every sentence-support request returns one of three states: direct support + citation / no direct support — suggest weakening or rewriting the claim / not found — needs re-checking. The three states are a hard contract; better to report "not retrieved" than pad the count.
-- The citation audit returns a three-column comparison table (original key sentence / what the cited paper says / whether it drifts — judged against the full `paper_detail` abstract, never `paper_info`'s partial `abstract_slice`); a full page of numbered citations is batch-verified into one complete table (title / DOI (from the `paper_search` card) / link / checkability / three-state; PMID and page numbers: user-provided / the platform has no such data) — never one entry at a time.
-- Arbitration requests ("another AI says this paper doesn't exist — you check"): first give an existence verdict + literature anchors (DOI / volume-issue via `paper_detail`; page numbers user-provided / the platform has no such data); when conflicting with another AI's conclusion, do not paper over the conflict. Verified literature enters the dossier's verified list (carried on the handoff card) and is not re-verified once the card is pasted back.
+- The citation audit returns a three-column comparison table (original key sentence / what the cited paper says / whether it drifts — judged against the full `paper_detail_batch` abstract, never `paper_info`'s partial `abstract_slice`); a full page of numbered citations is batch-verified into one complete table (title / DOI (from the `paper_search` card) / link / checkability / three-state; PMID and page numbers: user-provided / the platform has no such data) — never one entry at a time.
+- Arbitration requests ("another AI says this paper doesn't exist — you check"): first give an existence verdict + literature anchors (DOI / volume-issue via `paper_detail_batch`; page numbers user-provided / the platform has no such data); when conflicting with another AI's conclusion, do not paper over the conflict. Verified literature enters the dossier's verified list (carried on the handoff card) and is not re-verified once the card is pasted back.
 - Non-literature fact checks (policy-outline sentences, national/industry standards) do not use the literature three states — route to the corresponding source, label the source type, and give an "original text verifiable / no public source" verdict + alternative wording.
 
 ## 6 Stage F — Format compliance (school template)
@@ -147,7 +147,7 @@ If missing, stop immediately and guide the user to https://open.aminer.cn/open/b
 python3 scripts/aminer_client.py --action paper_search --params '{"query":"knowledge graph completion","year_from":2022,"year_to":2025,"page":1,"size":20}'
 # Look up one reference by DOI (¥0.05)
 python3 scripts/aminer_client.py --action paper_qa_search --params '{"doi":"<DOI>","use_topic":false}'
-# Batch-verify matched paper IDs (free; ids ≤ 100); then paper_detail {"id": ...} (¥0.01) for full abstract / doi / volume / issue / n_citation
+# Batch-verify matched paper IDs (free; ids ≤ 100); then paper_detail_batch {"ids": [...]} (¥0.01 per returned paper) for full abstract / doi / volume / issue / n_citation
 python3 scripts/aminer_client.py --action paper_info --params '{"ids":["<PAPER_ID_1>","<PAPER_ID_2>"]}'
 # Patent-avoidance scan (free; query / page / size only)
 python3 scripts/aminer_client.py --action patent_search --params '{"query":"knowledge graph completion","page":0,"size":20}'
@@ -155,20 +155,20 @@ python3 scripts/aminer_client.py --action patent_search --params '{"query":"know
 
 ### General rules
 
-1. **Citation authenticity**: write only what retrieval actually returned, three-state labeled (verified / questionable / not found). Retrieval returns only paper cards (no evidence sentences); when supporting text is needed, quote the abstract returned by `paper_detail`, labeled as abstract original text with its source — never present it as an evidence sentence. Nothing found → say "not found", downgrade or relax — never fabricate.
+1. **Citation authenticity**: write only what retrieval actually returned, three-state labeled (verified / questionable / not found). Retrieval returns only paper cards (no evidence sentences); when supporting text is needed, quote the abstract returned by `paper_detail_batch`, labeled as abstract original text with its source — never present it as an evidence sentence. Nothing found → say "not found", downgrade or relax — never fabricate.
 2. **Coverage statement merged with hit counts (mandatory on retrieval-based conclusions)**: state which APIs were used, the keyword combinations, year windows, and the data timestamp, and **record the hit count per keyword combination** — the defensibility of a novelty check's "no similar work found" = the hit records of each combination; writing only "novelty checked" without numbers counts as not written. **Cross-query dedup**: when merging the results of the health-check and review retrieval rounds, deduplicate at two levels — first by identifier (DOI / paper ID), then by "title + year"; entries judged inconsistent are conflicting records, listed side by side, never silently merged.
 3. **Entity links (mandatory in output)**: papers `https://www.aminer.cn/pub/{paper_id}`, DOI `https://doi.org/{doi}`, patents `https://www.aminer.cn/patent/{patent_id}` — assembled only from IDs/DOIs actually returned by the API; never invent an ID or URL.
-4. **Cost discipline**: free first (`paper_search` / `patent_search` lead); citation-audit batch verification uses the free `paper_info` (`ids` array ≤100) instead of per-item `paper_detail`; when the estimated total cost is ≥¥5, stop, show the call plan, and proceed only after the user confirms.
+4. **Cost discipline**: free first (`paper_search` / `patent_search` lead); citation-audit batch verification uses the free `paper_info` (`ids` array ≤100) instead of paying `paper_detail_batch` for every entry; when the estimated total cost is ≥¥5, stop, show the call plan, and proceed only after the user confirms.
 
 ### Data capability mapping (task → platform capability)
 
 | Task | Open Platform API |
 |---|---|
-| Sentence-level literature support (§3, §5); hard year filter (`year_from`/`year_to`); supporting text taken from the `paper_detail` abstract and labeled as abstract original text | `paper_search` (free) → `paper_detail` (¥0.01); split a full-sentence question into keywords before searching |
+| Sentence-level literature support (§3, §5); hard year filter (`year_from`/`year_to`); supporting text taken from the `paper_detail_batch` abstract and labeled as abstract original text | `paper_search` (free) → `paper_detail_batch` (¥0.01/paper); split a full-sentence question into keywords before searching |
 | Cheap candidate enumeration when no year range is needed (§3); novelty check / topic-collision scan (§2.1, §2.2) | `paper_search` (free; single query box over title + keywords) |
-| Proposal literature inventory (§2.2, §2.3); innovation-point benchmarking, recent-work abstracts (§2.1) | `paper_search` (free) → `paper_detail` (¥0.01) |
+| Proposal literature inventory (§2.2, §2.3); innovation-point benchmarking, recent-work abstracts (§2.1) | `paper_search` (free) → `paper_detail_batch` (¥0.01/paper) |
 | Citation audit: whole-table existence verification (§5) — first match every entry to a paper ID (by title via `paper_search`, comparing normalized titles; by DOI via `paper_qa_search` with `doi` + `use_topic: false`), then batch-verify | `paper_search` (free) / `paper_qa_search` (¥0.05; DOI) → `paper_info` (free; `ids` batch ≤100, returns card fields — no DOI, partial `abstract_slice`) |
-| Citation audit: drift verdicts and DOI / volume-issue anchors (§5) | `paper_detail` (¥0.01; full abstract, `doi`, `volume`, `issue`, `n_citation`; no page numbers) |
+| Citation audit: drift verdicts and DOI / volume-issue anchors (§5) | `paper_detail_batch` (¥0.01/paper; full abstract, `doi`, `volume`, `issue`, `n_citation`; no page numbers) |
 | Patent-avoidance perspective of the novelty check (§2.1) | `patent_search` (free; takes only `query`/`page`/`size` — coarse-filter client-side on the returned `app_year`/`pub_year`) |
 | Format compliance (§6) | No data capability — template rules are extracted only from the user's payload |
 

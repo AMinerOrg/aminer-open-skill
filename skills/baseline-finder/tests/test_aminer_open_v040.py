@@ -34,7 +34,7 @@ def test_free_search_uses_v15_contract_and_enriches_with_paper_info() -> None:
         assert request.headers["authorization"] == "test-key"
         assert request.headers["x-platform"] == detect_skill_runtime()
         assert request.headers["x-skill-name"] == "baseline-finder"
-        assert request.headers["x-skill-version"] == "0.5.1"
+        assert request.headers["x-skill-version"] == "0.5.2"
         if request.method == "GET":
             assert request.url.path.endswith("/api/paper/search")
             assert dict(request.url.params) == {
@@ -215,7 +215,54 @@ def test_default_free_chain_never_calls_paid_paper_detail() -> None:
     assert len(records) == 1
     assert records[0]["summary"] == ""
     assert diagnostics["api_calls"] == {"paper_search": 1, "paper_info": 1}
+    assert not any("/api/paper/detail" in path for path in calls)
+
+
+def test_detail_enrichment_uses_one_batch_call_billed_per_returned_paper() -> None:
+    first, second, missing = "a" * 24, "b" * 24, "c" * 24
+    calls: list[str] = []
+    batch_bodies: list[dict] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(request.url.path)
+        rows = [{"id": i, "title": f"Paper {i[0]}", "year": 2024} for i in (first, second, missing)]
+        if request.url.path.endswith("/api/paper/search"):
+            return httpx.Response(200, json={"code": 200, "success": True, "data": rows})
+        if request.url.path.endswith("/api/paper/info"):
+            return httpx.Response(200, json={"code": 200, "success": True, "data": rows})
+        if request.url.path.endswith("/api/paper/detail/batch"):
+            assert request.method == "POST"
+            batch_bodies.append(json.loads(request.content))
+            return httpx.Response(
+                200,
+                json={
+                    "code": 200,
+                    "success": True,
+                    "data": [
+                        {"id": first, "title": "Paper a", "abstract": "Abstract of a.", "year": 2024},
+                        {"id": second, "title": "Paper b", "abstract": "Abstract of b.", "year": 2024},
+                    ],
+                },
+            )
+        raise AssertionError(f"unexpected call {request.url.path}")
+
+    with _client_factory(handler)(timeout=10) as client:
+        records, diagnostics = search_aminer_query(
+            "batch detail",
+            review_as_of="2026-10-29",
+            client=client,
+            api_key="test-key",
+            detail_limit=3,
+        )
+    assert batch_bodies == [{"ids": [first, second, missing]}]
     assert not any(path.endswith("/api/paper/detail") for path in calls)
+    assert diagnostics["api_calls"]["paper_detail_batch"] == 1
+    # three requested, two returned: only the returned papers are billed
+    assert diagnostics["estimated_cost_cny_by_api"]["paper_detail_batch"] == 0.02
+    summaries = {record["aminer_pub_id"]: record["summary"] for record in records}
+    assert summaries[first] == "Abstract of a."
+    assert summaries[second] == "Abstract of b."
+    assert summaries[missing] == ""
 
 
 def test_paid_qa_permission_failure_downgrades_only_inside_aminer() -> None:

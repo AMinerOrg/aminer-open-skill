@@ -1,7 +1,7 @@
 ---
 name: aminer-patent-tech-intelligence
 name_zh: 专利与技术情报
-version: 1.0.0
+version: 1.0.1
 author: AMiner
 contact: report@aminer.cn
 description: >
@@ -111,7 +111,7 @@ python3 scripts/aminer_client.py --action org_patent_relation --params '{"org_id
 
 ### Unified rules for the data layer
 
-1. **Data sources**: all academic and patent data queries go through the Open Platform APIs — patents (`patent_search`/`patent_info`/`patent_detail`), papers (`paper_search`/`paper_search_pro`/`paper_detail`), scholars (`person_search`/`person_detail`), institutions (`org_search` and the institution-dimension relation APIs); when the platform does not provide a capability, state so honestly — never silently degrade into fabrication.
+1. **Data sources**: all academic and patent data queries go through the Open Platform APIs — patents (`patent_search`/`patent_info`/`patent_detail`), papers (`paper_search`/`paper_search_pro`/`paper_detail_batch`), scholars (`person_search`/`person_detail`), institutions (`org_search` and the institution-dimension relation APIs); when the platform does not provide a capability, state so honestly — never silently degrade into fabrication.
 2. **Citation authenticity**: write only what retrieval actually returned; every result three-state labeled (verified / questionable / not found); when nothing is found say "not found" and offer to downgrade or relax the claim — never fabricate.
 3. **Coverage statements merged with hit counts**: retrieval-based conclusions must carry a coverage statement (API / search statement / year window / data as-of date), and **hit counts are recorded per search statement** (for the patent family, including "how many bibliographic records were queried and how many details were read"); the legitimacy of "exhaustive / comprehensive" wording rests entirely on numbers — an exhaustiveness claim without hit counts is empty talk. Cross-query merges deduplicate at two levels, first by identifier (patent number / DOI), then by "title + year"; conflict records are listed side by side, never silently merged.
 4. **Entity links (mandatory in output)**: papers `https://www.aminer.cn/pub/{paper_id}`, scholars `https://www.aminer.cn/profile/{person_id}`, patents `https://www.aminer.cn/patent/{patent_id}`, DOIs `https://doi.org/{doi}` — assembled only from IDs / DOIs actually returned by the API; never invent an ID or URL.
@@ -123,7 +123,7 @@ python3 scripts/aminer_client.py --action org_patent_relation --params '{"org_id
 |---|---|
 | Patent family (prior-art document retrieval / patent data table) | `patent_search` (free; keyword search) → `patent_info` (free; bibliographic info) → `patent_detail` (¥0.01; full detail: abstract / filing date / IPC) |
 | Targeted screening (list × topic) | `paper_search_pro` (¥0.01; `author` (+ `org`) + `query`/`keyword`, `page` from 0, `size` ≤100) × `patent_search` (free; topic keywords only — no inventor filter) → `patent_info`/`patent_detail` (`inventor` field matched against the list) |
-| Paper-side benchmarking / literature evidence | `paper_search` (free; title-phrase search) → `paper_detail` (¥0.01) |
+| Paper-side benchmarking / literature evidence | `paper_search` (free; title-phrase search) → `paper_detail_batch` (¥0.01/paper) |
 | Object intelligence · scholar queries (industrial contexts only) | `person_search` (free; name/institution search, incl. interests/n_citation) → `person_detail` (¥1.00; full profile, use sparingly) |
 | Object intelligence · company queries (competitor patent / paper full history) | `org_search` (free; institution resolution and normalization) → `org_patent_relation` (¥0.10; `org_id`, `source` is required in practice (omitting it times out): `app` (applicant) for a company's R&D output and patent layout — it covers every filing including pending applications, while assignee records of unlinked/pending filings are often missed; `ass` (assignee) for granted status, ownership and post-transfer holders; `page` from 1, `page_size` ≤100 (page beyond); returns patent IDs only → `patent_info` per ID) / `org_paper_relation` (¥0.10; `org_id` + `offset`, 10 per call) |
 

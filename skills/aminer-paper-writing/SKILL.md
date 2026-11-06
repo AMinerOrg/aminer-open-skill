@@ -1,7 +1,7 @@
 ---
 name: aminer-paper-writing
 name_zh: 论文写作与返修
-version: 1.0.0
+version: 1.0.1
 author: AMiner
 contact: report@aminer.cn
 description: >
@@ -131,7 +131,7 @@ a. **Dimension report** (the core output, verifiable on the spot): five dimensio
 
 b. **Review baseline**: echo the target journal / degree tier before writing; the tier basis = journal metadata + same-genre retrieval benchmarking in the paper database against that journal's already-published papers; if unobtainable, declare "reviewed against generic academic tiers" — never impersonate the journal's internal standards, never invent its review preferences.
 
-c. **Citation check** (the red-line execution layer): every citation is searched by title in the paper database (results are relevance-ranked, not exact — compare normalized titles) → the paper-detail chain (`paper_info`'s `abstract_slice` is partial; pull the full abstract via `paper_detail` before concluding); compare the original abstract against the manuscript's claims and output a three-state table (in-text citation site → the claim it purports to support → verified / questionable / not found). Repair actions (swapping in real matched literature) hand over to Station R; once repaired, the manuscript can return to this station for another review round.
+c. **Citation check** (the red-line execution layer): every citation is searched by title in the paper database (results are relevance-ranked, not exact — compare normalized titles) → the paper-detail chain (`paper_info`'s `abstract_slice` is partial; pull the full abstract via `paper_detail_batch` before concluding); compare the original abstract against the manuscript's claims and output a three-state table (in-text citation site → the claim it purports to support → verified / questionable / not found). Repair actions (swapping in real matched literature) hand over to Station R; once repaired, the manuscript can return to this station for another review round.
 
 d. **Re-review comparison**: when the same manuscript comes back after revision → pull up the previous round's issue list and verify closure item by item (fixed / partially fixed / untouched / newly introduced); last round's leftover P0/P1 named out; old untouched issues get escalated wording — never re-review from zero.
 
@@ -186,17 +186,17 @@ python3 scripts/aminer_client.py --action paper_search --params '{"query":"retri
 # Topic search inside one journal/conference (¥0.01; page from 0, size ≤ 100)
 python3 scripts/aminer_client.py --action paper_search_pro --params '{"query":"retrieval augmented generation","venue":"<VENUE_NAME>","page":0,"size":50}'
 # Full abstract / doi / volume / issue of an entry to be cited (¥0.01)
-python3 scripts/aminer_client.py --action paper_detail --params '{"id":"<PAPER_ID>"}'
+python3 scripts/aminer_client.py --action paper_detail_batch --params '{"ids":["<PAPER_ID>","<PAPER_ID2>"]}'  # ¥0.01 per returned paper, ids ≤ 100, not-found free
 # Journal name → venue id (free); then venue_detail {"id": ...} (¥0.20) for issn / eissn
 python3 scripts/aminer_client.py --action venue_search --params '{"name":"<JOURNAL_NAME>"}'
 ```
 
 ### General rules
 
-1. **Citation authenticity**: write only what retrieval actually returned; every entry three-state labeled (verified / questionable / not found). Retrieval returns only paper cards (no abstract, no evidence sentences); quoted sentences are taken only from the abstract returned by `paper_detail`, **transcribed verbatim** and labeled "abstract sentence", with provenance — never rewritten, never stitched together; full-text sentences require the user to provide the PDF (upload), otherwise mark "full text unavailable". When nothing is found, write "not found", downgrade the claim or suggest relaxing it — never fabricate, never pass a weak hit off as the missing strong evidence.
+1. **Citation authenticity**: write only what retrieval actually returned; every entry three-state labeled (verified / questionable / not found). Retrieval returns only paper cards (no abstract, no evidence sentences); quoted sentences are taken only from the abstract returned by `paper_detail_batch`, **transcribed verbatim** and labeled "abstract sentence", with provenance — never rewritten, never stitched together; full-text sentences require the user to provide the PDF (upload), otherwise mark "full text unavailable". When nothing is found, write "not found", downgrade the claim or suggest relaxing it — never fabricate, never pass a weak hit off as the missing strong evidence.
 2. **Coverage statement with hit counts merged in**: literature-collection / empty-result-check conclusions must carry a coverage statement (API / keyword combinations / year window / data timestamp), and **hit counts are recorded per keyword combination** — for an empty-result check, the persuasiveness of "nobody has written this" = the zero-hit records of each combination; writing "not seen in retrieval" without numbers counts as not written. **Cross-query dedup**: merging hits from multiple combinations deduplicates at two levels — identifier first (DOI / paper ID), then title + year; entries the two levels judge inconsistently are conflicting records, listed side by side and never silently merged (possibly the same paper recorded differently — the user adjudicates).
 3. **Entity links (mandatory in output)**: papers `https://www.aminer.cn/pub/{paper_id}`, DOI `https://doi.org/{doi}`, journals `https://www.aminer.cn/open/journal/detail/{venue_id}` — assembled only from IDs/DOIs actually returned by the API; never invent an ID or URL.
-4. **Cost discipline**: free first (`paper_search`/`venue_search` lead; the ¥0.01 `paper_detail` pulls only papers definitely to be cited; the ¥0.10 `venue_paper_relation` is used only when a by-year listing of that journal's papers is genuinely needed — topic search inside a journal goes through the ¥0.01 `paper_search_pro` `venue` field); when the estimated total cost is ≥¥5, stop, show the call plan, and proceed only after the user confirms.
+4. **Cost discipline**: free first (`paper_search`/`venue_search` lead; the ¥0.01 `paper_detail_batch` pulls only papers definitely to be cited; the ¥0.10 `venue_paper_relation` is used only when a by-year listing of that journal's papers is genuinely needed — topic search inside a journal goes through the ¥0.01 `paper_search_pro` `venue` field); when the estimated total cost is ≥¥5, stop, show the call plan, and proceed only after the user confirms.
 
 ### Data capability mapping (task → platform capability)
 
@@ -204,12 +204,12 @@ python3 scripts/aminer_client.py --action venue_search --params '{"name":"<JOURN
 |---|---|
 | Empty-result check / literature collection (controlled phrases) | `paper_search` (free; single query box over title + keywords) |
 | Empty-result check (question-form query, year window) — the question is first decomposed into keyword combinations (`paper_search` has no Boolean operators — run each combination as its own query), with an optional year filter | `paper_search` (free; `year_from`/`year_to`) |
-| Sentence-level citation matching / add-citation comments (retrieval returns only paper cards — no abstract/evidence sentences, completed via paper detail) | `paper_search` (free) → `paper_detail` (¥0.01) |
+| Sentence-level citation matching / add-citation comments (retrieval returns only paper cards — no abstract/evidence sentences, completed via paper detail) | `paper_search` (free) → `paper_detail_batch` (¥0.01/paper) |
 | Citation slot filling (takes controlled phrases only, with an optional year window; upgrade when field-level author/venue filtering is needed) | `paper_search` (free) → `paper_search_pro` (¥0.01; field-level conditions on `title`/`author`/`venue`) |
-| Verify titles / check cited references / the literature cited by reviewers (fetch abstracts for claim comparison) | `paper_search` (free; search by title, then compare normalized titles — results are relevance-ranked, not exact) or `paper_search_pro` (¥0.01; `title` field) → `paper_info` (free; `ids` ≤100; `abstract_slice` is partial) → `paper_detail` (¥0.01; full abstract) |
+| Verify titles / check cited references / the literature cited by reviewers (fetch abstracts for claim comparison) | `paper_search` (free; search by title, then compare normalized titles — results are relevance-ranked, not exact) or `paper_search_pro` (¥0.01; `title` field) → `paper_info` (free; `ids` ≤100; `abstract_slice` is partial) → `paper_detail_batch` (¥0.01/paper; full abstract) |
 | Presence of a DOI in the platform index (never "resolvable") | `paper_qa_search` (¥0.05; `doi` + `use_topic: false`) |
 | References of a cited paper (what it cites — not the papers citing it) | `paper_relation` (¥0.10; `id`) |
-| DOI / full abstract / volume-issue / citation count (`n_citation`) of entries to be cited (page numbers not provided by the platform — ask the user or mark "to verify") | `paper_detail` (¥0.01) |
+| DOI / full abstract / volume-issue / citation count (`n_citation`) of entries to be cited (page numbers not provided by the platform — ask the user or mark "to verify") | `paper_detail_batch` (¥0.01/paper) |
 | Journal fit step 1 — topic search over that journal's already-published papers | `paper_search_pro` (¥0.01; `query` + `venue`) |
 | Journal tier benchmarking / by-year listing of that journal's papers | `venue_search` (free; venue `id`) → `venue_paper_relation` (¥0.10; `id`/`year`/`offset`/`limit`; returns only id/title/year — listing only, no topic query) |
 | ISSN only (when the submission package needs it) | `venue_search` (free; venue `id` only, no ISSN) → `venue_detail` (¥0.20; `issn`/`eissn`) |

@@ -953,7 +953,9 @@ def _walk(node: Any, via: str, kind: str, found: list[dict[str, Any]], depth: in
 # (`fulltext --unavailable`) so `check` can tell "could not" from "did not".
 DEPTHS = ("search", "slice", "detail", "fulltext")
 DEPTH_RANK = {name: i for i, name in enumerate(DEPTHS)}
-DEPTH_BY_API = {"paper_info": "slice", "paper_detail": "detail", "patent_detail": "detail"}
+DEPTH_BY_API = {
+    "paper_info": "slice", "paper_detail": "detail", "paper_detail_batch": "detail", "patent_detail": "detail",
+}
 # Channels an open-access fulltext can arrive through; `fulltext --via` records
 # which one was used, so the appendix can say how the original was obtained.
 FULLTEXT_CHANNELS = (

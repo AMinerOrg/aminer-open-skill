@@ -4,7 +4,7 @@ name_zh: 实验基线核查
 description: Audit whether a local PDF or AMiner pub_id visibly compares plausible direct experimental baselines discovered through time-bounded AMiner search and public backward references; use for missing-baseline questions, not general related-work coverage or acceptance prediction.
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/baseline-finder
 metadata:
-  version: "0.5.1"
+  version: "0.5.2"
 ---
 
 # Baseline Finder
@@ -40,7 +40,7 @@ AMiner Open Platform is the default paper-discovery provider:
 1. Before broad discovery, the Skill walks the complete structured TEI bibliography rather than relying on the model to copy titles. Targeted inline citations are linked directly; target-less citations require a body-visible acronym/full title plus matching author-year or reference label. If GROBID emits no citation node at all, recovery requires the acronym/full title and matching author-year in the same body sentence. Entries visibly compared in experiments are removed, and the remaining exact titles are verified one by one through free `paper_search(query=<title>, year_to=<cutoff year>, page=1, size<=20)`. Verification has a visible 60-title safety limit with truncation diagnostics; there is no hidden first-10/first-12 cutoff. Verified bibliography, relation, keyword-feedback, and search records then compete in one bounded, source-neutral pre-selector pool; no source or retrieval role reserves capacity.
 2. The `auto` router selects an AMiner endpoint by query shape: exact titles and short phrases use free `paper_search` with canonical `query` + `year_to`; controlled field phrases or requests above 20 results use `paper_search_pro` with `query` + `year_to`; natural-language semantic requests use the currently available legacy `paper_qa_search`. When Search Pro is explicitly used for `exact_title`, it may use its documented `title` field with `year_to` and `page=0`.
 3. `--aminer-search-tier qa-pro` explicitly probes `paper_qa_search_pro`. Permission, balance, provider, or empty-result failures downgrade visibly inside AMiner to legacy QA, Search Pro, then free search. `auto` does not repeatedly probe an unavailable QA-Pro entitlement.
-4. `paper_info` batch-enriches returned IDs with authors and abstract slices. `paper_detail` is used only for records still missing abstracts, bounded by `--aminer-detail-limit` (default 3 per query, `0` disables it).
+4. `paper_info` batch-enriches returned IDs with authors and abstract slices. Records still missing abstracts are enriched with one `paper_detail_batch` call (¥0.01 per returned paper; IDs not found are free), bounded by `--aminer-detail-limit` (default 3 per query, `0` disables it).
 5. Every endpoint attempt records the query shape, HTTP method, parameter names, result cap, response `log_id`, fallback reason, unit price, and estimated cost. No credential is retained.
 
 arXiv and OpenAlex remain explicit adapters, not silent fallbacks. Select one as the primary with `--retrieval-provider arxiv|openalex`, or opt into a fallback with `--external-fallback-provider arxiv|openalex`. The default is `--retrieval-provider aminer --external-fallback-provider none`; AMiner endpoint downgrades do not activate an external provider.

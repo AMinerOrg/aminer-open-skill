@@ -32,7 +32,7 @@ def test_aminer_headers_include_skill_identity_and_unknown_fallback() -> None:
     assert headers["Authorization"] == "test-key"
     assert headers["X-Platform"] == "unknown"
     assert headers["X-Skill-Name"] == "baseline-finder"
-    assert headers["X-Skill-Version"] == __version__ == "0.5.1"
+    assert headers["X-Skill-Version"] == __version__ == "0.5.2"
     assert headers["Content-Type"] == "application/json;charset=utf-8"
 
 

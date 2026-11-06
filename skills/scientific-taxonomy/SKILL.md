@@ -8,7 +8,7 @@ description: >
   Do not use this skill to implement PDF parsing, search for unrelated papers, create folders, or create symbolic links.
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/scientific-taxonomy
 metadata:
-  version: "1.0.3"
+  version: "1.0.4"
   author: "AMiner"
   contact: "report@aminer.cn"
 ---
@@ -31,7 +31,7 @@ Build the taxonomy from these fields only:
 Before classifying, check whether the supplied information is sufficient:
 
 1. When the user supplies local PDFs instead of titles and abstracts, invoke an available local PDF-extraction tool or Skill first. Consume its structured title and abstract output; do not implement PDF parsing in this Skill.
-2. Treat `abstract_slice`, search snippets, and visibly truncated abstracts as insufficient taxonomy input. For AMiner search results, invoke `aminer-academic-search` and use `paper_detail` with each selected AMiner paper ID to retrieve the complete abstract before classifying. Follow that Skill's authorization, pricing, and high-cost confirmation rules.
+2. Treat `abstract_slice`, search snippets, and visibly truncated abstracts as insufficient taxonomy input. For AMiner search results, invoke `aminer-academic-search` and use `paper_detail_batch` with the selected AMiner paper IDs (one call, up to 100 IDs, ¥0.01 per returned paper) to retrieve the complete abstracts before classifying. Follow that Skill's authorization, pricing, and high-cost confirmation rules.
 3. When a paper is supplied only as a DOI, arXiv ID, URL, or title, use an available AMiner Skill or AMiner API to resolve the paper and retrieve its complete abstract. Prefer a free lookup route for identity resolution, then use full paper details when the free result contains only an abstract slice.
 4. Enrich only papers already supplied by the user. Do not add related papers unless the user explicitly asks.
 5. Never invent or expand an abstract. If full-abstract retrieval is unavailable or returns no abstract, classify from the verified title and available slice, then record the affected paper titles in a short metadata note without visibly displaying paper IDs.

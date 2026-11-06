@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.2 — 2026-11-06
+
+- Enrich records still missing abstracts with one `paper_detail_batch` call instead of one `paper_detail` call per record. Billing is CNY 0.01 per returned paper (IDs not found are free); diagnostics record the requested IDs, the upper-bound estimate, and the billed fee.
+
 ## 0.5.1 — 2026-11-02
 
 - Raise the default per-paper selector concurrency from two to three workers while retaining the proven twenty-record batch contract, original-order merging, evidence gates, and Top-10 ranking.

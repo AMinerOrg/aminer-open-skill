@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "baseline-finder"
-version = "0.5.1"
+version = "0.5.2"
 description = "Standalone PDF or AMiner pub_id audit for potentially missing direct experimental baselines"
 readme = "SKILL.md"
 requires-python = ">=3.10"

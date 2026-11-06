@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "Research recent advances in retrieval-augmented generation evaluation and write a cited report. My AMiner token is <YOUR_TOKEN>.",
-      "expected_output": "Run 3-4 paper_qa_search_pro scout probes in query_type auto (query mode), separated by object and structured filter rather than by rewording, triage them with free paper_info and buy paper_detail for the keepers, induce a numbered outline (1, 1.1) from what they actually returned, then retrieve per section, record every source in the ledger, run gaps and check, and write the report as an academic review drafted with [@n] ledger-placeholder citations, delivered with ascending numbers and a cited-only bibliography from render --renumber, with the retrieval log and cost table in Appendix A and B.",
+      "expected_output": "Run 3-4 paper_qa_search_pro scout probes in query_type auto (query mode), separated by object and structured filter rather than by rewording, triage them with free paper_info and buy the keepers' details with paper_detail_batch, induce a numbered outline (1, 1.1) from what they actually returned, then retrieve per section, record every source in the ledger, run gaps and check, and write the report as an academic review drafted with [@n] ledger-placeholder citations, delivered with ascending numbers and a cited-only bibliography from render --renumber, with the retrieval log and cost table in Appendix A and B.",
       "files": [],
       "expectations": [
         "Uses the round protocol in references/research-loop.md rather than a single unstructured search",
@@ -12,7 +12,7 @@
         "Sends query_type auto (query mode) by default, and only drops to topic for literal term matching, pinning the concept with all_terms when it does",
         "Separates probes by object or structured filter, not by rewording the same question",
         "Registers each probe with evidence.py probe and induces the outline with evidence.py outline set",
-        "Buys paper_detail for every source a claim cites, since search results carry no abstract and paper_info slices are truncated",
+        "Buys paper_detail_batch details for every source a claim cites, since search results carry no abstract and paper_info slices are truncated",
         "Initializes scripts/evidence.py and adds every retained source to it with --section",
         "Prefers the CNY 0.01 paper_search_pro for post-scout axes the controlled vocabulary already covers, escalating to Pro only when one filter cannot express the query",
         "Acts on drifting_probes by pinning the concept with all_terms and cutting noise with exclude_terms, rather than retrying a synonym",
@@ -29,11 +29,11 @@
     {
       "id": 2,
       "prompt": "Deep-research the paper 'Attention Is All You Need': explain its contribution and trace its references. Token: <YOUR_TOKEN>.",
-      "expected_output": "Use free title search, one paper_detail, and one paper_relation; cite the AMiner paper page and report the small estimated cost without asking for confirmation.",
+      "expected_output": "Use free title search, one paper_detail_batch call, and one paper_relation; cite the AMiner paper page and report the small estimated cost without asking for confirmation.",
       "files": [],
       "expectations": [
         "Uses free paper_search for the known title instead of paid paper_qa_search_pro",
-        "Uses paper_detail and paper_relation only for the confirmed paper ID",
+        "Uses paper_detail_batch and paper_relation only for the confirmed paper ID",
         "Triages cited papers with free paper_info before any paid detail call",
         "Does not ask for high-cost confirmation below CNY 10",
         "Does not claim abstract evidence is full-text evidence"

@@ -58,6 +58,8 @@ class ApiSpec:
     required: tuple[str, ...] = ()
     any_of: tuple[str, ...] = ()
     note: str = ""
+    # Billed per returned item: price_cny is the unit price, cost = price × len(data)
+    per_item: str = ""  # request list field that bounds the item count, e.g. "ids"
 
     @property
     def allowed(self) -> frozenset[str]:
@@ -164,6 +166,13 @@ API_SPECS: dict[str, ApiSpec] = {
         note="Legacy. Use only for topic_high/middle/low OR-AND mode; otherwise call paper_qa_search_pro.",
     ),
     "paper_detail": ApiSpec("GET", "/api/paper/detail", 0.01, fields={"id": _s()}, required=("id",)),
+    "paper_detail_batch": ApiSpec(
+        "POST", "/api/paper/detail/batch", 0.01,
+        fields={"ids": _sl(maximum=100)},
+        required=("ids",),
+        per_item="ids",
+        note="Up to 100 IDs. CNY 0.01 per returned paper; IDs not found are free. Same fields as paper_detail.",
+    ),
     "paper_relation": ApiSpec("GET", "/api/paper/relation", 0.10, fields={"id": _s()}, required=("id",)),
     "paper_list_by_keywords": ApiSpec(
         "GET", "/api/paper/list/citation/by/keywords", 0.10,
@@ -273,6 +282,8 @@ def _check_field(api_name: str, key: str, value: Any, spec: Field) -> None:
                 _check_int(api_name, key, item, spec)
         elif any(not isinstance(item, str) or not item.strip() for item in value):
             raise ClientError(f"Parameter {key} for {api_name} must contain non-empty strings")
+        if spec.maximum is not None and len(value) > spec.maximum:
+            raise ClientError(f"Parameter {key} for {api_name} accepts at most {spec.maximum} items")
     elif spec.kind == "bool":
         if not isinstance(value, bool):
             raise ClientError(f"Parameter {key} for {api_name} must be true or false")
@@ -377,6 +388,23 @@ def _normalize_calls(api_name: str | None, params_json: str, batch_json: str | N
     return calls
 
 
+def _estimated_cost(spec: ApiSpec, params: dict[str, Any]) -> float:
+    """Upper bound before the call: per-item APIs can bill at most one unit per requested ID."""
+    if spec.per_item:
+        items = params.get(spec.per_item)
+        count = len(set(items)) if isinstance(items, list) else 1
+        return round(spec.price_cny * count, 4)
+    return spec.price_cny
+
+
+def _billed_cost(spec: ApiSpec, payload: Any) -> float:
+    """What a successful response actually costs: per-item APIs bill only returned items."""
+    if spec.per_item:
+        items = payload.get("data") if isinstance(payload, dict) else None
+        return round(spec.price_cny * (len(items) if isinstance(items, list) else 0), 4)
+    return spec.price_cny
+
+
 def _encode_get_url(path: str, params: dict[str, Any]) -> str:
     query = urllib.parse.urlencode({
         key: json.dumps(value, ensure_ascii=False, separators=(",", ":"))
@@ -393,7 +421,7 @@ def _request_plan(api_name: str, params: dict[str, Any]) -> dict[str, Any]:
         "api": api_name,
         "method": spec.method,
         "url": url,
-        "unit_cost_cny": spec.price_cny,
+        "unit_cost_cny": _estimated_cost(spec, params),
     }
     if spec.method == "POST":
         plan["body"] = params
@@ -447,7 +475,7 @@ def _perform_call(
                     "ok": True,
                     "api": api_name,
                     "status": getattr(response, "status", 200),
-                    "unit_cost_cny": spec.price_cny,
+                    "unit_cost_cny": _billed_cost(spec, payload),
                     "data": payload,
                 }
                 # Hoist the server's own signals so a caller does not have to dig
@@ -467,7 +495,8 @@ def _perform_call(
                 "ok": False,
                 "api": api_name,
                 "status": exc.code,
-                "unit_cost_cny": spec.price_cny,
+                # error responses carry no items, so a per-item API bills nothing
+                "unit_cost_cny": 0.0 if spec.per_item else spec.price_cny,
                 "error": "http_error",
                 "detail": error_body,
             }
@@ -489,7 +518,7 @@ def _perform_call(
                 last_error["may_have_been_billed"] = True
                 last_error["reconcile"] = (
                     f"If AMiner billed this attempt, record it with: "
-                    f"evidence.py spend --api {api_name} --cny {spec.price_cny}"
+                    f"evidence.py spend --api {api_name} --cny {_estimated_cost(spec, params)}"
                 )
         except Exception as exc:  # defensive: keep credentials out of unexpected errors
             last_error = {
@@ -519,7 +548,7 @@ def _cost_summary(calls: list[dict[str, Any]]) -> dict[str, Any]:
     total = 0.0
     for call in calls:
         name = call["api"]
-        price = API_SPECS[name].price_cny
+        price = _estimated_cost(API_SPECS[name], call.get("params") or {})
         total += price
         entry = breakdown.setdefault(name, {"calls": 0, "unit_cost_cny": price, "subtotal_cny": 0.0})
         entry["calls"] += 1
@@ -545,6 +574,7 @@ def _api_catalog() -> dict[str, Any]:
                 "required": list(spec.required),
                 "any_of": list(spec.any_of),
                 "optional": list(spec.optional),
+                **({"billing": "per_returned_item"} if spec.per_item else {}),
                 **({"note": spec.note} if spec.note else {}),
             }
             for name, spec in sorted(API_SPECS.items())

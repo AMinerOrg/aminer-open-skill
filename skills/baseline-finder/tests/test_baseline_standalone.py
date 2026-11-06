@@ -1271,7 +1271,7 @@ def test_aminer_interface_b_frozen_http_preserves_experiment_structure(
             assert request.headers["authorization"] == "test-aminer-key"
             assert request.headers["x-platform"] == detect_skill_runtime()
             assert request.headers["x-skill-name"] == "baseline-finder"
-            assert request.headers["x-skill-version"] == "0.5.1"
+            assert request.headers["x-skill-version"] == "0.5.2"
             if body.get("file_types"):
                 return httpx.Response(200, json={"data": [{"md": [markdown_url]}]})
             return httpx.Response(

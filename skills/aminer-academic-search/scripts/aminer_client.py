@@ -41,7 +41,7 @@ from typing import Any, Optional
 
 BASE_URL = "https://datacenter.aminer.cn/gateway/open_platform"
 SKILL_NAME = "aminer-academic-search"
-SKILL_VERSION = "1.6.0"
+SKILL_VERSION = "1.7.0"
 
 REQUEST_TIMEOUT_SECONDS = 30
 MAX_RETRIES = 3
@@ -50,7 +50,8 @@ RETRYABLE_HTTP_STATUS = {408, 429, 500, 502, 503, 504}
 API_PRICE: dict[str, Optional[float]] = {
     "paper_search": 0, "paper_info": 0, "person_search": 0,
     "org_search": 0, "venue_search": 0, "patent_search": 0, "patent_info": 0,
-    "paper_search_pro": 0.01, "paper_detail": 0.01, "patent_detail": 0.01,
+    "paper_search_pro": 0.01, "paper_detail": 0.01, "paper_detail_batch": 0.01,  # per returned paper
+    "patent_detail": 0.01,
     "org_detail": 0.01, "org_disambiguate": 0.01,
     "paper_qa_search": 0.05, "paper_qa_search_pro": 0.30, "org_disambiguate_pro": 0.05,
     "paper_relation": 0.10, "org_paper_relation": 0.10,
@@ -68,8 +69,11 @@ _cost_log: list[tuple[str, Optional[float]]] = []
 _cost_lock = threading.Lock()
 
 
-def _track_cost(api_name: str) -> None:
+def _track_cost(api_name: str, units: int = 1) -> None:
+    """Record one call; per-item APIs pass units = number of returned items."""
     price = API_PRICE.get(api_name, 0)
+    if price is not None:
+        price = round(price * units, 6)
     with _cost_lock:
         _cost_log.append((api_name, price))
 
@@ -371,10 +375,37 @@ def paper_info(token: str, ids: list) -> Any:
     return _request(token, "POST", "/api/paper/info", body={"ids": ids})
 
 
+PAPER_DETAIL_BATCH_MAX = 100
+
+
+def paper_detail_batch(token: str, paper_ids: list) -> Any:
+    """Paper Details Batch (¥0.01 per returned paper): full details for up to 100 IDs per request.
+
+    IDs not found are not charged. Duplicates are dropped; more than 100 IDs are split
+    into several requests and the results merged in request order.
+    """
+    ids = list(dict.fromkeys(i for i in paper_ids if i))
+    if not ids:
+        return {"code": 200, "success": True, "data": [], "total": 0}
+    merged: list = []
+    last: Any = None
+    for start in range(0, len(ids), PAPER_DETAIL_BATCH_MAX):
+        chunk = ids[start:start + PAPER_DETAIL_BATCH_MAX]
+        last = _request(token, "POST", "/api/paper/detail/batch", body={"ids": chunk})
+        data = last.get("data") if isinstance(last, dict) else None
+        items = data if isinstance(data, list) else []
+        _track_cost("paper_detail_batch", len(items))
+        if isinstance(last, dict) and last.get("success") is False and not items:
+            return last
+        merged.extend(items)
+    if len(ids) <= PAPER_DETAIL_BATCH_MAX:
+        return last
+    return {"code": 200, "success": True, "data": merged, "total": len(merged)}
+
+
 def paper_detail(token: str, paper_id: str) -> Any:
-    """Paper Details (¥0.01/call): retrieve complete paper information."""
-    _track_cost("paper_detail")
-    return _request(token, "GET", "/api/paper/detail", params={"id": paper_id})
+    """Paper Details (¥0.01/paper): one paper via the batch endpoint; response shape `data: [{...}]`."""
+    return paper_detail_batch(token, [paper_id])
 
 
 def paper_relation(token: str, paper_id: str) -> Any:
@@ -781,7 +812,7 @@ def workflow_paper_deep_dive(token: str, title: str = None, keyword: str = None,
     result = {
         "source_api_chain": [
             search_api,
-            "paper_detail",
+            "paper_detail_batch",
             "paper_relation",
             "paper_info",
         ],
@@ -1207,7 +1238,7 @@ WORKFLOW_DRY_RUN_INFO = {
         ("person_paper_relation", 1.50), ("person_patent_relation", 1.50), ("person_project", 1.50),
     ],
     "paper_deep_dive": [
-        ("paper_search", 0), ("paper_detail", 0.01), ("paper_relation", 0.10), ("paper_info", 0),
+        ("paper_search", 0), ("paper_detail_batch", 0.01), ("paper_relation", 0.10), ("paper_info", 0),
     ],
     "org_analysis": [
         ("org_disambiguate_pro", 0.05), ("org_detail", 0.01),
@@ -1357,6 +1388,7 @@ def main():
             "paper_qa_search_pro": paper_qa_search_pro,
             "paper_info": paper_info,
             "paper_detail": paper_detail,
+            "paper_detail_batch": paper_detail_batch,
             "paper_relation": paper_relation,
             "paper_list_by_keywords": paper_list_by_keywords,
             "paper_detail_by_condition": paper_detail_by_condition,

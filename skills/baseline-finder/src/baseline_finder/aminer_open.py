@@ -27,6 +27,8 @@ AMINER_PAPER_QA_SEARCH_URL = f"{AMINER_OPEN_BASE_URL}/api/paper/qa/search"
 AMINER_PAPER_QA_SEARCH_PRO_URL = f"{AMINER_OPEN_BASE_URL}/api/paper/qa/searchPro"
 AMINER_PAPER_INFO_URL = f"{AMINER_OPEN_BASE_URL}/api/paper/info"
 AMINER_PAPER_DETAIL_URL = f"{AMINER_OPEN_BASE_URL}/api/paper/detail"
+AMINER_PAPER_DETAIL_BATCH_URL = f"{AMINER_OPEN_BASE_URL}/api/paper/detail/batch"
+AMINER_PAPER_DETAIL_BATCH_MAX = 100
 AMINER_PAPER_RELATION_URL = f"{AMINER_OPEN_BASE_URL}/api/paper/relation"
 AMINER_PAPER_LIST_BY_KEYWORDS_URL = (
     f"{AMINER_OPEN_BASE_URL}/api/paper/list/citation/by/keywords"
@@ -39,6 +41,7 @@ AMINER_API_COST_CNY: dict[str, float] = {
     "paper_qa_search_pro": 0.30,
     "paper_info": 0.0,
     "paper_detail": 0.01,
+    "paper_detail_batch": 0.01,  # per returned paper; IDs not found are free
     "paper_relation": 0.10,
     "paper_list_by_keywords": 0.10,
 }
@@ -483,12 +486,13 @@ def _declared_request_shape(
     }
 
 
-def _add_call(diagnostics: dict[str, Any], endpoint: str) -> None:
+def _add_call(diagnostics: dict[str, Any], endpoint: str, units: int = 1) -> None:
+    """Count one call; per-item endpoints pass units = number of billed items."""
     calls = diagnostics.setdefault("api_calls", {})
     calls[endpoint] = int(calls.get(endpoint, 0)) + 1
     costs = diagnostics.setdefault("estimated_cost_cny_by_api", {})
     costs[endpoint] = round(
-        float(costs.get(endpoint, 0.0)) + AMINER_API_COST_CNY[endpoint], 2
+        float(costs.get(endpoint, 0.0)) + AMINER_API_COST_CNY[endpoint] * units, 2
     )
     diagnostics["estimated_cost_cny"] = round(
         sum(float(value) for value in costs.values()), 2
@@ -731,36 +735,43 @@ def search_aminer_query(
         record
         for record in records
         if record.get("aminer_pub_id") and not record.get("summary")
-    ][: max(0, detail_limit)]
-    for record in detail_candidates:
-        _add_call(diagnostics, "paper_detail")
+    ][: max(0, min(detail_limit, AMINER_PAPER_DETAIL_BATCH_MAX))]
+    if detail_candidates:
+        # One batch call for every record still missing an abstract; billed per returned paper.
+        detail_ids = [str(record["aminer_pub_id"]) for record in detail_candidates]
+        unit_price = AMINER_API_COST_CNY["paper_detail_batch"]
         detail_attempt: dict[str, Any] = {
-            "endpoint": "paper_detail",
+            "endpoint": "paper_detail_batch",
             "stage": "bounded_missing_abstract_enrichment",
             "request": {
-                "method": "GET",
-                "parameter_names": ["id"],
-                "paper_id": record["aminer_pub_id"],
+                "method": "POST",
+                "parameter_names": ["ids"],
+                "paper_ids": detail_ids,
             },
-            "unit_price_cny": AMINER_API_COST_CNY["paper_detail"],
-            "estimated_fee_cny": AMINER_API_COST_CNY["paper_detail"],
+            "unit_price_cny": unit_price,
+            "estimated_fee_cny": round(unit_price * len(detail_ids), 2),
         }
         try:
             payload = checked_payload(
-                client.get(
-                    AMINER_PAPER_DETAIL_URL,
-                    params={"id": record["aminer_pub_id"]},
+                client.post(
+                    AMINER_PAPER_DETAIL_BATCH_URL,
+                    json={"ids": detail_ids},
                     headers=headers,
                 ),
-                endpoint="paper_detail",
+                endpoint="paper_detail_batch",
             )
             detail_rows = rows_from_payload(payload)
-            if detail_rows:
-                merge_paper_metadata(record, detail_rows[0])
+            detail_by_id = {paper_id(row): row for row in detail_rows if paper_id(row)}
+            for record in detail_candidates:
+                row = detail_by_id.get(str(record["aminer_pub_id"]).lower())
+                if row:
+                    merge_paper_metadata(record, row)
+            _add_call(diagnostics, "paper_detail_batch", units=len(detail_rows))
             detail_attempt.update(
                 {
                     "status": "completed",
                     "record_count": len(detail_rows),
+                    "billed_fee_cny": round(unit_price * len(detail_rows), 2),
                     "response": {
                         "code": payload.get("code"),
                         "msg": payload.get("msg") or payload.get("message"),
@@ -769,8 +780,10 @@ def search_aminer_query(
                 }
             )
         except Exception as exc:
+            # A failed batch returns no items, so nothing is billed.
+            _add_call(diagnostics, "paper_detail_batch", units=0)
             diagnostics["provider_errors"].append(
-                f"paper_detail {record['aminer_pub_id']}: "
+                f"paper_detail_batch: "
                 f"{type(exc).__name__ if not isinstance(exc, AMinerAPIError) else str(exc)}"
             )
             detail_attempt.update(

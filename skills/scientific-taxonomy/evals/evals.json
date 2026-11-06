@@ -30,11 +30,11 @@
     {
       "id": 3,
       "prompt": "Create a taxonomy from this aminer-deep-search result. Every paper has an AMiner ID, title, and a 300-character abstract_slice, but no complete abstract.",
-      "expected_output": "Treat abstract_slice as insufficient. Use aminer-academic-search paper_detail for only the selected paper IDs, respecting authorization and cost rules, then generate taxonomy.md from verified titles and complete abstracts. If a complete abstract remains unavailable, classify from the verified title and available slice and append a concise metadata note.",
+      "expected_output": "Treat abstract_slice as insufficient. Use aminer-academic-search paper_detail_batch for only the selected paper IDs, respecting authorization and cost rules, then generate taxonomy.md from verified titles and complete abstracts. If a complete abstract remains unavailable, classify from the verified title and available slice and append a concise metadata note.",
       "files": [],
       "expectations": [
         "Did not treat abstract_slice as a complete abstract",
-        "Called aminer-academic-search paper_detail before taxonomy generation",
+        "Called aminer-academic-search paper_detail_batch (or paper_detail) before taxonomy generation",
         "Did not add unrelated papers from search results",
         "Did not invent or expand missing abstracts",
         "Recorded unresolved metadata in a note after the taxonomy"

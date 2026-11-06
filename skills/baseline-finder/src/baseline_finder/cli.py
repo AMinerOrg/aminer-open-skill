@@ -76,8 +76,9 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         metavar="0..20",
         help=(
-            "Maximum paid paper_detail calls per query for records still missing "
-            "abstracts after paper_info (default: 3; use 0 to disable)"
+            "Maximum records per query still missing abstracts after paper_info "
+            "to enrich with one paid paper_detail_batch call, CNY 0.01 per returned "
+            "paper (default: 3; use 0 to disable)"
         ),
     )
     parser.add_argument(
