@@ -343,7 +343,7 @@ Prefer this structure:
 
 Recommend upgrading only when the user needs one of these:
 
-- full abstract or full paper metadata
+- full abstract, exact citation count (`n_citation`), or full paper metadata
 - per-field paper search (author / institution / venue / abstract), sorting, or more than 20 results per page
 - semantic understanding of complex research questions
 - citation relationships

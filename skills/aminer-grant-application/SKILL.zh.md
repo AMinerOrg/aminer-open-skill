@@ -116,7 +116,7 @@ python3 scripts/aminer_client.py --action paper_detail --params '{"id":"<paper_i
 | 学者维度重叠/成果盘点（§2.3、§1 佐证材料） | `paper_search_pro`（¥0.01；`author` + `org`（+ `query`/`keyword`），`page` 从 0 起，`size` ≤100） |
 | 点名同行的已资助项目（§2.3）——平台无此数据能力 | 无——请用户提供官方公示，绝不用论文列表冒充立项记录 |
 | 句级支撑文献（§1 任务型 7） | `paper_search`（免费；关键词检索 + 翻页；支撑句取自 `paper_detail` 摘要并标注） |
-| 配引用的摘要摘录与著录字段（§1 任务型 7） | `paper_detail`（¥0.01；摘要/DOI/卷期——页码平台不提供，标「待补」） |
+| 配引用的摘要摘录与著录字段（§1 任务型 7） | `paper_detail`（¥0.01；摘要/DOI/卷期/被引次数 `n_citation`——页码平台不提供，标「待补」） |
 
 ## 4 失败协议
 

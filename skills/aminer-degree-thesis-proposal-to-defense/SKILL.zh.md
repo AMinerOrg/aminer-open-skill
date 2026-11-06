@@ -144,7 +144,7 @@ metadata:
 python3 scripts/aminer_client.py --action paper_search --params '{"query":"knowledge graph completion","year_from":2022,"year_to":2025,"page":1,"size":20}'
 # 按 DOI 查一条参考文献（¥0.05）
 python3 scripts/aminer_client.py --action paper_qa_search --params '{"doi":"<DOI>","use_topic":false}'
-# 批量核验已匹配的论文 ID（免费；ids ≤ 100）；再用 paper_detail {"id": ...}（¥0.01）取完整摘要 / doi / 卷 / 期
+# 批量核验已匹配的论文 ID（免费；ids ≤ 100）；再用 paper_detail {"id": ...}（¥0.01）取完整摘要 / doi / 卷 / 期 / 被引次数 n_citation
 python3 scripts/aminer_client.py --action paper_info --params '{"ids":["<PAPER_ID_1>","<PAPER_ID_2>"]}'
 # 专利规避扫描（免费；只收 query / page / size）
 python3 scripts/aminer_client.py --action patent_search --params '{"query":"knowledge graph completion","page":0,"size":20}'
@@ -165,7 +165,7 @@ python3 scripts/aminer_client.py --action patent_search --params '{"query":"know
 | 不需要年份范围时的廉价候选列举（§3）；查新/撞车扫描（§2.1、§2.2） | `paper_search`（免费；标题+关键词单框检索） |
 | 开题文献盘点（§2.2、§2.3）；创新点对标、近年工作摘要（§2.1） | `paper_search`（免费）→ `paper_detail`（¥0.01） |
 | 引文审计：整表存在性核验（§5）——先把每条文献匹配到论文 ID（按标题用 `paper_search` 并比对归一化题名；按 DOI 用 `paper_qa_search`，`doi` + `use_topic: false`），再批量核验 | `paper_search`（免费）/ `paper_qa_search`（¥0.05；DOI）→ `paper_info`（免费；`ids` 批量 ≤100，返回卡片字段——无 DOI、`abstract_slice` 只是部分摘要） |
-| 引文审计：漂移裁定与 DOI/卷期锚点（§5） | `paper_detail`（¥0.01；完整摘要、`doi`、`volume`、`issue`；无页码） |
+| 引文审计：漂移裁定与 DOI/卷期锚点（§5） | `paper_detail`（¥0.01；完整摘要、`doi`、`volume`、`issue`、`n_citation`；无页码） |
 | 查新的专利规避视角（§2.1） | `patent_search`（免费；只收 `query`/`page`/`size`——按返回的 `app_year`/`pub_year` 在本地粗筛） |
 | 格式合规（§6） | 无数据能力——模板规则只从用户载体提取 |
 

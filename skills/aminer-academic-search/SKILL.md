@@ -108,7 +108,7 @@ Key `paper_qa_search_pro` rules:
 - **Use the natural-language `query` field** (`query_type="auto"`, the default) and pass the user's original question as a whole sentence. Do not pre-split it into keywords and reassemble them into `all_terms` — splitting throws away the semantic understanding you are paying for, and precision drops below just asking. Fall back to `query_type="topic"` only when literal term matching is genuinely required.
 - Page size is **fixed at 10**. Do not send `size`. Paginate with `next_cursor` → next request body is `{"cursor":"..."}` only.
 - `sort`: `relevance` / `balanced` / `recent` / `citation`. For “most cited” use `citation`; for “newest” use `recent`.
-- Response card fields only: `paper_id`, `title`, `title_zh`, `doi`, `authors.name`/`name_zh`, `n_citation_bucket`, `venue_name`, `year`. Use `paper_detail` when full abstract/keywords are needed.
+- Response card fields only: `paper_id`, `title`, `title_zh`, `doi`, `authors.name`/`name_zh`, `n_citation_bucket`, `venue_name`, `year`. Use `paper_detail` when full abstract/keywords or an exact citation count (`n_citation`) are needed.
 - Always append `https://www.aminer.cn/pub/{paper_id}`.
 
 `paper_qa_search` key rules:
@@ -137,7 +137,7 @@ Free-tier screening fields available:
 - `patent_search`: `inventor_name`, `app_year`, `pub_year`
 - `patent_info`: `app_year`, `pub_year`
 
-`paper_search`, `paper_search_pro` and `paper_qa_search` return the same screening set — `doi`, `first_author`, `venue_name`, `year`, `n_citation_bucket`; `paper_qa_search` additionally returns `venue_id` (venue entity ID, when linked — feeds the venue APIs); `paper_qa_search_pro` returns the full `authors` list plus `doi`, `venue_name`, `year`, `n_citation_bucket`. Filter on these before calling `paper_detail` (¥0.01 each); only fetch details for papers you will actually cite. `n_citation_bucket` is a coarse tier, never an exact count — do not compare buckets numerically or claim a precise citation figure from one.
+`paper_search`, `paper_search_pro` and `paper_qa_search` return the same screening set — `doi`, `first_author`, `venue_name`, `year`, `n_citation_bucket`; `paper_qa_search` additionally returns `venue_id` (venue entity ID, when linked — feeds the venue APIs); `paper_qa_search_pro` returns the full `authors` list plus `doi`, `venue_name`, `year`, `n_citation_bucket`. Filter on these before calling `paper_detail` (¥0.01 each); only fetch details for papers you will actually cite. `n_citation_bucket` is a coarse tier, never an exact count — do not compare buckets numerically or claim a precise citation figure from one; `paper_detail` returns the exact `n_citation`.
 
 ---
 
@@ -180,11 +180,11 @@ Parallel calls (pick as needed):
 ```
 Paper search / Paper search pro (title/keyword → paper_id)
     ↓
-Paper details (abstract/authors/DOI/journal/year/keywords)  ¥0.01
+Paper details (abstract/authors/DOI/journal/year/keywords/n_citation)  ¥0.01
     ↓
-Paper citations (cited papers → cited_ids)                  ¥0.10
+Paper citations (cited papers → cited_ids)                             ¥0.10
     ↓
-(Optional) Batch paper_info for cited papers                Free
+(Optional) Batch paper_info for cited papers                           Free
 ```
 
 If `paper_search` finds nothing, reformulate the query and search again; sending the same text to `paper_search_pro` will not return more results.

@@ -154,7 +154,7 @@ python3 scripts/aminer_client.py --action org_person_relation --params '{"org_id
 |---|---|
 | Field temperature / competition density (T): hit volume and per-year distribution | `paper_search` (free; topic search + `year_from`/`year_to` per-year-window aggregation) |
 | Topic novelty check / prior-art search (T): the workhorse for topic-collision checks | `paper_search` (free; single query box over title + keywords, optional year window) |
-| Representative-works source tracing (T): anchor verification for the tier card and the reading list | `paper_detail` (¥0.01; full abstract) |
+| Representative-works source tracing (T): anchor verification for the tier card and the reading list | `paper_detail` (¥0.01; full abstract, exact citation count `n_citation`) |
 | Department enumeration (A): department-level personnel roster | `org_search` (free; `orgs` → `org_id`) → `org_person_relation` (¥0.50 per 10 people; `org_id` + `offset` paging); `person_search` (free; `name` + `org`/`org_id`, `size` ≤10 with no pagination) for spot checks |
 | Per-advisor profile (A): title / bio / education / interests / output | `person_search` (free; includes interests/n_citation) → `person_detail` (¥1.00; full profile, pulled only at final-candidate selection) × `paper_search_pro` (¥0.01; `author` + `org` (+ `query`/`keyword`), `order`, `page` from 0, `size` ≤100 — output lines) → `paper_detail` (¥0.01/paper; author list for author role) |
 | Supplementary (A): grants and ongoing projects | No data capability — user-supplied material or the advisor's personal / lab-group page |

@@ -151,7 +151,7 @@ python3 scripts/aminer_client.py --action org_person_relation --params '{"org_id
 |---|---|
 | 方向冷热/竞争密度（T）：命中规模与按年分布 | `paper_search`（免费；主题检索 + `year_from`/`year_to` 分年窗聚合） |
 | 题目查新/在先检索（T）：撞车检查主力 | `paper_search`（免费；标题+关键词单框检索，可加年份窗） |
-| 代表作溯源（T）：定档卡与阅读清单的锚点核源 | `paper_detail`（¥0.01；完整摘要） |
+| 代表作溯源（T）：定档卡与阅读清单的锚点核源 | `paper_detail`（¥0.01；完整摘要、精确被引次数 `n_citation`） |
 | 院系枚举（A）：院系级人员名录 | `org_search`（免费；`orgs` → `org_id`）→ `org_person_relation`（¥0.50/10 人；`org_id` + `offset` 翻页）；`person_search`（免费；`name` + `org`/`org_id`，`size` ≤10 无翻页）做点查 |
 | 逐师档案（A）：职称/简介/教育/兴趣/成果 | `person_search`（免费；含 interests/n_citation）→ `person_detail`（¥1.00；完整档案，候选终选才拉）× `paper_search_pro`（¥0.01；`author` + `org`（+ `query`/`keyword`）、`order`、`page` 从 0 起、`size` ≤100——成果线）→ `paper_detail`（¥0.01/篇；作者列表判作者角色） |
 | 补充（A）：基金与在研项目 | 无数据能力——用户提供的材料或导师个人/课题组页面 |

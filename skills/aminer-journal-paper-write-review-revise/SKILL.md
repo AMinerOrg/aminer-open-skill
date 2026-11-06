@@ -209,7 +209,7 @@ python3 scripts/aminer_client.py --action venue_search --params '{"name":"<JOURN
 | Verify titles / check cited references / the literature cited by reviewers (fetch abstracts for claim comparison) | `paper_search` (free; search by title, then compare normalized titles — results are relevance-ranked, not exact) or `paper_search_pro` (¥0.01; `title` field) → `paper_info` (free; `ids` ≤100; `abstract_slice` is partial) → `paper_detail` (¥0.01; full abstract) |
 | Presence of a DOI in the platform index (never "resolvable") | `paper_qa_search` (¥0.05; `doi` + `use_topic: false`) |
 | References of a cited paper (what it cites — not the papers citing it) | `paper_relation` (¥0.10; `id`) |
-| DOI / full abstract / volume-issue of entries to be cited (page numbers not provided by the platform — ask the user or mark "to verify") | `paper_detail` (¥0.01) |
+| DOI / full abstract / volume-issue / citation count (`n_citation`) of entries to be cited (page numbers not provided by the platform — ask the user or mark "to verify") | `paper_detail` (¥0.01) |
 | Journal fit step 1 — topic search over that journal's already-published papers | `paper_search_pro` (¥0.01; `query` + `venue`) |
 | Journal tier benchmarking / by-year listing of that journal's papers | `venue_search` (free; venue `id`) → `venue_paper_relation` (¥0.10; `id`/`year`/`offset`/`limit`; returns only id/title/year — listing only, no topic query) |
 | ISSN only (when the submission package needs it) | `venue_search` (free; venue `id` only, no ISSN) → `venue_detail` (¥0.20; `issn`/`eissn`) |

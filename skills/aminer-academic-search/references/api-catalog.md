@@ -404,9 +404,10 @@ curl -X POST \
 | authors | Author list (name/name_zh/org/org_zh) |
 | doi | DOI |
 | issn | ISSN |
-| issue | Volume number |
-| volume | Issue number |
+| issue | Issue number |
+| volume | Volume number |
 | year | Year |
+| n_citation | Citation count (exact) |
 | keywords | Keywords |
 | keywords_zh | Keywords (Chinese) |
 | raw | Journal name |

@@ -135,7 +135,7 @@ python3 scripts/aminer_client.py --action paper_relation --params '{"id":"<paper
 2. **实体链接（输出必带）**：论文 `https://www.aminer.cn/pub/{paper_id}`、学者 `https://www.aminer.cn/profile/{person_id}`、DOI `https://doi.org/{doi}`——只用 API 实际返回的 ID/DOI 拼，绝不编造出版社/预印本 URL 或 ID。
 3. **精确定位优先**：裸标题/引用串先做精确匹配（期刊缩写/错拼归一化后再查 `paper_search`；按标题定向匹配用 `paper_search_pro` 的 `{"title":"..."}`，¥0.01），绝不落入语义检索空转。
 4. **费用纪律**：免费优先（`paper_search` 先行，命中不足再升级）；预估总费用 ≥¥5 时停下向用户展示调用计划并确认后才执行。
-5. **全文边界**：平台只返回元数据+摘要（`paper_info` 给部分摘要 `abstract_slice`，`paper_detail` 给完整摘要）——没有全文、PDF、图表。全文级产出（关键数字、方法参数、配方审计、图表解读、逐句绑定、逐句翻译）需要用户提供 PDF/正文（扫描版 PDF 可先走 aminer-pdf-ocr）。只有标题时交付基于摘要的骨架并标注「基于摘要」，需全文的字段一律标「未提供全文」——绝不凭记忆补写。
+5. **全文边界**：平台只返回元数据+摘要（`paper_info` 给部分摘要 `abstract_slice`，`paper_detail` 给完整摘要和精确被引次数 `n_citation`）——没有全文、PDF、图表。全文级产出（关键数字、方法参数、配方审计、图表解读、逐句绑定、逐句翻译）需要用户提供 PDF/正文（扫描版 PDF 可先走 aminer-pdf-ocr）。只有标题时交付基于摘要的骨架并标注「基于摘要」，需全文的字段一律标「未提供全文」——绝不凭记忆补写。
 
 ### 本技能的数据能力映射
 

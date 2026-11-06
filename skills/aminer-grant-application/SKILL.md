@@ -119,7 +119,7 @@ python3 scripts/aminer_client.py --action paper_detail --params '{"id":"<paper_i
 | Scholar-dimension overlap / publication inventory (§2.3, §1 supporting materials) | `paper_search_pro` (¥0.01; `author` + `org` (+ `query`/`keyword`), `page` from 0, `size` ≤100) |
 | Named peers' funded projects (§2.3) — beyond the platform's data capability | None — ask the user to provide the official public announcements; never pass off a paper list as funding records |
 | Sentence-level supporting literature (§1 task type 7) | `paper_search` (free; keyword search + pagination; supporting sentences taken from the `paper_detail` abstract and labeled) |
-| Abstract excerpts and bibliographic fields for citations (§1 task type 7) | `paper_detail` (¥0.01; abstract / DOI / volume-issue — page numbers are not provided by the platform, mark "to be supplemented") |
+| Abstract excerpts and bibliographic fields for citations (§1 task type 7) | `paper_detail` (¥0.01; abstract / DOI / volume-issue / citation count `n_citation` — page numbers are not provided by the platform, mark "to be supplemented") |
 
 ## 4. Failure Protocol
 

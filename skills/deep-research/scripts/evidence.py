@@ -510,7 +510,7 @@ def _coerce_source(
         "depth": str(raw.get("depth") or "search"),
     }
     for optional in ("year", "venue", "authors", "assignee", "pub_num", "app_num", "pub_kind",
-                     "note", "abstract", "abstract_slice", "keywords",
+                     "note", "abstract", "abstract_slice", "keywords", "n_citation",
                      "fulltext", "fulltext_unavailable", "fulltext_note"):
         if raw.get(optional) not in (None, "", []):
             source[optional] = raw[optional]
@@ -558,7 +558,7 @@ def _add_sources(
             # merge the richer text in rather than discarding it. `note` is the
             # only content a web source has, so it merges the same way.
             for field in ("authors", "assignee", "abstract", "abstract_slice", "keywords", "year", "venue",
-                          "pub_num", "app_num", "pub_kind", "note"):
+                          "pub_num", "app_num", "pub_kind", "note", "n_citation"):
                 incoming = candidate.get(field)
                 if not incoming:
                     continue
@@ -930,6 +930,11 @@ def _walk(node: Any, via: str, kind: str, found: list[dict[str, Any]], depth: in
                 entry["venue"] = name
         elif isinstance(node.get("venue_name"), str) and node["venue_name"].strip():
             entry["venue"] = node["venue_name"].strip()
+        # `paper_detail` carries the exact citation count; search cards only a
+        # coarse `n_citation_bucket`, which is never stored as a number.
+        n_citation = node.get("n_citation")
+        if isinstance(n_citation, int) and not isinstance(n_citation, bool) and n_citation >= 0:
+            entry["n_citation"] = n_citation
         _absorb_content(node, entry)
         found.append(entry)
         return

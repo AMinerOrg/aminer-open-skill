@@ -147,7 +147,7 @@ If missing, stop immediately and guide the user to https://open.aminer.cn/open/b
 python3 scripts/aminer_client.py --action paper_search --params '{"query":"knowledge graph completion","year_from":2022,"year_to":2025,"page":1,"size":20}'
 # Look up one reference by DOI (¥0.05)
 python3 scripts/aminer_client.py --action paper_qa_search --params '{"doi":"<DOI>","use_topic":false}'
-# Batch-verify matched paper IDs (free; ids ≤ 100); then paper_detail {"id": ...} (¥0.01) for full abstract / doi / volume / issue
+# Batch-verify matched paper IDs (free; ids ≤ 100); then paper_detail {"id": ...} (¥0.01) for full abstract / doi / volume / issue / n_citation
 python3 scripts/aminer_client.py --action paper_info --params '{"ids":["<PAPER_ID_1>","<PAPER_ID_2>"]}'
 # Patent-avoidance scan (free; query / page / size only)
 python3 scripts/aminer_client.py --action patent_search --params '{"query":"knowledge graph completion","page":0,"size":20}'
@@ -168,7 +168,7 @@ python3 scripts/aminer_client.py --action patent_search --params '{"query":"know
 | Cheap candidate enumeration when no year range is needed (§3); novelty check / topic-collision scan (§2.1, §2.2) | `paper_search` (free; single query box over title + keywords) |
 | Proposal literature inventory (§2.2, §2.3); innovation-point benchmarking, recent-work abstracts (§2.1) | `paper_search` (free) → `paper_detail` (¥0.01) |
 | Citation audit: whole-table existence verification (§5) — first match every entry to a paper ID (by title via `paper_search`, comparing normalized titles; by DOI via `paper_qa_search` with `doi` + `use_topic: false`), then batch-verify | `paper_search` (free) / `paper_qa_search` (¥0.05; DOI) → `paper_info` (free; `ids` batch ≤100, returns card fields — no DOI, partial `abstract_slice`) |
-| Citation audit: drift verdicts and DOI / volume-issue anchors (§5) | `paper_detail` (¥0.01; full abstract, `doi`, `volume`, `issue`; no page numbers) |
+| Citation audit: drift verdicts and DOI / volume-issue anchors (§5) | `paper_detail` (¥0.01; full abstract, `doi`, `volume`, `issue`, `n_citation`; no page numbers) |
 | Patent-avoidance perspective of the novelty check (§2.1) | `patent_search` (free; takes only `query`/`page`/`size` — coarse-filter client-side on the returned `app_year`/`pub_year`) |
 | Format compliance (§6) | No data capability — template rules are extracted only from the user's payload |
 

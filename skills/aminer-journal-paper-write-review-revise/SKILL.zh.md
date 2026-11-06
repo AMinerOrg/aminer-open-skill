@@ -206,7 +206,7 @@ python3 scripts/aminer_client.py --action venue_search --params '{"name":"<JOURN
 | 核验标题/检查被引文献/审稿人引用的文献（取摘要供论断比对） | `paper_search`（免费；按标题检索后比对归一化题名——结果按相关度排序、非精确匹配）或 `paper_search_pro`（¥0.01；`title` 字段）→ `paper_info`（免费；`ids` ≤100；`abstract_slice` 只是部分摘要）→ `paper_detail`（¥0.01；完整摘要） |
 | DOI 是否在平台索引中（绝不说「能解析」） | `paper_qa_search`（¥0.05；`doi` + `use_topic: false`） |
 | 某篇被引文献的参考文献（它引用了谁——不是谁引用了它） | `paper_relation`（¥0.10；`id`） |
-| 待引条目的 DOI/完整摘要/卷期（页码平台不提供——问用户或标「待核」） | `paper_detail`（¥0.01） |
+| 待引条目的 DOI/完整摘要/卷期/被引次数 `n_citation`（页码平台不提供——问用户或标「待核」） | `paper_detail`（¥0.01） |
 | 期刊适配步 1——该刊已发论文的主题检索 | `paper_search_pro`（¥0.01；`query` + `venue`） |
 | 期刊档次对标/该刊已发论文按年列举 | `venue_search`（免费；取期刊 `id`）→ `venue_paper_relation`（¥0.10；`id`/`year`/`offset`/`limit`；只返回 id/题名/年份——仅列举，不支持主题检索） |
 | 仅取 ISSN（投稿包需要时） | `venue_search`（免费；只给期刊 `id`，不含 ISSN）→ `venue_detail`（¥0.20；`issn`/`eissn`） |
