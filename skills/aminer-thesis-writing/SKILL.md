@@ -1,14 +1,14 @@
 ---
-name: aminer-degree-thesis-proposal-to-defense
-name_zh: 学位论文开题到答辩
+name: aminer-thesis-writing
+name_zh: 学位论文全流程
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
 description: >
   [Activation] The degree-thesis production line, from the proposal gate to the defense: "how do I write the proposal report", "can my topic pass the proposal review", "this is the school template, fill it in for me", "proposal deadline on the 15th", "make a proposal-defense PPT set", "now write section 3.2" + pasted table of contents, "implement the advisor's comments item by item", "find two papers from the last two years to support this sentence", "you are a blind-review expert", "what to say on each defense PPT slide", "check the whole thesis against the school format", or a pasted annotated manuscript / numbered comment list.
   [Scenarios] One line, two eras. Proposal era: topic health check (novelty check / innovation points vs degree level / feasibility), school-template field-by-field drafting, deadline sprints, proposal-defense rehearsal, proposal-stage comment closure. Post-approval era: section-by-section production, item-by-item comment closure, citation audit, format compliance, blind-review self-check, mid-term and defense materials. A topic dossier carries the whole line — within the session, and across sessions via a pasteable handoff card.
-  [Routing] Topic or advisor choice undecided → aminer-topic-advisor-selection; journal/conference manuscripts → aminer-journal-paper-write-review-revise; experiment troubleshooting → aminer-experiment-to-paper; deep reading → aminer-paper-deep-reading; patents → aminer-patent-tech-intelligence.
-homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-degree-thesis-proposal-to-defense
+  [Routing] Topic or advisor choice undecided → aminer-topic-advisor-selection; journal/conference manuscripts → aminer-paper-writing; experiment troubleshooting → aminer-experiment-to-paper; deep reading → aminer-paper-deep-reading; patents → aminer-patent-tech-intelligence.
+homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-thesis-writing
 metadata:
   {
     "openclaw":
@@ -22,7 +22,7 @@ metadata:
   }
 ---
 
-# aminer-degree-thesis-proposal-to-defense — Degree Thesis Line (proposal gate → defense)
+# aminer-thesis-writing — Thesis: Proposal to Defense
 
 **Stance**: A degree thesis is not a one-shot writing request but a production line spanning weeks to months. This skill holds the whole line starting from the proposal gate: proposal health check → school-template drafting → proposal defense → section-by-section production → advisor-comment closure → mid-term check → format compliance → blind-review self-check → defense packaging. The proposal user's real question is "can it pass", not "how to write it" — answer the former first. Every stage's first answer is a directly usable deliverable; the whole line's state is carried across sessions via the handoff card (§10); **the school template is the acceptance standard** — never fill in a generic document out of generic imagination.
 
@@ -119,7 +119,7 @@ Stage rules: **topic not yet decided at first contact** (only a direction, or a 
 - Blind-review mode: academic quality / rigor / novelty / completeness — score dimension by dimension + a deduction-point list with every item located to section/page; the full manuscript is reviewed in chunks; "school + degree level" is kept as a config profile in the dossier, auto-switching the rubric when school or level changes.
 - Personas ("you are a senior blind-review expert for master's theses") are absorbed as role parameters; scoring dimensions follow the persona's declaration.
 - "Can I get around the plagiarism check / will AI detection flag me" → translate into a compliant path (rewrite based on actual work + proper citation + paraphrase/structural-reorganization rewriting); explicitly never promise to evade detection and never assist with "trace removal". This skill cannot access any plagiarism-check or AI-detection system (CNKI / Wanfang / Turnitin etc.) and cannot compute duplication or AI-detection rates — never report or estimate any percentage.
-- Blind-review deduction points become a "location / problem / fix" issue table and are rewritten paragraph by paragraph. Blind-review self-checks for degree theses are always handled here — the discriminating axis is manuscript type, never outsourced by output form (journal manuscripts → `aminer-journal-paper-write-review-revise`).
+- Blind-review deduction points become a "location / problem / fix" issue table and are rewritten paragraph by paragraph. Blind-review self-checks for degree theses are always handled here — the discriminating axis is manuscript type, never outsourced by output form (journal manuscripts → `aminer-paper-writing`).
 
 ## 8 Stage D — Defense and mid-term materials
 
@@ -195,7 +195,7 @@ Each citation's verification output is exactly one of the three states: verified
 ## 11 Boundaries and Handoffs
 
 1. **`aminer-topic-advisor-selection` ↔ this skill**: topic undecided at first contact (only a direction, drifting) → there; once the topic is locked, the lock-in card and starter pack flow into this skill's Stage P. An advisor reply that reopens topic selection flows back there.
-2. **`aminer-journal-paper-write-review-revise` (manuscript-type axis)**: degree theses stay here end to end; standalone journal/conference manuscripts (writing, revising one's own draft, pre-submission review, revision loops) → there. Mixed streams switch by the current manuscript type; the two closure ledgers are never cross-contaminated.
+2. **`aminer-paper-writing` (manuscript-type axis)**: degree theses stay here end to end; standalone journal/conference manuscripts (writing, revising one's own draft, pre-submission review, revision loops) → there. Mixed streams switch by the current manuscript type; the two closure ledgers are never cross-contaminated.
 3. **`aminer-experiment-to-paper`**: experimental data / error troubleshooting and statistical outputs → there; analysis results turned into results/discussion/methods sections are drafted there; when the draft comes back, Stage S assembles and continues — this skill does not do experiment troubleshooting.
 4. **`aminer-paper-deep-reading`**: reproduction-grade deep reading of supporting literature → there. **`aminer-patent-tech-intelligence`**: patent retrieval and drafting → there (this skill's health check takes only the patent-avoidance perspective).
 5. **Non-literature facts and pure-retrieval tasks**: policy outlines, standards, equipment parameters → route to the corresponding source and label the source type; pure-retrieval task types such as novelty checks / precise lists → platform-retrieval triage, granularity = original-sentence / numeric level.

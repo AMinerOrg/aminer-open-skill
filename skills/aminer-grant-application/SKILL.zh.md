@@ -1,10 +1,10 @@
 ---
 name: aminer-grant-application
-name_zh: 项目申报
+name_zh: 科研项目申报
 version: 1.0.0
 author: AMiner
 contact: report@aminer.cn
-description: "[激活条件] 用户贴入红头通知/指南条目/官方格式模板要求提取申报要件；问「科学问题怎么凝练」「研究基础是X想写Y」；贴新出台政策文件挑方向；说「查已经资助的项目别撞车」；要求「以评审专家组身份评审我的本子」并正反两面论证；要「找支撑这句话的文献」或按文献数据校准；说「限N字」「你还记得吗」时使用。 [适用场景] 项目申报全流程执行器——要件提取、挑方向、科学问题凝练（迁移式/约束式/三层级）、分节撰写与贴节迭代、句级配证与数据校准、防撞车、多角色模拟评审、预算/奖项/述职等周边固定件。 [路由规则] 申报语境内的贴段配引、字数压缩与数据校准留在本技能，不按一般改稿外派；非申报语境的一般学术自有稿迭代转 aminer-journal-paper-write-review-revise；期刊稿审稿人视角模拟转 aminer-journal-paper-write-review-revise；方向未定先送上游 aminer-topic-advisor-selection。"
+description: "[激活条件] 用户贴入红头通知/指南条目/官方格式模板要求提取申报要件；问「科学问题怎么凝练」「研究基础是X想写Y」；贴新出台政策文件挑方向；说「查已经资助的项目别撞车」；要求「以评审专家组身份评审我的本子」并正反两面论证；要「找支撑这句话的文献」或按文献数据校准；说「限N字」「你还记得吗」时使用。 [适用场景] 科研项目申报全流程执行器——要件提取、挑方向、科学问题凝练（迁移式/约束式/三层级）、分节撰写与贴节迭代、句级配证与数据校准、防撞车、多角色模拟评审、预算/奖项/述职等周边固定件。 [路由规则] 申报语境内的贴段配引、字数压缩与数据校准留在本技能，不按一般改稿外派；非申报语境的一般学术自有稿迭代转 aminer-paper-writing；期刊稿审稿人视角模拟转 aminer-paper-writing；方向未定先送上游 aminer-topic-advisor-selection。"
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-grant-application
 metadata:
   {
@@ -19,7 +19,7 @@ metadata:
   }
 ---
 
-# aminer-grant-application — 项目申报（申报书是截止日期前的流水线，本技能是它的分诊执行器）
+# aminer-grant-application — 科研项目申报（申报书是截止日期前的流水线，本技能是它的分诊执行器）
 
 立场：按「提取要件→挑方向→凝练科学问题→分节撰写→句级配证→防撞车→模拟评审→周边固定件」承接。载体优先：引导用户贴通知/指南/模板/半成品稿/获批本子原文，看贴了什么、不听转述。首答即全部：单轮即走的用户存在，首答就按分诊结果交付完整产物，不靠反问拖轮次。死线前几天整本成稿的冲刺与数周打磨同一本的长跑都是正常节奏，交付契约不因赶速度而降。
 
@@ -142,10 +142,10 @@ python3 scripts/aminer_client.py --action paper_detail --params '{"id":"<paper_i
 
 ## 6 边界与接力
 
-1. **↔ aminer-journal-paper-write-review-revise（稿件轴）**：本技能的专家组模拟评审是申报书语境内建角色；期刊论文投稿前以审稿人视角审用户自己的稿→ aminer-journal-paper-write-review-revise。两侧的「再评审只评新改动」同规。
+1. **↔ aminer-paper-writing（稿件轴）**：本技能的专家组模拟评审是申报书语境内建角色；期刊论文投稿前以审稿人视角审用户自己的稿→ aminer-paper-writing。两侧的「再评审只评新改动」同规。
 2. **↔ aminer-topic-advisor-selection（定题轴）**：科学问题源自尚未定题的方向探索→ aminer-topic-advisor-selection 上游；本技能从「指南已定/方向已定」开始，凝练请求若连方向都未定，先送上游。
-3. **↔ aminer-degree-thesis-proposal-to-defense / aminer-journal-paper-write-review-revise（管线轴）**：学位论文章节生产与盲审销号→ aminer-degree-thesis-proposal-to-defense；综述从查空到投稿包→ aminer-journal-paper-write-review-revise。申报书内句级文献支撑与数据校准的契约在本技能内自含，不外派。
-4. **↔ aminer-journal-paper-write-review-revise（载体语境轴）**：申报书/申报材料语境内的贴段配引、字数压缩与数据校准按本技能契约执行——逐句配文献查无即【无支撑】降格改写、数据校准出「原文值-文献值-来源」三元组、措辞与既定申报口径一致，不外派；非申报语境的一般学术自有稿锚定迭代与配引→ aminer-journal-paper-write-review-revise。
+3. **↔ aminer-thesis-writing / aminer-paper-writing（管线轴）**：学位论文章节生产与盲审销号→ aminer-thesis-writing；综述从查空到投稿包→ aminer-paper-writing。申报书内句级文献支撑与数据校准的契约在本技能内自含，不外派。
+4. **↔ aminer-paper-writing（载体语境轴）**：申报书/申报材料语境内的贴段配引、字数压缩与数据校准按本技能契约执行——逐句配文献查无即【无支撑】降格改写、数据校准出「原文值-文献值-来源」三元组、措辞与既定申报口径一致，不外派；非申报语境的一般学术自有稿锚定迭代与配引→ aminer-paper-writing。
 5. **数据能力边界**：已资助项目/立项名单超出通用文献检索范围→路由官方公示渠道（基金管理机构公示/主管部门官网），拿论文列表冒充立项名单是灾难；宏观断言只给可部分核验结论+代理指标+口径声明；区域/财政数据用统计年鉴与官方报表源并前置声明可得性。文献层的防撞车检索按 §3 Data Access 的映射执行。
 6. **长周期文件管理**：版本树、文件级协同、附件批注超出对话式会话能力→转带版本管理的文档工具，档案卡随行。
 

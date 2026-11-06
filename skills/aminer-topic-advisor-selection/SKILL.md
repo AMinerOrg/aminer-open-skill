@@ -7,7 +7,7 @@ contact: report@aminer.cn
 description: >
   [Activation] The decision stage before research begins — two tracks. Topic-selection track: "Is direction X still worth doing", "A or B — which is easier to write", "Is the novelty enough for a master's thesis", "Give me a few candidate topics", "None of these work, start over", "Decided — going with this one", "Continue last time's topic selection". Advisor-selection track: "Which doctoral advisors does department X have", "Build a profile for each of these advisors", "Advisor A or B", "Am I a fit for this advisor", "Write an outreach email", "The advisor replied — how do I respond", "Predict what the advisor will ask".
   [Scope] Turn decision drift into a convergence mechanism. Topic-selection track: five-dimension candidate cards, same-axis ranking, anti-restart guardrails, tier card + four-piece starter pack delivered in the same round. Advisor-selection track: department enumeration → per-advisor profiles (output record; student placements and grants user-supplied only) → same-axis comparison → fit assessment → outreach and application materials → reply follow-up → interview rehearsal, sharing one application dossier carried across sessions via a pasteable handoff card. The decision objects are inherently entangled (topics constrain advisors; advisor opinions reopen topic selection) — one skill, two tracks, two ledgers, with explicit inter-track handoffs.
-  [Routing] Full thesis-proposal production → aminer-degree-thesis-proposal-to-defense; manuscript writing/revision/review/revise-and-resubmit → aminer-journal-paper-write-review-revise; grant application → aminer-grant-application; experiment execution → aminer-experiment-to-paper; deep reading → aminer-paper-deep-reading; patents → aminer-patent-tech-intelligence.
+  [Routing] Full thesis-proposal production → aminer-thesis-writing; manuscript writing/revision/review/revise-and-resubmit → aminer-paper-writing; grant application → aminer-grant-application; experiment execution → aminer-experiment-to-paper; deep reading → aminer-paper-deep-reading; patents → aminer-patent-tech-intelligence.
 homepage: https://github.com/AMinerOrg/aminer-open-skill/tree/main/skills/aminer-topic-advisor-selection
 metadata:
   {
@@ -22,7 +22,7 @@ metadata:
   }
 ---
 
-# aminer-topic-advisor-selection — Research decision-making (locking the topic, choosing the advisor; turning decision drift into a convergence mechanism)
+# aminer-topic-advisor-selection — Topic & Advisor Selection (locking the topic, choosing the advisor; turning decision drift into a convergence mechanism)
 
 ## 0 Essence of the Scenario
 
@@ -183,8 +183,8 @@ There is no built-in storage: state lives within the session. At the end of each
 
 ## 6 Boundaries and Handoffs
 
-1. **`aminer-degree-thesis-proposal-to-defense`**: after the tier-lock skeleton is delivered, full thesis-proposal production → that skill (tier card and starter pack travel along); proposal-stage sessions encountering an unsettled-topic user → back to Track T.
-2. **`aminer-journal-paper-write-review-revise`**: after tier-locking, entering manuscript writing / revision / review / revise-and-resubmit → that skill; Track T's starter pack and to-fill slots are its starting point.
+1. **`aminer-thesis-writing`**: after the tier-lock skeleton is delivered, full thesis-proposal production → that skill (tier card and starter pack travel along); proposal-stage sessions encountering an unsettled-topic user → back to Track T.
+2. **`aminer-paper-writing`**: after tier-locking, entering manuscript writing / revision / review / revise-and-resubmit → that skill; Track T's starter pack and to-fill slots are its starting point.
 3. **`aminer-grant-application`**: tier-locking aimed at grant application → that skill, with the tier card traveling along.
 4. **`aminer-experiment-to-paper`**: the discriminator is **whether experiments are already running** — "is method M feasible on problem P" with no experiment in flight and the answer deciding whether to start → Track T; already in experiment execution (pasting code / errors / data / statistical output) → that skill, with candidate cards kept in the handoff card for continuation.
 5. **`aminer-paper-deep-reading`**: paper-by-paper deep reading to find a direction → that skill; Track T only owns the "read → card" sedimentation loop (each paper's breakdown back-fills the feasibility / density dimensions of the candidate cards); Track A's profiles stop at research-landscape and method-lineage cards.
