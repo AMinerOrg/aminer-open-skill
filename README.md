@@ -105,7 +105,6 @@ export AMINER_API_KEY="<YOUR_TOKEN>"
 - 邮件：[report@aminer.cn](mailto:report@aminer.cn)
 - API 接入与计费：[AMiner 开放平台](https://open.aminer.cn/open/docs)
 
-本仓库技能由 AMiner 团队维护，暂不接受外部提交新技能。基于 [MIT License](LICENSE) 开源。
 
 ## Star 历史
 
