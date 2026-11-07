@@ -105,7 +105,8 @@ Manual install, Python dependencies, OpenClaw setup, and billing notes are in th
 - Email: [report@aminer.cn](mailto:report@aminer.cn)
 - API access and billing: [AMiner Open Platform](https://open.aminer.cn/open/docs)
 
-Skills in this repository are maintained by the AMiner team; external skill submissions are not accepted at this time. Released under the [MIT License](LICENSE).
+
+
 
 ## Star History
 
